@@ -1,10 +1,10 @@
 <template>
-    <b-icon
-        icon="plus"
-        v-bind="$attrs"
-        @click.native="$emit('click')"
-    >
-    </b-icon>
+  <b-icon
+    icon="plus"
+    v-bind="$attrs"
+    @click.native="$emit('click')"
+  >
+  </b-icon>
 </template>
 
 <script>

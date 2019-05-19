@@ -1,13 +1,10 @@
-import {
-  START_APP,
-  SIGN_IN,
-  SIGN_OUT,
-  GET_EXT_VERSION, REDIRECT_USER,
-} from "./constants/action-types";
+import browser from 'webextension-polyfill';
+import { START_APP, SIGN_IN, SIGN_OUT, GET_EXT_VERSION, REDIRECT_USER, UPDATE_AUTH_STATE } from './constants/action-types';
 import { ERROR, OK } from './constants/status-types';
 import firebase from './firebase';
+import store from './backgroundStore';
 
-global.browser = require('webextension-polyfill');
+global.browser = browser;
 
 firebase.init({
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
@@ -17,60 +14,57 @@ firebase.init({
   storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID,
 });
-firebase.watchAuth();
 
-function getActiveTab() {
-  return new Promise(resolve => {
-    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-      const activeTab = tabs[0];
-      resolve(activeTab);
-    });
+chrome.runtime.onConnect.addListener(port => {
+  if (port.name !== process.env.VUE_APP_NAME) return;
+
+  let connected = true;
+  port.onDisconnect.addListener(() => {
+    connected = false;
   });
-}
 
-async function sendMessage(tabId = null, action = null, data = {}) {
-  let activeTabId = tabId;
-  if (!activeTabId) {
-    const activeTab = await getActiveTab();
-    activeTabId = activeTab.id;
+  const postMessage = (action, data) => {
+    if (!connected) return;
+    port.postMessage({
+      action,
+      data,
+    });
+  };
+
+  const startApp = async () => {
+    const user = await firebase.checkAuth();
+    if (user) {
+      postMessage(START_APP);
+    } else {
+      postMessage(REDIRECT_USER);
+    }
+  };
+
+  firebase.watchAuth(async user => {
+    postMessage(UPDATE_AUTH_STATE, user);
+  });
+
+  chrome.browserAction.onClicked.addListener(async () => {
+    // TODO activeとそうじゃないときにアイコンの色を変更する
+    await store.dispatch('setActive', !store.state.active);
+    startApp();
+  });
+
+  if (store.state.active) {
+    startApp();
   }
-  console.log('activeTabId', activeTabId);
-  return new Promise((resolve, reject) => {
-    try {
-      chrome.tabs.sendMessage(activeTabId, { app: process.env.VUE_APP_NAME, action, data }, response => {
-        resolve(response);
-      });
-    } catch (e) {
-      console.error(e);
-      reject(e);
+
+  port.onMessage.addListener(async request => {
+    const { status } = request;
+    if (status === ERROR) {
+      console.log(request);
     }
   });
-}
-
-chrome.browserAction.onClicked.addListener(async tab => {
-  const user = await firebase.checkAuth();
-  if (user) {
-    await sendMessage(tab.id, START_APP);
-  } else {
-    await sendMessage(tab.id, REDIRECT_USER);
-  }
 });
-
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  console.log('onUpdated');
-});
-
-// chrome.runtime.onMessage.addListener(function (request={}, sender, sendResponse) {
-//     if (request.app === appName) {
-//         if (request.status === 'OK') {
-//             clearMeta()
-//         }
-//     }
-// });
 
 chrome.runtime.onMessageExternal.addListener(async (request = {}, sender, sendResponse) => {
-  console.log('onMessageExternal', request);
   const { action = null, data = {} } = request;
+  console.log(request);
   switch (action) {
     case SIGN_IN:
       try {
@@ -89,10 +83,14 @@ chrome.runtime.onMessageExternal.addListener(async (request = {}, sender, sendRe
       }
       break;
     case GET_EXT_VERSION:
-      console.log(GET_EXT_VERSION);
+      sendResponse({ status: OK, message: chrome.runtime.getManifest().version });
       break;
     default:
       throw Error('unknown action');
   }
   return true;
 });
+
+window.onload = () => {
+  store.dispatch('setActive', false);
+};

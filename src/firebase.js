@@ -1,6 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import store from './store';
+import store from './backgroundStore';
 
 export default {
   init(config) {
@@ -8,24 +8,24 @@ export default {
     firebase.auth().useDeviceLanguage();
   },
   async signIn(email, password) {
-    console.log('signIn()');
     const { user } = await firebase.auth().signInWithEmailAndPassword(email, password);
     await store.dispatch('setUser', user);
+    return user;
   },
   async signOut() {
-    console.log('signOut()');
     await firebase.auth().signOut();
     await store.dispatch('setUser', null);
   },
   checkAuth() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       firebase.auth().onAuthStateChanged(user => resolve(user));
     });
   },
-  watchAuth() {
-    firebase.auth().onAuthStateChanged(async (user) => {
+  watchAuth(cb) {
+    firebase.auth().onAuthStateChanged(async user => {
       console.log('watchAuth()', user);
       await store.dispatch('setUser', user);
+      cb(user);
     });
   },
 };

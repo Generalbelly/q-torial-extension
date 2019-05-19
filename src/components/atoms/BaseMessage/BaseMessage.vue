@@ -1,10 +1,11 @@
 <template>
-    <b-message
-        v-bind="$attrs"
-        :active="active"
-    >
-        <slot></slot>
-    </b-message>
+  <b-message
+    v-bind="$attrs"
+    :active="active"
+    @close="$emit('close')"
+  >
+    <slot />
+  </b-message>
 </template>
 
 <script>
@@ -19,6 +20,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

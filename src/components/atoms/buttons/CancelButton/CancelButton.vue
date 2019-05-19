@@ -1,10 +1,10 @@
 <template>
-    <button
-        class="button"
-        @click="$emit('click')"
-    >
-        Cancel
-    </button>
+  <button
+    class="button"
+    @click="$emit('click')"
+  >
+    Cancel
+  </button>
 </template>
 
 <script>

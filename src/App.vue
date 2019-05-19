@@ -1,111 +1,137 @@
 <template>
-  <div id="omotenashi" :class="{ 'font-size-fixer': needsFontSizeFixer }">
-    <navbar
+  <div>
+    <the-navbar
       v-show="showNav"
       @click:tutorials-button="onClickTutorialsButton"
       @click:logo="onClickLogo"
-    ></navbar>
-    <greeting-modal
-      v-show="extLog.userIsFirstTime"
-      @click:start="onClickStart"
-    ></greeting-modal>
-    <tutorial-page
-      v-show="showTutorials"
-      @click:close="onClickCloseTutorialPage"
-      ref="tutorialPage"
+    ></the-navbar>
+    <the-main
+      :active="showMain"
+      @click:close="onClickMainClose"
     >
-    </tutorial-page>
+      <tutorials-page
+        @click:add="onClickAdd"
+      ></tutorials-page>
+    </the-main>
+    <the-sidebar
+      v-show="showSideNav"
+      :is-on-right="showSideNavRight"
+      @click:close="onClickSidebarClose"
+      @click:switch="onClickSwitch"
+    >
+      <tutorial-page
+        @select:step-element="onSelectStepElement"
+      ></tutorial-page>
+    </the-sidebar>
   </div>
 </template>
 <script>
-import TutorialPage from './components/pages/TutorialsPage'
-import GreetingModal from './components/organisms/GreetingModal'
-import Navbar from "./components/organisms/Navbar"
-import ProjectNotFoundModal from "./components/organisms/ProjectNotFoundModal"
-import {
-  mapActions,
-  mapState
-} from 'vuex'
+import { mapActions, mapState } from 'vuex';
+import TutorialsPage from './components/pages/TutorialsPage';
+import TheNavbar from './components/organisms/TheNavbar';
+import TheMain from './components/organisms/global/TheMain';
+import TheSidebar from './components/organisms/TheSidebar';
+import TutorialPage from './components/pages/TutorialPage';
 
 export default {
   name: 'App',
   components: {
-    ProjectNotFoundModal,
-    Navbar,
     TutorialPage,
-    GreetingModal,
+    TheSidebar,
+    TheMain,
+    TheNavbar,
+    TutorialsPage,
   },
   data() {
     return {
       showNav: true,
-      showTutorials: false,
-      needsFontSizeFixer: false,
-    }
+      showSideNav: false,
+      showSideNavRight: true,
+      showMain: false,
+      iframeElement: null,
+    };
   },
-  computed: {
-    ...mapState([
-      'extLog',
-    ]),
-  },
-  created() {
-    this.retrieveLog()
+  watch: {
+    showMain(value) {
+      if (value) {
+        this.changeIframeStyle({
+          height: '100%',
+        });
+      }
+    },
+    showSideNav(value) {
+      if (value) {
+        this.changeIframeStyle({
+          width: '300px',
+          height: '100%',
+        });
+      }
+    },
   },
   mounted() {
-    const fontSize = this.getRootElementFontSize()
-    if (this.isFontSizeInPixel(fontSize)) {
-      const size = fontSize.replace('px', '')
-      if (size < 16) {
-        this.needsFontSizeFixer = true
-      }
-    }
+    this.iframeElement = window.parent.document.querySelector('iframe#q-torial');
   },
   methods: {
-    ...mapActions([
-      'retrieveLog',
-      'saveLog',
-    ]),
-    onClickStart() {
-      if (this.extLog.userIsFirstTime) {
-        this.saveLog({ userIsFirstTime: false })
-      }
-    },
-    isFontSizeInPixel(fontSize) {
-      return !!/px$/.exec(fontSize)
-    },
-    getRootElementFontSize() {
-      return window.getComputedStyle(document.documentElement).getPropertyValue('font-size')
+    changeIframeStyle(styles) {
+      Object.keys(styles).forEach((attribute) => {
+        this.iframeElement.style[attribute] = styles[attribute];
+      });
     },
     onClickLogo() {
-      window.open(
-              process.env.APP_URL,
-              '_blank'
-      );
+      window.open(process.env.VUE_APP_URL, '_blank');
     },
     onClickTutorialsButton() {
-      this.showNav = false
-      this.showTutorials = true
+      this.showNav = false;
+      this.showSideNav = false;
+      this.showMain = true;
     },
-    onClickCloseTutorialPage() {
-      this.showTutorials = false
-      this.showNav = true
+    onClickMainClose() {
+      this.showMain = false;
+      this.showSideNav = false;
+      this.showNav = true;
+    },
+    onClickSidebarClose() {
+      this.showMain = true;
+      this.showSideNav = false;
+      this.showNav = false;
+    },
+    onClickAdd() {
+      this.showNav = false;
+      this.showMain = false;
+      this.changeIframeStyle({
+        top: '0',
+        right: '0',
+        left: 'unset',
+        bottom: '0',
+      });
+      this.showSideNav = true;
+    },
+    onClickSwitch() {
+      this.showSideNavRight = !this.showSideNavRight;
+      if (this.showSideNavRight) {
+        this.changeIframeStyle({
+          top: '0',
+          right: '0',
+          left: 'unset',
+          bottom: '0',
+        });
+      } else {
+        this.changeIframeStyle({
+          top: '0',
+          right: 'unset',
+          left: '0',
+          bottom: '0',
+        });
+      }
+    },
+    onSelectStepElement(cordinates) {
+
     },
   },
-}
+};
 </script>
-
 <style>
-#omotenashi {
-  z-index: 2147483648 !important;
-  position: relative;
-}
-#omotenashi > .navbar {
-  top: unset;
-}
-#omotenashi > .navbar:after,
-#omotenashi > .navbar:before {
-  content: none;
-}
-#omotenashi.font-size-fixer * {
-  font-size: 16px;
+html {
+  background-color: transparent;
 }
 </style>

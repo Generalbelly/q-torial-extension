@@ -1,5 +1,5 @@
 <template>
-  <data-table
+  <base-table
     :pagination="pagination"
     :data="tutorialEntities"
     :columns="columns"
@@ -9,13 +9,13 @@
     v-bind="$attrs"
     @change:pagination="$emit('change:pagination', $event)"
     @select="$emit('select', $event)"
-    @click:create-first="$emit('click:create-first-tutorial')"
+    @click:create-first-item="$emit('click:create-first-tutorial')"
   >
-  </data-table>
+  </base-table>
 </template>
 <script>
 
-import DataTable from '../../molecules/DataTable';
+import BaseTable from '../../molecules/BaseTable';
 
 const columns = [
   {
@@ -48,7 +48,7 @@ const columns = [
 export default {
   name: 'TutorialTable',
   components: {
-    DataTable,
+    BaseTable,
   },
   props: {
     query: {
@@ -83,5 +83,5 @@ export default {
   },
 };
 </script>
-<style scoped>
-</style>
+
+<style scoped></style>

@@ -7,8 +7,8 @@ import '../sass/main.scss';
 import './fontawesome';
 import store from './store';
 import App from './App';
-import { SIGN_IN, SIGN_OUT, START_APP, REDIRECT_USER } from './constants/action-types';
-import { OK, ERROR } from './constants/status-types';
+import { START_APP, REDIRECT_USER, UPDATE_AUTH_STATE } from './constants/action-types';
+import { ERROR } from './constants/status-types';
 
 // Buefy
 Vue.use(Buefy, {
@@ -42,9 +42,9 @@ Vue.use(VeeValidate, {
 // }
 
 class ExtApp {
-  iframeId = 'q-torial';
+  iframeId = process.env.VUE_APP_NAME;
 
-  appId = 'q-app';
+  appId = 'app';
 
   init() {
     const iframeElement = document.querySelector(`iframe#${this.iframeId}`);
@@ -57,18 +57,26 @@ class ExtApp {
     iframe.style.right = '0';
     iframe.style.left = '0';
     iframe.style.width = '100%';
+    iframe.style.height = '100px';
     iframe.id = this.iframeId;
     const self = this;
-    iframe.onload = () => {
+    iframe.onload = function() {
+      const doc = this.contentDocument || this.contentWindow.document;
+      const linkElement = doc.createElement('link');
+      linkElement.rel = 'stylesheet';
+      linkElement.type = 'text/css';
+      linkElement.href = chrome.runtime.getURL('contentScript.css');
+      doc.head.appendChild(linkElement);
+
+      const divElement = doc.createElement('div');
+      divElement.id = self.appId;
+      doc.body.appendChild(divElement);
       const app = new Vue({
         render: h => h(App),
         store,
       });
-      app.$mount(`iframe#${self.iframeId}>#${self.appId}`);
+      app.$mount(divElement);
     };
-    const divElement = document.createElement('div');
-    divElement.id = this.appId;
-    iframe.appendChild(divElement);
     document.body.appendChild(iframe);
   }
 
@@ -79,7 +87,7 @@ class ExtApp {
 
 let extApp = null;
 
-async function start() {
+async function startApp() {
   if (!extApp) {
     extApp = new ExtApp();
     extApp.init();
@@ -87,26 +95,51 @@ async function start() {
   extApp.start();
 }
 
-chrome.runtime.onMessage.addListener(async (request={}, sender, sendResponse) => {
-  console.log(request);
-  const { app = null, action = null, data = {} } = request;
-  if (app === process.env.VUE_APP_NAME) {
-    switch (action) {
-      case START_APP:
-        try {
-          await start();
-          sendResponse({ status: OK });
-        } catch (e) {
-          sendResponse({ status: ERROR, message: e.message });
-        }
-        break;
-      case REDIRECT_USER:
-        window.location.href = `${process.env.VUE_APP_URL}?source=extension&redirect=${window.location.href}`;
-        break;
-      default:
-        break;
-    }
-  }
-  return true;
+const port = chrome.runtime.connect({
+  name: process.env.VUE_APP_NAME,
 });
 
+let connected = true;
+port.onDisconnect.addListener(() => {
+  connected = false;
+});
+
+port.onMessage.addListener(async request => {
+  const { action = null, data = {} } = request;
+  console.log(request);
+  const postMessage = (status, message) => {
+    if (!connected) return;
+    port.postMessage({
+      status,
+      message,
+    });
+  };
+
+  switch (action) {
+    case START_APP:
+      try {
+        if (window.location.origin !== process.env.VUE_APP_URL) {
+          await startApp();
+        }
+      } catch (e) {
+        postMessage(ERROR, e.message);
+      }
+      break;
+    case REDIRECT_USER:
+      if (window.location.origin !== process.env.VUE_APP_URL) {
+        window.location.href = `${process.env.VUE_APP_URL}?source=extension&redirect=${window.location.href}`;
+      }
+      break;
+    case UPDATE_AUTH_STATE:
+      console.log('UPDATE_AUTH_STATE');
+      console.log(data);
+      try {
+        await store.dispatch('setUser', data);
+      } catch (e) {
+        postMessage(ERROR, e.message);
+      }
+      break;
+    default:
+      break;
+  }
+});

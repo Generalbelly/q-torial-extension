@@ -1,2 +1,3 @@
-import TutorialsPage from './TutorialsPage'
-export default TutorialsPage
+import TutorialsPage from './TutorialsPage';
+
+export default TutorialsPage;

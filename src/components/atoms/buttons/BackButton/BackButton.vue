@@ -3,7 +3,7 @@
     class="button is-neutral-100"
     @click="$emit('click')"
   >
-      Back
+    Back
   </button>
 </template>
 

@@ -19,6 +19,8 @@ import {
   faEye,
   faEnvelope,
   faKey,
+  faTimes,
+  faExchangeAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -49,4 +51,6 @@ library.add(
   faEye,
   faEnvelope,
   faKey,
+  faTimes,
+  faExchangeAlt
 );

@@ -1,21 +1,19 @@
 <template>
-    <b-field v-bind="$attrs">
-        <b-input
-            type="search"
-            icon-pack="fas"
-            icon="search"
-            v-model="inputValue"
-        >
-        </b-input>
-        <p class="control">
-            <search-button
-                :class="searchButtonClass"
-                class="is-primary-050"
-                @click="$emit('click:search')"
-            >
-            </search-button>
-        </p>
-    </b-field>
+  <b-field v-bind="$attrs">
+    <b-input
+      type="search"
+      icon-pack="fas"
+      v-model="inputValue"
+      icon="search"
+    ></b-input>
+    <p class="control">
+      <search-button
+        :class="searchButtonClass"
+        class="is-primary-050"
+        @click="$emit('click:search')"
+      ></search-button>
+    </p>
+  </b-field>
 </template>
 
 <script>

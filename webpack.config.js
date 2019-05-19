@@ -12,6 +12,7 @@ const config = {
   entry: {
     background: './background.js',
     contentScript: './contentScript.js',
+    driver: './driver.js/index.js',
   },
   output: {
     path: __dirname + '/dist',

@@ -1,22 +1,23 @@
 <template>
-    <main
-        class="container"
-    >
-        <base-fade-transition>
-            <slot></slot>
-        </base-fade-transition>
-    </main>
+  <b-modal
+    :active="active"
+    @close="$emit('click:close')"
+  >
+    <div class="has-background-neutral-050 has-padding-5">
+      <slot></slot>
+    </div>
+  </b-modal>
 </template>
 
 <script>
-import BaseFadeTransition from '../../../atoms/transitions/BaseFadeTransition';
-
 export default {
   name: 'TheMain',
-  components: { BaseFadeTransition },
+  props: {
+    active: {
+      type: Boolean,
+      default: false,
+    },
+  },
 };
 </script>
 
-<style scoped>
-
-</style>

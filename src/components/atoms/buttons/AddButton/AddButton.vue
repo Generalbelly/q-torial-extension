@@ -1,13 +1,13 @@
 <template>
-    <base-button
-        class="is-primary"
-        @click="$emit('click')"
-    >
-        <plus-icon></plus-icon>
-        <span>
-            <slot>Add</slot>
-        </span>
-    </base-button>
+  <base-button
+    class="is-primary"
+    @click="$emit('click')"
+  >
+    <plus-icon></plus-icon>
+    <span>
+      <slot>Add</slot>
+    </span>
+  </base-button>
 </template>
 
 <script>
@@ -16,10 +16,11 @@ import BaseButton from '../../BaseButton';
 
 export default {
   name: 'AddButton',
-  components: { BaseButton, PlusIcon },
+  components: {
+    BaseButton,
+    PlusIcon,
+  },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

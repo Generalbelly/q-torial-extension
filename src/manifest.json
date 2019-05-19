@@ -25,9 +25,12 @@
       "matches": [
         "*://*/*"
       ],
-      "css": [],
       "js": [
-        "contentScript.js"
+        "contentScript.js",
+        "driver.js"
+      ],
+      "css": [
+        "driver.css"
       ]
     }
   ],
@@ -36,5 +39,8 @@
       "*://localhost/*"
     ]
   },
+  "web_accessible_resources": [
+    "contentScript.css"
+  ],
   "content_security_policy":"script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
 }

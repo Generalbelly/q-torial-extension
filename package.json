@@ -8,12 +8,12 @@
     "lint": "eslint --ext .js,.vue src",
     "precommit": "pretty-quick --staged",
     "prettier": "prettier \"src/**/*.{js,vue}\"",
-    "prettier:write": "npm run prettier -- --write",
+    "prettier:write": "yarn prettier -- --write",
     "build": "cross-env NODE_ENV=production webpack --hide-modules",
     "build:dev": "cross-env NODE_ENV=development webpack --hide-modules",
     "build-zip": "node scripts/build-zip.js",
-    "watch": "npm run build -- --watch",
-    "watch:dev": "cross-env HMR=true npm run build:dev -- --watch"
+    "watch": "yarn build -- --watch",
+    "watch:dev": "cross-env HMR=true yarn build:dev -- --watch"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.17",
@@ -49,7 +49,7 @@
     "dotenv-webpack": "^1.7.0",
     "ejs": "^2.6.1",
     "eslint": "^5.16.0",
-    "eslint-config-airbnb-base": "^13.0.0",
+    "j": "^13.0.0",
     "eslint-config-prettier": "^3.1.0",
     "eslint-friendly-formatter": "^4.0.1",
     "eslint-import-resolver-webpack": "^0.10.1",
@@ -66,6 +66,7 @@
     "sass-loader": "^7.1.0",
     "vue-loader": "^15.4.2",
     "vue-template-compiler": "^2.6.10",
+    "vuexfire": "^3.0.0-alpha.16",
     "web-ext-types": "^2.1.0",
     "webpack": "^4.20.2",
     "webpack-chrome-extension-reloader": "^0.8.3",

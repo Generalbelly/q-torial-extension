@@ -1,11 +1,11 @@
 <template>
   <tutorial-template
     @click:add="$emit('click:add')"
+    @click:step-type="$emit('click:step-type', $event)"
+    @select:step-element="$emit('select:step-element', $event)"
   ></tutorial-template>
 </template>
 <script>
-import { debounce } from 'debounce';
-import { mapActions, mapGetters, mapState } from 'vuex';
 import TutorialTemplate from '../../templates/TutorialTemplate';
 
 export default {
@@ -16,8 +16,5 @@ export default {
   data() {
     return {};
   },
-  created() {
-    console.log('create');
-  }
 };
 </script>

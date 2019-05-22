@@ -1,23 +1,10 @@
 <template>
-  <nav
-    class="has-background-grey-dark side-bar"
-    :style="{'width': width}"
-  >
-    <div
-      :class="isOnRight ? '' : 'side-bar__header--reverse'"
-      class="side-bar__header has-padding-3"
-    >
-      <close-icon
-        size="is-large"
-        class="side-bar__close-icon"
-        @click="$emit('click:close')"
-      />
-      <switch-icon
-        class="has-text-white side-bar__switch-icon"
-        @click="$emit('click:switch')"
-      />
+  <nav class="has-background-neutral-050 side-bar" :style="{ width: width }">
+    <div :class="isOnRight ? '' : 'side-bar__header--reverse'" class="has-background-neutral-700 has-text-white has-padding-x-4 has-padding-y-3 side-bar__header">
+      <close-icon size="is-large" class="side-bar__close-icon has-cursor-pointer" @click="$emit('click:close')" />
+      <switch-icon class="side-bar__switch-icon has-cursor-pointer" @click="$emit('click:switch')" />
     </div>
-    <div class="has-padding-3">
+    <div class="has-padding-4">
       <slot />
     </div>
   </nav>
@@ -25,18 +12,10 @@
 <script>
 import CloseIcon from '../../atoms/icons/CloseIcon';
 import SwitchIcon from '../../atoms/icons/SwitchIcon';
-import BaseLevel from '../../atoms/BaseLevel/BaseLevel';
-import BaseLevelLeft from '../../atoms/BaseLevelLeft/BaseLevelLeft';
-import BaseLevelRight from '../../atoms/BaseLevelRight';
-import BaseLevelItem from '../../atoms/BaseLevelItem/BaseLevelItem';
 
 export default {
   name: 'TheSidebar',
   components: {
-    BaseLevelItem,
-    BaseLevelRight,
-    BaseLevelLeft,
-    BaseLevel,
     SwitchIcon,
     CloseIcon,
   },

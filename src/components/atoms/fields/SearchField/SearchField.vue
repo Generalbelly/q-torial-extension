@@ -1,17 +1,8 @@
 <template>
   <b-field v-bind="$attrs">
-    <b-input
-      type="search"
-      icon-pack="fas"
-      v-model="inputValue"
-      icon="search"
-    ></b-input>
+    <b-input type="search" icon-pack="fas" v-model="inputValue" icon="search"></b-input>
     <p class="control">
-      <search-button
-        :class="searchButtonClass"
-        class="is-primary-050"
-        @click="$emit('click:search')"
-      ></search-button>
+      <search-button :class="searchButtonClass" @click="$emit('click:search')"></search-button>
     </p>
   </b-field>
 </template>

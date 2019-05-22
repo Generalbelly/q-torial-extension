@@ -1,20 +1,28 @@
 import Entity from './Entity';
 
 export default class TutorialStepEntity extends Entity {
-    type = null
+  step_type = 'driver';
 
-    target = null
+  trigger_target = null;
 
-    value = null
+  trigger_event = 'load';
 
-    config = null
+  hightlight_target = null;
 
-    tutorial_id = null
+  waiting_time = 0;
 
-    tutorialEntity = null
+  config = {};
 
-    constructor(data = {}) {
-      super();
-      this.fill(data);
-    }
+  created_at = null;
+
+  updated_at = null;
+
+  tutorial_id = null;
+
+  tutorialEntity = null;
+
+  constructor(data = {}) {
+    super();
+    this.fill(data);
+  }
 }

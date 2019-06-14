@@ -21,9 +21,19 @@
             <span
               class="step-definition__step has-background-grey has-cursor-pointer"
               @click="onStepClick(step)"
+              @mouseenter="hoveredStepIndex = stepIndex"
+              @mouseleave="hoveredStepIndex = null"
             >
               <modal-icon v-if="step.type === 'modal'" />
               <tooltip-icon v-else-if="step.type === 'tooltip'" />
+              <base-fade-transition>
+                <trash-button
+                  v-show="hoveredStepIndex === stepIndex"
+                  class="step-definition__delete"
+                  type="is-neutral"
+                  @click.stop="onStepDeleteClick(step)"
+                />
+              </base-fade-transition>
             </span>
             <span class="step-definition">
               <base-icon
@@ -34,9 +44,14 @@
           </template>
         </div>
         <div class="has-margin-top-5">
-          <step-type-dropdown
-            class="is-fullwidth"
+          <add-step-button
+            class="is-fullwidth has-margin-bottom-3"
             @click:step-type="onClickStepType"
+          />
+          <preview-button
+            v-if="innerTutorial.steps.length > 0"
+            class="is-fullwidth"
+            @click="onPreviewClick"
           />
         </div>
       </div>
@@ -144,9 +159,10 @@ import {
   ADD,
   EDIT,
   PREVIEW,
+  PREVIEW_DONE,
   SAVE,
 } from '../../../constants/drvier-editor-command-types'
-import StepTypeDropdown from '../../organisms/StepTypeDropdown/StepTypeDropdown'
+import AddStepButton from '../../organisms/AddStepButton/AddStepButton'
 import BaseModal from '../../molecules/BaseModal/BaseModal'
 import ValidatableTextField from '../../molecules/fields/ValidatableTextField'
 import ValidatableTextareaField from '../../molecules/fields/ValidatableTextareaField'
@@ -166,6 +182,10 @@ import ModalIcon from '../../atoms/icons/ModalIcon/ModalIcon'
 import TooltipIcon from '../../atoms/icons/TooltipIcon/TooltipIcon'
 import BaseIcon from '../../atoms/icons/BaseIcon/BaseIcon'
 import StepEntity from '../../atoms/Entities/StepEntity'
+import PreviewButton from '../../atoms/buttons/PreviewButton/PreviewButton'
+import BaseButton from '../../atoms/BaseButton/BaseButton'
+import TrashButton from '../../atoms/buttons/TrashButton/TrashButton'
+import BaseFadeTransition from '../../atoms/transitions/BaseFadeTransition/BaseFadeTransition'
 
 const pathOperators = [
   {
@@ -201,6 +221,10 @@ export default {
   name: 'TutorialTemplate',
   mixins: [iframeStyler],
   components: {
+    BaseFadeTransition,
+    TrashButton,
+    BaseButton,
+    PreviewButton,
     BaseIcon,
     TooltipIcon,
     ModalIcon,
@@ -219,7 +243,7 @@ export default {
     ValidatableTextareaField,
     ValidatableTextField,
     BaseModal,
-    StepTypeDropdown,
+    AddStepButton,
     BaseHeading,
   },
   props: {
@@ -245,6 +269,7 @@ export default {
       innerTutorial: new TutorialEntity(),
       domain: window.parent.location.hostname,
       driverEditorID: `${process.env.VUE_APP_NAME}-editor`,
+      hoveredStepIndex: null,
     }
   },
   watch: {
@@ -330,7 +355,7 @@ export default {
           this.shouldShowSideNav = true
         }
         this.showIframe()
-      } else if (command === CANCEL) {
+      } else if (command === CANCEL || command === PREVIEW_DONE) {
         this.shouldShowSideNav = true
         this.showIframe()
       }
@@ -383,6 +408,20 @@ export default {
         step,
       })
     },
+    onPreviewClick() {
+      this.sendCommand(PREVIEW, {
+        steps: this.innerTutorial.steps,
+      })
+      this.hideIframe()
+    },
+    onStepDeleteClick(step) {
+      const index = this.innerTutorial.steps.findIndex(s => s.id === step.id)
+      this.innerTutorial.steps = [
+        ...this.innerTutorial.steps.slice(0, index),
+        ...this.innerTutorial.steps.slice(index + 1),
+      ]
+      this.$emit('update:tutorial', this.innerTutorial)
+    },
   },
 }
 </script>
@@ -412,6 +451,7 @@ export default {
   align-items: center;
 }
 .step-definition__step {
+  position: relative;
   display: inline-block;
   padding: 15px;
   border-radius: 50%;
@@ -422,5 +462,17 @@ export default {
 
 .step-definition__step > svg {
   width: 45px;
+}
+.step-definition__delete {
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  font-size: 8px;
 }
 </style>

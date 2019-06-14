@@ -36,7 +36,7 @@ const stepTypes = [
 ]
 
 export default {
-  name: 'StepTypeDropdown',
+  name: 'AddStepButton',
   components: {
     ModalIcon,
     TooltipIcon,

@@ -1,13 +1,17 @@
 <template>
-  <base-button class="button" @click="$emit('click')">
-    Delete
+  <base-button
+    v-bind="$attrs"
+    @click="$emit('click', $event)"
+    icon-right="trash"
+  >
   </base-button>
 </template>
 
 <script>
 import BaseButton from '../../BaseButton'
+
 export default {
-  name: 'DeleteButton',
+  name: 'TrashButton',
   components: { BaseButton },
 }
 </script>

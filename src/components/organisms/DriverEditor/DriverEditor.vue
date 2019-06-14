@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div />
 </template>
 
 <script>
@@ -9,7 +9,7 @@ import {
   ADD,
   EDIT,
   PREVIEW,
-  SHOW_NO_STEP_ADDED_YET_MESSAGE,
+  PREVIEW_DONE,
   SAVE,
   CANCEL,
 } from '../../../constants/drvier-editor-command-types'
@@ -18,14 +18,6 @@ import StepEntity from '../../atoms/Entities/StepEntity'
 const MAX_RETRIES = 5
 export default {
   name: 'DriverEditor',
-  // props: {
-  //   steps: {
-  //     type: Array,
-  //     default() {
-  //       return [];
-  //     },
-  //   },
-  // },
   data() {
     return {
       driver: null,
@@ -104,9 +96,10 @@ export default {
         const { step } = data
         this.isEditing = true
         this.step = step
-        this.highlight(step.highlightTarget, {
-          content: step.config.content,
-        })
+        this.highlight(step.highlightTarget, step.config)
+      } else if (command === PREVIEW) {
+        const { steps } = data
+        this.preview(steps)
       }
     },
     addUserScreenClickHandler() {
@@ -210,14 +203,14 @@ export default {
       return [...lowerElements, ...upperElements]
     },
     userScreenClickHandler(e) {
-      e.preventDefault() // for driver.js
       e.stopPropagation() // for driver.js
 
-      if (this.selectorChoices.length === 0) {
-        this.selectorChoices = this.extractSelectorChoices(e)
+      if (this.isEditing) {
+        if (this.selectorChoices.length === 0) {
+          this.selectorChoices = this.extractSelectorChoices(e)
+          this.showDriverChoice()
+        }
       }
-
-      this.showDriverChoice()
     },
     async highlight(
       element = 'modal',
@@ -232,7 +225,7 @@ export default {
         this.driver.defineSteps([
           {
             element,
-            popover: popover,
+            popover,
             onNext: el => {
               this.onClickNext(el)
               this.driver.preventMove()
@@ -247,15 +240,18 @@ export default {
         resolve(this.driver.hasHighlightedElement())
       })
     },
-    preview() {
-      if (this.steps.length === 0) {
-        this.sendCommand(SHOW_NO_STEP_ADDED_YET_MESSAGE)
-        return
-      }
-
+    preview(steps = []) {
+      this.addUserScreenClickHandler()
       this.driver.options.allowClose = true
-      // this.driver.options.onReset = () => {};
-      this.driver.defineSteps(this.steps)
+      this.driver.options.onReset = () => {
+        this.sendCommand(PREVIEW_DONE)
+        this.removeUserScreenClickHandler()
+      }
+      const definedSteps = steps.map(step => ({
+        element: step.highlightTarget,
+        popover: step.config,
+      }))
+      this.driver.defineSteps(definedSteps)
       this.driver.start()
     },
     async showDriverChoice() {

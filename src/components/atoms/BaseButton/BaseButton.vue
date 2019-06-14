@@ -1,6 +1,6 @@
 <template>
   <b-button v-bind="$attrs" v-on="$listeners">
-    <slot></slot>
+    <slot />
   </b-button>
 </template>
 

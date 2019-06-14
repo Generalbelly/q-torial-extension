@@ -1,5 +1,8 @@
 <template>
-  <base-dropdown :items="stepTypes" @click:item="$emit('click:step-type', $event)">
+  <base-dropdown
+    :items="stepTypes"
+    @click:item="$emit('click:step-type', $event)"
+  >
     <add-button />
     <template v-slot:tooltip>
       <span>
@@ -16,10 +19,10 @@
   </base-dropdown>
 </template>
 <script>
-import BaseDropdown from '../../molecules/BaseDropdown';
-import AddButton from '../../atoms/buttons/AddButton';
-import TooltipIcon from '../../atoms/icons/TooltipIcon';
-import ModalIcon from '../../atoms/icons/ModalIcon';
+import BaseDropdown from '../../molecules/BaseDropdown'
+import AddButton from '../../atoms/buttons/AddButton'
+import TooltipIcon from '../../atoms/icons/TooltipIcon'
+import ModalIcon from '../../atoms/icons/ModalIcon'
 
 const stepTypes = [
   {
@@ -30,7 +33,7 @@ const stepTypes = [
     text: 'Modal',
     value: 'modal',
   },
-];
+]
 
 export default {
   name: 'StepTypeDropdown',
@@ -43,9 +46,9 @@ export default {
   data() {
     return {
       stepTypes,
-    };
+    }
   },
-};
+}
 </script>
 
 <style scoped>

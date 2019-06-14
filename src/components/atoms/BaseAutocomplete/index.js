@@ -1,3 +1,3 @@
-import BaseAutocomplete from './BaseAutocomplete';
+import BaseAutocomplete from './BaseAutocomplete'
 
-export default BaseAutocomplete;
+export default BaseAutocomplete

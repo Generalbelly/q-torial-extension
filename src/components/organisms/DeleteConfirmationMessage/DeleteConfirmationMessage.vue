@@ -1,5 +1,10 @@
 <template>
-  <message :is-fixed-top-right="false" is-fixed-bottom-right is-danger @closeClick="$emit('closeClick')">
+  <message
+    :is-fixed-top-right="false"
+    is-fixed-bottom-right
+    is-danger
+    @closeClick="$emit('closeClick')"
+  >
     <template slot="header">
       Delete Tutorial
     </template>
@@ -10,7 +15,13 @@
       </p>
       <text-field v-model="tutorialName"></text-field>
       <div class="field">
-        <base-button is-danger is-outlined is-fullwidth @click="onDeleteClick" :disabled="isButtonDisabled">
+        <base-button
+          is-danger
+          is-outlined
+          is-fullwidth
+          @click="onDeleteClick"
+          :disabled="isButtonDisabled"
+        >
           DELETE
         </base-button>
       </div>
@@ -18,9 +29,9 @@
   </message>
 </template>
 <script>
-import Message from '../../molecules/Message';
-import BaseButton from '../../atoms/BaseButton';
-import TextField from '../../molecules/fields/TextField';
+import Message from '../../molecules/Message'
+import BaseButton from '../../atoms/BaseButton'
+import TextField from '../../molecules/fields/TextField'
 
 export default {
   name: 'DeleteConfirmationMessage',
@@ -38,22 +49,24 @@ export default {
   data() {
     return {
       tutorialName: '',
-    };
+    }
   },
   computed: {
     isButtonDisabled() {
-      return this.tutorialName === '' || this.tutorialName !== this.tutorial.name;
+      return (
+        this.tutorialName === '' || this.tutorialName !== this.tutorial.name
+      )
     },
   },
   watch: {
     tutorial() {
-      this.tutorialName = '';
+      this.tutorialName = ''
     },
   },
   methods: {
     onDeleteClick() {
-      this.$emit('deleteClick', this.tutorial.id);
+      this.$emit('deleteClick', this.tutorial.id)
     },
   },
-};
+}
 </script>

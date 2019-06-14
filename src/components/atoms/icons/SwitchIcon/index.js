@@ -1,3 +1,3 @@
-import SwitchIcon from './SwitchIcon';
+import SwitchIcon from './SwitchIcon'
 
-export default SwitchIcon;
+export default SwitchIcon

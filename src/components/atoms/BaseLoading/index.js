@@ -1,3 +1,3 @@
-import BaseLoading from './BaseLoading';
+import BaseLoading from './BaseLoading'
 
-export default BaseLoading;
+export default BaseLoading

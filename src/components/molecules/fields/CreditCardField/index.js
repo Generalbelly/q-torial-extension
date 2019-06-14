@@ -1,3 +1,3 @@
-import CreditCardField from './CreditCardField';
+import CreditCardField from './CreditCardField'
 
-export default CreditCardField;
+export default CreditCardField

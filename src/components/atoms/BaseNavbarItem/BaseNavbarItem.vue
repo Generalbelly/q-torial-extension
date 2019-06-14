@@ -8,7 +8,7 @@ export default {
     },
   },
   render(createElement) {
-    const self = this;
+    const self = this
     return createElement(
       self.el,
       {
@@ -17,12 +17,12 @@ export default {
         },
         on: {
           click(event) {
-            self.$emit('click', event);
+            self.$emit('click', event)
           },
         },
       },
       self.$slots.default
-    );
+    )
   },
-};
+}
 </script>

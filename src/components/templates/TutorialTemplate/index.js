@@ -1,3 +1,3 @@
-import TutorialTemplate from './TutorialTemplate';
+import TutorialTemplate from './TutorialTemplate'
 
-export default TutorialTemplate;
+export default TutorialTemplate

@@ -1,3 +1,3 @@
-import BaseSelect from './BaseSelect';
+import BaseSelect from './BaseSelect'
 
-export default BaseSelect;
+export default BaseSelect

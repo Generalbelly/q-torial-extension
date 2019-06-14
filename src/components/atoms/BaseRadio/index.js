@@ -1,3 +1,3 @@
-import BaseRadio from './BaseRadio';
+import BaseRadio from './BaseRadio'
 
-export default BaseRadio;
+export default BaseRadio

@@ -1,3 +1,3 @@
-import ErrorHeading from './ErrorHeading';
+import ErrorHeading from './ErrorHeading'
 
-export default ErrorHeading;
+export default ErrorHeading

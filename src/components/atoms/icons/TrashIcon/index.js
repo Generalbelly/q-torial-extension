@@ -1,3 +1,3 @@
-import TrashIcon from './TrashIcon';
+import TrashIcon from './TrashIcon'
 
-export default TrashIcon;
+export default TrashIcon

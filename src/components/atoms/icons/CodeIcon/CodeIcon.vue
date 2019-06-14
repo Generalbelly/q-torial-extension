@@ -5,7 +5,7 @@
 <script>
 export default {
   name: 'CodeIcon',
-};
+}
 </script>
 
 <style scoped></style>

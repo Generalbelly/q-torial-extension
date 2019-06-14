@@ -7,7 +7,7 @@
 <script>
 export default {
   name: 'BaseFadeTransitionGroup',
-};
+}
 </script>
 
 <style scoped>

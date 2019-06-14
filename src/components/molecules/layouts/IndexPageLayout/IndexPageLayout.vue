@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import BaseHeading from '../../../atoms/BaseHeading';
+import BaseHeading from '../../../atoms/BaseHeading'
 
 export default {
   name: 'IndexPageLayout',
@@ -34,7 +34,7 @@ export default {
       default: null,
     },
   },
-};
+}
 </script>
 
 <style scoped></style>

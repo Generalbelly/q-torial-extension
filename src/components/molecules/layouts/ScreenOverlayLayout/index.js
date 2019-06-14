@@ -1,3 +1,3 @@
-import ScreenOverlayLayout from './ScreenOverlayLayout';
+import ScreenOverlayLayout from './ScreenOverlayLayout'
 
-export default ScreenOverlayLayout;
+export default ScreenOverlayLayout

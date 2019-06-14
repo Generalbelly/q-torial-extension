@@ -1,3 +1,3 @@
-import BaseHeading from './BaseHeading';
+import BaseHeading from './BaseHeading'
 
-export default BaseHeading;
+export default BaseHeading

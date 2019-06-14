@@ -1,3 +1,3 @@
-import ValidatableAutocompleteField from './ValidatableAutocompleteField';
+import ValidatableAutocompleteField from './ValidatableAutocompleteField'
 
-export default ValidatableAutocompleteField;
+export default ValidatableAutocompleteField

@@ -1,2 +1,2 @@
-import ModalIcon from './ModalIcon';
-export default ModalIcon;
+import ModalIcon from './ModalIcon'
+export default ModalIcon

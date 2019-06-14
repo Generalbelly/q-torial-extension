@@ -1,3 +1,3 @@
-import ValidatableSelectField from './ValidatableSelectField';
+import ValidatableSelectField from './ValidatableSelectField'
 
-export default ValidatableSelectField;
+export default ValidatableSelectField

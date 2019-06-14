@@ -1,13 +1,20 @@
 <template>
   <validation-provider :name="name" :rules="rules" ref="provider">
-    <select-field v-model="inputValue" v-bind="$attrs" :items="items" slot-scope="{ errors, valid }" :message="errors" :type="getType(errors, valid)" />
+    <select-field
+      v-model="inputValue"
+      v-bind="$attrs"
+      :items="items"
+      slot-scope="{ errors, valid }"
+      :message="errors"
+      :type="getType(errors, valid)"
+    />
   </validation-provider>
 </template>
 
 <script>
-import { ValidationProvider } from 'vee-validate';
-import validatable from '../../../mixins/validatable';
-import SelectField from '../SelectField';
+import { ValidationProvider } from 'vee-validate'
+import validatable from '../../../mixins/validatable'
+import SelectField from '../SelectField'
 
 export default {
   name: 'ValidatableSelectField',
@@ -24,7 +31,7 @@ export default {
     items: {
       type: Array,
       default() {
-        return [];
+        return []
       },
     },
   },
@@ -35,14 +42,14 @@ export default {
   computed: {
     inputValue: {
       get() {
-        return this.value;
+        return this.value
       },
       set(newValue) {
-        return this.$emit('input', newValue);
+        return this.$emit('input', newValue)
       },
     },
   },
-};
+}
 </script>
 
 <style scoped></style>

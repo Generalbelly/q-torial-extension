@@ -23,10 +23,10 @@ export default {
         [this.class]: !!this.class,
         'is-right': this.isRight,
         'is-left': this.isLeft,
-      };
+      }
     },
   },
-};
+}
 </script>
 
 <style></style>

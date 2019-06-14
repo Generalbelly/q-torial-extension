@@ -1,3 +1,3 @@
-import FormSectionLayout from './FormSectionLayout';
+import FormSectionLayout from './FormSectionLayout'
 
-export default FormSectionLayout;
+export default FormSectionLayout

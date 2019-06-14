@@ -1,3 +1,3 @@
-import SaveButton from './CancelButton';
+import SaveButton from './CancelButton'
 
-export default SaveButton;
+export default SaveButton

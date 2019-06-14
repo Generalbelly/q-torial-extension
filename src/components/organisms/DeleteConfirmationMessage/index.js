@@ -1,2 +1,2 @@
-import DeleteConfirmationMessage from './DeleteConfirmationMessage';
-export default DeleteConfirmationMessage;
+import DeleteConfirmationMessage from './DeleteConfirmationMessage'
+export default DeleteConfirmationMessage

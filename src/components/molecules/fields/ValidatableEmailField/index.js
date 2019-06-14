@@ -1,3 +1,3 @@
-import ValidatableEmailField from './ValidatableEmailField';
+import ValidatableEmailField from './ValidatableEmailField'
 
-export default ValidatableEmailField;
+export default ValidatableEmailField

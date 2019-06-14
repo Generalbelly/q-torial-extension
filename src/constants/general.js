@@ -1,1 +1,1 @@
-export const QUERY_LIMIT = 20;
+export const QUERY_LIMIT = 20

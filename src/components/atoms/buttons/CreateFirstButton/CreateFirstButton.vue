@@ -7,14 +7,14 @@
 </template>
 
 <script>
-import BaseButton from '../../BaseButton/BaseButton';
+import BaseButton from '../../BaseButton/BaseButton'
 
 export default {
   name: 'CreateFirstButton',
   components: {
     BaseButton,
   },
-};
+}
 </script>
 
 <style scoped></style>

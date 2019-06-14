@@ -1,3 +1,3 @@
-import WarningMessage from './WarningMessage';
+import WarningMessage from './WarningMessage'
 
-export default WarningMessage;
+export default WarningMessage

@@ -1,3 +1,3 @@
-import DomainField from './DomainField';
+import DomainField from './DomainField'
 
-export default DomainField;
+export default DomainField

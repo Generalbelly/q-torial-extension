@@ -11,7 +11,7 @@
   </base-table>
 </template>
 <script>
-import BaseTable from '../../molecules/BaseTable';
+import BaseTable from '../../molecules/BaseTable'
 
 const columns = [
   {
@@ -39,7 +39,7 @@ const columns = [
     label: 'Created at',
     sortable: true,
   },
-];
+]
 
 export default {
   name: 'TutorialTable',
@@ -49,9 +49,9 @@ export default {
   data() {
     return {
       columns,
-    };
+    }
   },
-};
+}
 </script>
 
 <style scoped></style>

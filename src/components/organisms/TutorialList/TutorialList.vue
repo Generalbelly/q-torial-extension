@@ -2,7 +2,14 @@
   <base-panel class="has-background-white list">
     <base-panel-header class="has-margin-bottom-0">
       <base-header :level="2">Tutorials</base-header>
-      <base-button is-primary is-outlined has-text-white class="tutorial-add-button" @click="$emit('addTutorialClick')" icon="plus">
+      <base-button
+        is-primary
+        is-outlined
+        has-text-white
+        class="tutorial-add-button"
+        @click="$emit('addTutorialClick')"
+        icon="plus"
+      >
         Add
       </base-button>
     </base-panel-header>
@@ -25,10 +32,16 @@
             no-item-selected-text="Select a tutorial"
           ></select-field>
           <span>
-            <base-icon icon="pen" @click="$emit('editTutorialClick')"></base-icon>
+            <base-icon
+              icon="pen"
+              @click="$emit('editTutorialClick')"
+            ></base-icon>
           </span>
           <span>
-            <base-icon @click="$emit('deleteTutorialClick')" icon="trash"></base-icon>
+            <base-icon
+              @click="$emit('deleteTutorialClick')"
+              icon="trash"
+            ></base-icon>
           </span>
         </div>
       </template>
@@ -49,12 +62,21 @@
           <font-awesome-icon icon="circle"></font-awesome-icon>
         </span>
         Step {{ stepIndex + 1 }}
-        <span class="panel-icon block has-margin-left-auto has-cursor-pointer" @click.stop="$emit('deleteStepClick', step.id)">
+        <span
+          class="panel-icon block has-margin-left-auto has-cursor-pointer"
+          @click.stop="$emit('deleteStepClick', step.id)"
+        >
           <font-awesome-icon icon="trash"></font-awesome-icon>
         </span>
       </base-panel-block>
       <base-panel-block style="flex-direction: column;">
-        <base-button is-primary is-fullwidth @click="$emit('addStepClick')" icon="plus" class="has-margin-bottom-5">
+        <base-button
+          is-primary
+          is-fullwidth
+          @click="$emit('addStepClick')"
+          icon="plus"
+          class="has-margin-bottom-5"
+        >
           Add Step
         </base-button>
         <base-button is-fullwidth @click="$emit('previewClick')" icon="play">
@@ -63,7 +85,12 @@
       </base-panel-block>
     </template>
     <base-panel-block>
-      <base-icon class="has-cursor-pointer has-margin-left-auto" icon="exchange-alt" @click="onSwitchSideClick"> </base-icon>
+      <base-icon
+        class="has-cursor-pointer has-margin-left-auto"
+        icon="exchange-alt"
+        @click="onSwitchSideClick"
+      >
+      </base-icon>
     </base-panel-block>
     <base-icon
       class="list__close-button has-cursor-pointer"
@@ -76,16 +103,16 @@
   </base-panel>
 </template>
 <script>
-import BaseButton from '../../atoms/BaseButton';
-import BaseIcon from '../../atoms/BaseIcon';
-import BaseProgressCircular from '../../atoms/BaseProgressCircular';
-import BaseHeader from '../../atoms/BaseHeader';
-import SelectField from '../../molecules/fields/SelectField';
-import BasePanel from '../../atoms/BasePanel/BasePanel';
-import BasePanelBlock from '../../atoms/BasePanelBlock';
-import BasePanelHeader from '../../atoms/BasePanelHeader';
-import BaseContent from '../../atoms/BaseContent/BaseContent';
-import BaseTile from '../../atoms/BaseTile/BaseTile';
+import BaseButton from '../../atoms/BaseButton'
+import BaseIcon from '../../atoms/icons/BaseIcon'
+import BaseProgressCircular from '../../atoms/BaseProgressCircular'
+import BaseHeader from '../../atoms/BaseHeader'
+import SelectField from '../../molecules/fields/SelectField'
+import BasePanel from '../../atoms/BasePanel/BasePanel'
+import BasePanelBlock from '../../atoms/BasePanelBlock'
+import BasePanelHeader from '../../atoms/BasePanelHeader'
+import BaseContent from '../../atoms/BaseContent/BaseContent'
+import BaseTile from '../../atoms/BaseTile/BaseTile'
 
 export default {
   name: 'TutorialList',
@@ -109,7 +136,7 @@ export default {
     tutorialEntities: {
       type: Array,
       default() {
-        return [];
+        return []
       },
     },
     selectedTutorial: {
@@ -124,19 +151,19 @@ export default {
   data() {
     return {
       isOnRight: true,
-    };
+    }
   },
   methods: {
     onSwitchSideClick() {
-      this.isOnRight = !this.isOnRight;
-      this.$emit('switchSideClick');
+      this.isOnRight = !this.isOnRight
+      this.$emit('switchSideClick')
     },
     isActiveStep(step) {
-      if (!this.selectedStep) return false;
-      return step.id === this.selectedStep.id;
+      if (!this.selectedStep) return false
+      return step.id === this.selectedStep.id
     },
   },
-};
+}
 </script>
 <style scoped>
 .tutorial-add-button {

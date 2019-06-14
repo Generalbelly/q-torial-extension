@@ -1,3 +1,3 @@
-import PenIcon from './PenIcon';
+import PenIcon from './PenIcon'
 
-export default PenIcon;
+export default PenIcon

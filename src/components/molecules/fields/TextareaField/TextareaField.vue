@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import BaseField from '../../../atoms/BaseField';
-import BaseInput from '../../../atoms/BaseInput';
+import BaseField from '../../../atoms/BaseField'
+import BaseInput from '../../../atoms/BaseInput'
 
 export default {
   name: 'TextareaField',
@@ -16,7 +16,7 @@ export default {
     BaseInput,
     BaseField,
   },
-};
+}
 </script>
 
 <style scoped></style>

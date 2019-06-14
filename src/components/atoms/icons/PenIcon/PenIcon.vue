@@ -5,7 +5,7 @@
 <script>
 export default {
   name: 'PenIcon',
-};
+}
 </script>
 
 <style scoped></style>

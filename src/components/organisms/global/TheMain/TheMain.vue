@@ -6,7 +6,11 @@
         <slot />
       </div>
     </div>
-    <button class="modal-close is-large" aria-label="close" @click="$emit('click:close', $event)"></button>
+    <button
+      class="modal-close is-large"
+      aria-label="close"
+      @click="$emit('click:close', $event)"
+    ></button>
   </div>
 </template>
 
@@ -19,7 +23,7 @@ export default {
       default: false,
     },
   },
-};
+}
 </script>
 
 <style scoped></style>

@@ -7,14 +7,14 @@
 </template>
 
 <script>
-import BaseCheckbox from '../../../atoms/BaseCheckbox';
+import BaseCheckbox from '../../../atoms/BaseCheckbox'
 
 export default {
   name: 'CheckboxField',
   components: {
     BaseCheckbox,
   },
-};
+}
 </script>
 
 <style scoped></style>

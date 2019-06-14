@@ -1,3 +1,3 @@
-import ValidatableTextField from './ValidatableTextField';
+import ValidatableTextField from './ValidatableTextField'
 
-export default ValidatableTextField;
+export default ValidatableTextField

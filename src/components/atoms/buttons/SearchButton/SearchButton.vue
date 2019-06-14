@@ -4,12 +4,12 @@
   </base-button>
 </template>
 <script>
-import BaseButton from '../../BaseButton/BaseButton';
+import BaseButton from '../../BaseButton/BaseButton'
 
 export default {
   name: 'SearchButton',
   components: {
     BaseButton,
   },
-};
+}
 </script>

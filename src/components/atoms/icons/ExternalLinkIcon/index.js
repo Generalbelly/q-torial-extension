@@ -1,3 +1,3 @@
-import ExternalLinkIcon from './ExternalLinkIcon';
+import ExternalLinkIcon from './ExternalLinkIcon'
 
-export default ExternalLinkIcon;
+export default ExternalLinkIcon

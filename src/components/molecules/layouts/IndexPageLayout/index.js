@@ -1,3 +1,3 @@
-import IndexPageLayout from './IndexPageLayout';
+import IndexPageLayout from './IndexPageLayout'
 
-export default IndexPageLayout;
+export default IndexPageLayout

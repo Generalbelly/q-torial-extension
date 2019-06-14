@@ -1,3 +1,3 @@
-import BaseNavbarBrand from './BaseNavbarBrand';
+import BaseNavbarBrand from './BaseNavbarBrand'
 
-export default BaseNavbarBrand;
+export default BaseNavbarBrand

@@ -1,2 +1,2 @@
-import TheGreetingModal from './TheGreetingModal';
-export default TheGreetingModal;
+import TheGreetingModal from './TheGreetingModal'
+export default TheGreetingModal

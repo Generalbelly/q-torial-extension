@@ -8,8 +8,8 @@
   ></tutorial-template>
 </template>
 <script>
-import { mapGetters, mapState, mapActions } from 'vuex';
-import TutorialTemplate from '../../templates/TutorialTemplate';
+import { mapGetters, mapState, mapActions } from 'vuex'
+import TutorialTemplate from '../../templates/TutorialTemplate'
 
 export default {
   name: 'TutorialPage',
@@ -23,9 +23,9 @@ export default {
   methods: {
     ...mapActions(['upsertTutorial', 'upsertStep']),
     onUpdateTutorial(tutorial) {
-      const data = tutorial.toPlainObject();
-      this.upsertTutorial(data);
+      const data = tutorial.toPlainObject()
+      this.upsertTutorial(data)
     },
   },
-};
+}
 </script>

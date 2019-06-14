@@ -1,52 +1,62 @@
-import Entity from './Entity';
-import StepEntity from './StepEntity';
-import { has } from '../../../utils';
+import Entity from './Entity'
+import StepEntity from './StepEntity'
+import { has } from '../../../utils'
 
 export default class TutorialEntity extends Entity {
-  name = null;
+  name = null
 
-  description = null;
+  description = null
 
-  domain = null;
+  domain = null
 
-  pathOperator = 'EQUAL';
+  pathOperator = 'EQUAL'
 
-  pathValue = null;
+  pathValue = null
 
-  parameters = [];
+  parameters = []
 
-  settings = {};
+  settings = {}
 
-  isActive = false;
+  isActive = false
 
-  steps = [];
+  steps = []
 
-  createdAt = null;
+  createdAt = null
 
-  createdAtAsDate = null;
+  createdAtAsDate = null
 
-  updatedAt = null;
+  updatedAt = null
 
-  updatedAtAsDate = null;
+  updatedAtAsDate = null
 
   constructor(data = {}) {
-    super();
-    const { steps = [], ...props } = data;
+    super()
+    const { steps = [], ...props } = data
 
-    this.fill(props);
-    this.steps = steps.map(step => new StepEntity(step));
+    this.fill(props)
+    this.steps = steps.map(step => new StepEntity(step))
   }
 
   toPlainObject() {
-    const privateProperty = ['createdAtAsDate', 'updatedAtAsDate', 'createdAt', 'updatedAt'];
-    const object = {};
+    const privateProperty = [
+      'createdAtAsDate',
+      'updatedAtAsDate',
+      'createdAt',
+      'updatedAt',
+    ]
+    const object = {}
     Object.keys(this).forEach(propertyName => {
       if (propertyName === 'steps') {
-        object[propertyName] = this[propertyName].map(step => step.toPlainObject());
-      } else if (!privateProperty.includes(propertyName) && has.call(this, propertyName)) {
-        object[propertyName] = this[propertyName];
+        object[propertyName] = this[propertyName].map(step =>
+          step.toPlainObject()
+        )
+      } else if (
+        !privateProperty.includes(propertyName) &&
+        has.call(this, propertyName)
+      ) {
+        object[propertyName] = this[propertyName]
       }
-    });
-    return object;
+    })
+    return object
   }
 }

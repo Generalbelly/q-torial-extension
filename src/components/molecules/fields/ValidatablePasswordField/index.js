@@ -1,3 +1,3 @@
-import ValidatablePasswordField from './ValidatablePasswordField';
+import ValidatablePasswordField from './ValidatablePasswordField'
 
-export default ValidatablePasswordField;
+export default ValidatablePasswordField

@@ -1,2 +1,2 @@
-import TutorialList from './TutorialList';
-export default TutorialList;
+import TutorialList from './TutorialList'
+export default TutorialList

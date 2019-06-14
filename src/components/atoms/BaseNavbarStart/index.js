@@ -1,3 +1,3 @@
-import BaseNavbarStart from './BaseNavbarStart';
+import BaseNavbarStart from './BaseNavbarStart'
 
-export default BaseNavbarStart;
+export default BaseNavbarStart

@@ -1,20 +1,20 @@
-import Entity from './Entity';
+import Entity from './Entity'
 
 export default class StepEntity extends Entity {
-  type = 'tooltip';
+  type = 'tooltip'
 
-  triggerTarget = 'window';
+  triggerTarget = 'window'
 
-  triggerEvent = 'load';
+  triggerEvent = 'load'
 
-  highlightTarget = null;
+  highlightTarget = null
 
-  waitingTime = 0;
+  waitingTime = 0
 
-  config = {};
+  config = {}
 
   constructor(data = {}) {
-    super();
-    this.fill(data);
+    super()
+    this.fill(data)
   }
 }

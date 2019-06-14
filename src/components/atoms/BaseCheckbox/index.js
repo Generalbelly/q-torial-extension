@@ -1,3 +1,3 @@
-import BaseCheckbox from './BaseCheckbox';
+import BaseCheckbox from './BaseCheckbox'
 
-export default BaseCheckbox;
+export default BaseCheckbox

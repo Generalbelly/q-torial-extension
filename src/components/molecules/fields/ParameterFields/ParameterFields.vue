@@ -4,9 +4,25 @@
       <base-label>Key</base-label>
       <base-label>Value</base-label>
     </div>
-    <div v-for="(p, pIndex) in inputValue" :key="pIndex" class="parameter__input">
-      <validatable-text-field :value="p.key" @input="updateParameter(pIndex, { key: $event })" rules="required" name="parameter key" class="is-marginless" />
-      <validatable-text-field :value="p.value" @input="updateParameter(pIndex, { value: $event })" rules="required" name="parameter value" class="is-marginless" />
+    <div
+      v-for="(p, pIndex) in inputValue"
+      :key="pIndex"
+      class="parameter__input"
+    >
+      <validatable-text-field
+        :value="p.key"
+        @input="updateParameter(pIndex, { key: $event })"
+        rules="required"
+        name="parameter key"
+        class="is-marginless"
+      />
+      <validatable-text-field
+        :value="p.value"
+        @input="updateParameter(pIndex, { value: $event })"
+        rules="required"
+        name="parameter value"
+        class="is-marginless"
+      />
       <trash-icon class="has-cursor-pointer" @click="deleteParameter(pIndex)" />
     </div>
     <div v-show="inputValue.length > 0" class="has-margin-top-1">
@@ -18,10 +34,10 @@
 </template>
 
 <script>
-import BaseButton from '../../../atoms/BaseButton';
-import BaseLabel from '../../../atoms/BaseLabel';
-import ValidatableTextField from '../ValidatableTextField';
-import TrashIcon from '../../../atoms/icons/TrashIcon';
+import BaseButton from '../../../atoms/BaseButton'
+import BaseLabel from '../../../atoms/BaseLabel'
+import ValidatableTextField from '../ValidatableTextField'
+import TrashIcon from '../../../atoms/icons/TrashIcon'
 
 export default {
   name: 'ParameterFields',
@@ -35,17 +51,17 @@ export default {
     value: {
       type: Array,
       default() {
-        return [];
+        return []
       },
     },
   },
   computed: {
     inputValue: {
       get() {
-        return this.value;
+        return this.value
       },
       set(newValue) {
-        return this.$emit('input', newValue);
+        return this.$emit('input', newValue)
       },
     },
   },
@@ -57,7 +73,7 @@ export default {
           key: '',
           value: '',
         },
-      ];
+      ]
     },
     updateParameter(index, value) {
       this.inputValue = [
@@ -67,13 +83,16 @@ export default {
           ...value,
         },
         ...this.inputValue.slice(index + 1),
-      ];
+      ]
     },
     deleteParameter(index) {
-      this.inputValue = [...this.inputValue.slice(0, index), ...this.inputValue.slice(index + 1)];
+      this.inputValue = [
+        ...this.inputValue.slice(0, index),
+        ...this.inputValue.slice(index + 1),
+      ]
     },
   },
-};
+}
 </script>
 
 <style scoped>

@@ -1,3 +1,3 @@
-import BaseLevelRight from './BaseLevelRight';
+import BaseLevelRight from './BaseLevelRight'
 
-export default BaseLevelRight;
+export default BaseLevelRight

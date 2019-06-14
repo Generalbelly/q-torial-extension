@@ -14,7 +14,9 @@
       <section class="section">
         <div class="content has-text-grey has-text-centered">
           <p>No {{ itemType }} found</p>
-          <create-first-button @click="$emit('click:create-first-item')"> Create your first {{ itemType }} </create-first-button>
+          <create-first-button @click="$emit('click:create-first-item')">
+            Create your first {{ itemType }}
+          </create-first-button>
         </div>
       </section>
     </template>
@@ -23,15 +25,19 @@
         <show-more-button @click="$emit('click:show-more', $event)" />
       </div>
     </template>
-    <template v-for="slot in Object.keys($scopedSlots)" :slot="slot" slot-scope="scope">
+    <template
+      v-for="slot in Object.keys($scopedSlots)"
+      :slot="slot"
+      slot-scope="scope"
+    >
       <slot :name="slot" v-bind="scope"> </slot>
     </template>
   </b-table>
 </template>
 
 <script>
-import CreateFirstButton from '../../atoms/buttons/CreateFirstButton';
-import ShowMoreButton from '../../atoms/buttons/ShowMoreButton';
+import CreateFirstButton from '../../atoms/buttons/CreateFirstButton'
+import ShowMoreButton from '../../atoms/buttons/ShowMoreButton'
 
 export default {
   name: 'BaseTable',
@@ -47,19 +53,19 @@ export default {
     orderBy: {
       type: Array,
       default() {
-        return [];
+        return []
       },
     },
     data: {
       type: Array,
       default() {
-        return [];
+        return []
       },
     },
     columns: {
       type: Array,
       default() {
-        return [];
+        return []
       },
     },
     hoverable: {
@@ -77,10 +83,10 @@ export default {
   },
   methods: {
     onSort(orderBy, direction) {
-      this.$emit('sort', [orderBy, direction]);
+      this.$emit('sort', [orderBy, direction])
     },
   },
-};
+}
 </script>
 
 <style scoped>

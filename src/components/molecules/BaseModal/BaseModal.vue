@@ -6,7 +6,11 @@
       </div>
       <grouped-buttons-layout v-if="!hideFooter" is-right>
         <slot name="secondary-action-button">
-          <cancel-button v-if="modalType === 'dialog'" class="is-neutral-100" @click="$emit('click:cancel')" />
+          <cancel-button
+            v-if="modalType === 'dialog'"
+            class="is-neutral-100"
+            @click="$emit('click:cancel')"
+          />
         </slot>
         <slot name="primary-action-button">
           <confirm-button class="is-primary" @click="$emit('click:confirm')" />
@@ -17,9 +21,9 @@
 </template>
 
 <script>
-import GroupedButtonsLayout from '../layouts/GroupedButtonsLayout';
-import CancelButton from '../../atoms/buttons/CancelButton';
-import ConfirmButton from '../../atoms/buttons/ConfirmButton';
+import GroupedButtonsLayout from '../layouts/GroupedButtonsLayout'
+import CancelButton from '../../atoms/buttons/CancelButton'
+import ConfirmButton from '../../atoms/buttons/ConfirmButton'
 
 export default {
   name: 'BaseModal',
@@ -38,7 +42,7 @@ export default {
       default: 'dialog',
     },
   },
-};
+}
 </script>
 
 <style></style>

@@ -7,7 +7,7 @@
 <script>
 export default {
   name: 'BaseSubHeading',
-};
+}
 </script>
 
 <style scoped></style>

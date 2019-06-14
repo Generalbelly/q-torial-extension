@@ -5,11 +5,11 @@
 </template>
 
 <script>
-import BaseHeading from '../BaseHeading';
+import BaseHeading from '../BaseHeading'
 export default {
   name: 'ErrorHeading',
   components: { BaseHeading },
-};
+}
 </script>
 
 <style scoped></style>

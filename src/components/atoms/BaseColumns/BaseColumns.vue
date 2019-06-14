@@ -7,7 +7,7 @@
 <script>
 export default {
   name: 'BaseColumns',
-};
+}
 </script>
 
 <style scoped></style>

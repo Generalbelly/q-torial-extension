@@ -1,3 +1,3 @@
-import BaseNavbarBurger from './BaseNavbarBurger';
+import BaseNavbarBurger from './BaseNavbarBurger'
 
-export default BaseNavbarBurger;
+export default BaseNavbarBurger

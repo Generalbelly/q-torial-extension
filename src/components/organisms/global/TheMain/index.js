@@ -1,3 +1,3 @@
-import TheMain from './TheMain';
+import TheMain from './TheMain'
 
-export default TheMain;
+export default TheMain

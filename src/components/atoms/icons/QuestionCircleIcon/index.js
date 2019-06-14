@@ -1,3 +1,3 @@
-import QuestionCircle from './QuestionCircleIcon';
+import QuestionCircle from './QuestionCircleIcon'
 
-export default QuestionCircle;
+export default QuestionCircle

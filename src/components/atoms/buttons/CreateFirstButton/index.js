@@ -1,3 +1,3 @@
-import CreateFirstButton from './CreateFirstButton';
+import CreateFirstButton from './CreateFirstButton'
 
-export default CreateFirstButton;
+export default CreateFirstButton

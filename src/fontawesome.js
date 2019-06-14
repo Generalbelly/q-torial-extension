@@ -1,4 +1,4 @@
-import { library } from '@fortawesome/fontawesome-svg-core';
+import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faCode,
   faExternalLinkAlt,
@@ -25,9 +25,9 @@ import {
   faChevronRight,
   faPlay,
   faArrowDown,
-} from '@fortawesome/free-solid-svg-icons';
+} from '@fortawesome/free-solid-svg-icons'
 
-import { faFrown, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
+import { faFrown, faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 
 library.add(
   faCode,
@@ -58,4 +58,4 @@ library.add(
   faChevronRight,
   faPlay,
   faArrowDown
-);
+)

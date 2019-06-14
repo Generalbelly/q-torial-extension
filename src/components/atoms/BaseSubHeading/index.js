@@ -1,3 +1,3 @@
-import BaseSubHeading from './BaseSubHeading';
+import BaseSubHeading from './BaseSubHeading'
 
-export default BaseSubHeading;
+export default BaseSubHeading

@@ -1,3 +1,3 @@
-import BaseNavbarItem from './BaseNavbarItem';
+import BaseNavbarItem from './BaseNavbarItem'
 
-export default BaseNavbarItem;
+export default BaseNavbarItem

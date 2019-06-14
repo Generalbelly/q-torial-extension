@@ -1,3 +1,3 @@
-import ValidatableCreditCardField from './ValidatableCreditCardField';
+import ValidatableCreditCardField from './ValidatableCreditCardField'
 
-export default ValidatableCreditCardField;
+export default ValidatableCreditCardField

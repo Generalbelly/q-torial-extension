@@ -1,3 +1,3 @@
-import CodeIcon from './CodeIcon';
+import CodeIcon from './CodeIcon'
 
-export default CodeIcon;
+export default CodeIcon

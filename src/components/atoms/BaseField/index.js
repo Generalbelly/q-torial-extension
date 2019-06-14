@@ -1,3 +1,3 @@
-import BaseField from './BaseField';
+import BaseField from './BaseField'
 
-export default BaseField;
+export default BaseField

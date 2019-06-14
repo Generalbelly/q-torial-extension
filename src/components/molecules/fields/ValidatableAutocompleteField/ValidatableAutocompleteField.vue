@@ -1,7 +1,17 @@
 <template>
   <validation-provider :name="name" :rules="rules">
-    <autocomplete-field v-bind="$attrs" slot-scope="{ errors, valid }" :message="errors" v-model="inputValue" :type="getType(errors, valid)">
-      <template v-for="slot in Object.keys($scopedSlots)" :slot="slot" slot-scope="scope">
+    <autocomplete-field
+      v-bind="$attrs"
+      slot-scope="{ errors, valid }"
+      :message="errors"
+      v-model="inputValue"
+      :type="getType(errors, valid)"
+    >
+      <template
+        v-for="slot in Object.keys($scopedSlots)"
+        :slot="slot"
+        slot-scope="scope"
+      >
         <slot :name="slot" v-bind="scope" />
       </template>
     </autocomplete-field>
@@ -9,9 +19,9 @@
 </template>
 
 <script>
-import { ValidationProvider } from 'vee-validate';
-import validatable from '../../../mixins/validatable';
-import AutocompleteField from '../AutocompleteField';
+import { ValidationProvider } from 'vee-validate'
+import validatable from '../../../mixins/validatable'
+import AutocompleteField from '../AutocompleteField'
 
 export default {
   name: 'ValidatableAutocompleteField',
@@ -24,7 +34,7 @@ export default {
     items: {
       type: Array,
       default() {
-        return [];
+        return []
       },
     },
   },
@@ -35,14 +45,14 @@ export default {
   computed: {
     inputValue: {
       get() {
-        return this.value;
+        return this.value
       },
       set(newValue) {
-        return this.$emit('input', newValue);
+        return this.$emit('input', newValue)
       },
     },
   },
-};
+}
 </script>
 
 <style scoped></style>

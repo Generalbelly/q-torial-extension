@@ -2,7 +2,12 @@
   <base-modal active @click:close="$emit('click:close')" hide-footer>
     <index-page-layout title="Tutorials">
       <template v-slot:search>
-        <search-field :value="query" @input="$emit('change:query', $event)" search-button-class="is-primary-050" @click:search="$emit('click:search')"></search-field>
+        <search-field
+          :value="query"
+          @input="$emit('change:query', $event)"
+          search-button-class="is-primary-050"
+          @click:search="$emit('click:search')"
+        ></search-field>
       </template>
       <template v-slot:add>
         <add-button @click="$emit('click:add')" class="is-primary"></add-button>
@@ -26,11 +31,11 @@
 </template>
 
 <script>
-import TutorialTable from '../../organisms/TutorialTable';
-import IndexPageLayout from '../../molecules/layouts/IndexPageLayout';
-import SearchField from '../../molecules/fields/SearchField';
-import AddButton from '../../atoms/buttons/AddButton';
-import BaseModal from '../../molecules/BaseModal';
+import TutorialTable from '../../organisms/TutorialTable'
+import IndexPageLayout from '../../molecules/layouts/IndexPageLayout'
+import SearchField from '../../molecules/fields/SearchField'
+import AddButton from '../../atoms/buttons/AddButton'
+import BaseModal from '../../molecules/BaseModal'
 
 export default {
   name: 'TutorialsTemplate',
@@ -49,7 +54,7 @@ export default {
     tutorials: {
       type: Array,
       default() {
-        return [];
+        return []
       },
     },
     total: {
@@ -67,7 +72,7 @@ export default {
     orderBy: {
       type: Array,
       default() {
-        return [];
+        return []
       },
     },
   },
@@ -100,9 +105,9 @@ export default {
           sortable: true,
         },
       ],
-    };
+    }
   },
-};
+}
 </script>
 
 <style></style>

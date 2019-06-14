@@ -1,3 +1,3 @@
-import TutorialForm from './TutorialForm';
+import TutorialForm from './TutorialForm'
 
-export default TutorialForm;
+export default TutorialForm

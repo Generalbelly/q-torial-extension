@@ -1,3 +1,3 @@
-import TipsMessage from './TipsMessage';
+import TipsMessage from './TipsMessage'
 
-export default TipsMessage;
+export default TipsMessage

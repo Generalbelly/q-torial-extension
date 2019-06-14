@@ -1,3 +1,3 @@
-import BaseLogo from './BaseLogo';
+import BaseLogo from './BaseLogo'
 
-export default BaseLogo;
+export default BaseLogo

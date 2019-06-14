@@ -1,3 +1,3 @@
-import PreviewButton from './PreviewButton';
+import PreviewButton from './PreviewButton'
 
-export default PreviewButton;
+export default PreviewButton

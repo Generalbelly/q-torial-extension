@@ -1,3 +1,3 @@
-import TheSidebar from './TheSidebar';
+import TheSidebar from './TheSidebar'
 
-export default TheSidebar;
+export default TheSidebar

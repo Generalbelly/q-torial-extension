@@ -1,3 +1,3 @@
-import DriverEditor from './DriverEditor';
+import DriverEditor from './DriverEditor'
 
-export default DriverEditor;
+export default DriverEditor

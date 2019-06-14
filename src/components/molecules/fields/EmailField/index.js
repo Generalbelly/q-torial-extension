@@ -1,3 +1,3 @@
-import EmailField from './EmailField';
+import EmailField from './EmailField'
 
-export default EmailField;
+export default EmailField

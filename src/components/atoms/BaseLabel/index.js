@@ -1,3 +1,3 @@
-import BaseLabel from './BaseLabel';
+import BaseLabel from './BaseLabel'
 
-export default BaseLabel;
+export default BaseLabel

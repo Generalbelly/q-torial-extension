@@ -1,3 +1,3 @@
-import ParameterFields from './ParameterFields';
+import ParameterFields from './ParameterFields'
 
-export default ParameterFields;
+export default ParameterFields

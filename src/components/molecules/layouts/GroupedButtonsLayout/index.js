@@ -1,3 +1,3 @@
-import GroupedButtonsLayout from './GroupedButtonsLayout';
+import GroupedButtonsLayout from './GroupedButtonsLayout'
 
-export default GroupedButtonsLayout;
+export default GroupedButtonsLayout

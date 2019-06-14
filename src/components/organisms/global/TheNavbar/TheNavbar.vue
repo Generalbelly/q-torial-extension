@@ -1,18 +1,34 @@
 <template>
-  <nav class="navbar is-spaced has-shadow" role="navigation" aria-label="main navigation">
+  <nav
+    class="navbar is-spaced has-shadow"
+    role="navigation"
+    aria-label="main navigation"
+  >
     <div class="container">
       <template>
         <base-navbar-brand>
           <base-navbar-item el="a">
             <base-logo></base-logo>
           </base-navbar-item>
-          <base-navbar-burger :is-active="burgerMenuActive" @click="burgerMenuActive = !burgerMenuActive"></base-navbar-burger>
+          <base-navbar-burger
+            :is-active="burgerMenuActive"
+            @click="burgerMenuActive = !burgerMenuActive"
+          ></base-navbar-burger>
         </base-navbar-brand>
         <base-navbar-menu :is-active="burgerMenuActive">
           <base-navbar-start>
             <template v-for="item in navItems">
-              <router-link :class="routerLinkClass('/projects')" :to="item.to" :key="item.text">
-                <b-icon :icon="item.icon" :class="item.iconClass" size="is-small"> </b-icon>
+              <router-link
+                :class="routerLinkClass('/projects')"
+                :to="item.to"
+                :key="item.text"
+              >
+                <b-icon
+                  :icon="item.icon"
+                  :class="item.iconClass"
+                  size="is-small"
+                >
+                </b-icon>
                 <span>{{ item.text }}</span>
               </router-link>
             </template>
@@ -30,13 +46,13 @@
 </template>
 
 <script>
-import BaseLogo from '../../../atoms/BaseLogo';
-import BaseNavbarItem from '../../../atoms/BaseNavbarItem';
-import BaseNavbarBurger from '../../../atoms/BaseNavbarBurger';
-import BaseNavbarBrand from '../../../atoms/BaseNavbarBrand';
-import BaseNavbarMenu from '../../../atoms/BaseNavbarMenu';
-import BaseNavbarStart from '../../../atoms/BaseNavbarStart';
-import BaseNavbarEnd from '../../../atoms/BaseNavbarEnd';
+import BaseLogo from '../../../atoms/BaseLogo'
+import BaseNavbarItem from '../../../atoms/BaseNavbarItem'
+import BaseNavbarBurger from '../../../atoms/BaseNavbarBurger'
+import BaseNavbarBrand from '../../../atoms/BaseNavbarBrand'
+import BaseNavbarMenu from '../../../atoms/BaseNavbarMenu'
+import BaseNavbarStart from '../../../atoms/BaseNavbarStart'
+import BaseNavbarEnd from '../../../atoms/BaseNavbarEnd'
 
 export default {
   name: 'TheNavbar',
@@ -53,14 +69,14 @@ export default {
     navItems: {
       type: Array,
       default() {
-        return [];
+        return []
       },
     },
   },
   data() {
     return {
       burgerMenuActive: false,
-    };
+    }
   },
   methods: {
     routerLinkClass(path) {
@@ -68,10 +84,10 @@ export default {
         'has-text-primary': this.$route.path.includes(path),
         'has-text-grey-light': !this.$route.path.includes(path),
         'navbar-item': true,
-      };
+      }
     },
   },
-};
+}
 </script>
 
 <style scoped>

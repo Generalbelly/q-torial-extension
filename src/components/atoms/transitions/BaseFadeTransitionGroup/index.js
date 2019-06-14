@@ -1,3 +1,3 @@
-import BaseFadeTransitionGroup from './BaseFadeTransitionGroup';
+import BaseFadeTransitionGroup from './BaseFadeTransitionGroup'
 
-export default BaseFadeTransitionGroup;
+export default BaseFadeTransitionGroup

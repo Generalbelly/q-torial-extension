@@ -1,3 +1,3 @@
-import BaseColumns from './BaseColumns';
+import BaseColumns from './BaseColumns'
 
-export default BaseColumns;
+export default BaseColumns

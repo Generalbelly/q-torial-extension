@@ -1,3 +1,3 @@
-import FrownIcon from './FrownIcon';
+import FrownIcon from './FrownIcon'
 
-export default FrownIcon;
+export default FrownIcon

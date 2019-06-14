@@ -1,3 +1,3 @@
-import BaseLevelItem from './BaseLevelItem';
+import BaseLevelItem from './BaseLevelItem'
 
-export default BaseLevelItem;
+export default BaseLevelItem

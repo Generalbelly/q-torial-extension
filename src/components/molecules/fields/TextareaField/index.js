@@ -1,3 +1,3 @@
-import TextareaField from './TextareaField';
+import TextareaField from './TextareaField'
 
-export default TextareaField;
+export default TextareaField

@@ -5,14 +5,14 @@
 </template>
 
 <script>
-import BaseRadio from '../../../atoms/BaseRadio';
+import BaseRadio from '../../../atoms/BaseRadio'
 
 export default {
   name: 'RadioField',
   components: {
     BaseRadio,
   },
-};
+}
 </script>
 
 <style scoped></style>

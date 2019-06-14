@@ -1,3 +1,3 @@
-import BaseNavbarEnd from './BaseNavbarEnd';
+import BaseNavbarEnd from './BaseNavbarEnd'
 
-export default BaseNavbarEnd;
+export default BaseNavbarEnd

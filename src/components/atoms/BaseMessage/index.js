@@ -1,3 +1,3 @@
-import BaseMessage from './BaseMessage';
+import BaseMessage from './BaseMessage'
 
-export default BaseMessage;
+export default BaseMessage

@@ -1,2 +1,2 @@
-import Setting from './Setting';
-export default Setting;
+import Setting from './Setting'
+export default Setting

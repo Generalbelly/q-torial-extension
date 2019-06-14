@@ -1,3 +1,3 @@
-import ValidatableDomainField from './ValidatableDomainField';
+import ValidatableDomainField from './ValidatableDomainField'
 
-export default ValidatableDomainField;
+export default ValidatableDomainField

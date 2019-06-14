@@ -12,19 +12,19 @@ export default {
     },
   },
   render(createElement) {
-    const self = this;
+    const self = this
     return createElement(
       self.el,
       {
         class: self.size ? `delete ${self.size}` : 'delete',
         on: {
           click(event) {
-            self.$emit('click', event);
+            self.$emit('click', event)
           },
         },
       },
       self.$slots.default
-    );
+    )
   },
-};
+}
 </script>

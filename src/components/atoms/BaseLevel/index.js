@@ -1,3 +1,3 @@
-import BaseLevel from './BaseLevel';
+import BaseLevel from './BaseLevel'
 
-export default BaseLevel;
+export default BaseLevel

@@ -1,21 +1,21 @@
 export default class UserEntity {
-  uid = null;
+  uid = null
 
-  email = null;
+  email = null
 
-  displayName = null;
+  displayName = null
 
-  emailVerified = false;
+  emailVerified = false
 
   constructor(data = {}) {
-    this.fill(data);
+    this.fill(data)
   }
 
   fill(data = {}) {
     Object.keys(data).forEach(field => {
       if (Object.prototype.hasOwnProperty.call(this, field)) {
-        this[field] = data[field];
+        this[field] = data[field]
       }
-    });
+    })
   }
 }

@@ -1,3 +1,3 @@
-import TutorialTable from './TutorialTable';
+import TutorialTable from './TutorialTable'
 
-export default TutorialTable;
+export default TutorialTable

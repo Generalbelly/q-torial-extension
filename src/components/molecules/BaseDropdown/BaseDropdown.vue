@@ -4,7 +4,10 @@
       <slot />
     </template>
     <template v-for="item in items">
-      <b-dropdown-item aria-role="listitem" @click="$emit('click:item', item.value)">
+      <b-dropdown-item
+        aria-role="listitem"
+        @click="$emit('click:item', item.value)"
+      >
         <template>
           <slot :name="item.value">
             {{ item.text }}
@@ -21,7 +24,7 @@ export default {
     items: {
       type: Array,
       default() {
-        return [];
+        return []
       },
     },
     itemText: {
@@ -33,5 +36,5 @@ export default {
       default: 'value',
     },
   },
-};
+}
 </script>

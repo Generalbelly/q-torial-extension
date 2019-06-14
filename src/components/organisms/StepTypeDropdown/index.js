@@ -1,3 +1,3 @@
-import StepTypeSelectDropdown from './StepTypeDropdown';
+import StepTypeSelectDropdown from './StepTypeDropdown'
 
-export default StepTypeSelectDropdown;
+export default StepTypeSelectDropdown

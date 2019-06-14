@@ -1,5 +1,9 @@
 <template>
-  <img src="https://bulma.io/images/bulma-logo.png" :width="width" :height="height" />
+  <img
+    src="https://bulma.io/images/bulma-logo.png"
+    :width="width"
+    :height="height"
+  />
 </template>
 
 <script>
@@ -15,7 +19,7 @@ export default {
       default: '20',
     },
   },
-};
+}
 </script>
 
 <style scoped></style>

@@ -5,13 +5,13 @@
 </template>
 
 <script>
-import BaseMessage from '../../../atoms/BaseMessage';
+import BaseMessage from '../../../atoms/BaseMessage'
 export default {
   name: 'TipsMessage',
   components: {
     BaseMessage,
   },
-};
+}
 </script>
 
 <style scoped></style>

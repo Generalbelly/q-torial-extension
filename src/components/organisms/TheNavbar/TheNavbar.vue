@@ -14,6 +14,7 @@
     </div>
   </nav>
 </template>
+
 <script>
 import BaseButton from '../../atoms/BaseButton';
 
@@ -24,6 +25,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .navbar {
   width: 100vw;

@@ -1,8 +1,9 @@
 import browser from 'webextension-polyfill';
-import { START_APP, SIGN_IN, SIGN_OUT, GET_EXT_VERSION, REDIRECT_USER, UPDATE_AUTH_STATE } from './constants/action-types';
+import { START_APP, SIGN_IN, SIGN_OUT, VERSION, REDIRECT_USER, UPDATE_AUTH_STATE, PASS_DATA_TO_VUEX, UPDATE_DATA } from './constants/command-types';
 import { ERROR, OK } from './constants/status-types';
 import firebase from './firebase';
 import store from './backgroundStore';
+import { RESET_STATE } from './backgroundStore/mutation-types';
 
 global.browser = browser;
 
@@ -15,57 +16,81 @@ firebase.init({
   messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID,
 });
 
-chrome.runtime.onConnect.addListener(port => {
+chrome.runtime.onConnect.addListener(async port => {
   if (port.name !== process.env.VUE_APP_NAME) return;
-
   let connected = true;
   port.onDisconnect.addListener(() => {
     connected = false;
   });
 
-  const postMessage = (action, data) => {
+  const sendCommand = (command, data) => {
     if (!connected) return;
     port.postMessage({
-      action,
+      command,
       data,
     });
   };
 
-  const startApp = async () => {
+  const startApp = async (resetState = false) => {
+    if (resetState) {
+      store.commit(`tutorial/${RESET_STATE}`);
+    }
     const user = await firebase.checkAuth();
     if (user) {
-      postMessage(START_APP);
+      sendCommand(START_APP);
     } else {
-      postMessage(REDIRECT_USER);
+      sendCommand(REDIRECT_USER);
     }
   };
 
   firebase.watchAuth(async user => {
-    postMessage(UPDATE_AUTH_STATE, user);
+    sendCommand(UPDATE_AUTH_STATE, user);
   });
 
   chrome.browserAction.onClicked.addListener(async () => {
     // TODO activeとそうじゃないときにアイコンの色を変更する
     await store.dispatch('setActive', !store.state.active);
-    startApp();
+    await startApp(true);
   });
 
-  if (store.state.active) {
-    startApp();
+  store.watch(
+    state => state.tutorial,
+    value => {
+      const { requesting } = value;
+      console.log('watch', value);
+      if (!requesting) {
+        console.log('send', value);
+        sendCommand(UPDATE_DATA, value);
+      }
+    },
+    { deep: true }
+  );
+
+  const user = await firebase.checkAuth();
+  if (user && store.state.active) {
+    await startApp();
   }
 
   port.onMessage.addListener(async request => {
-    const { status } = request;
+    const { status, command = null, data = null } = request;
     if (status === ERROR) {
       console.log(request);
+    }
+    if (command) {
+      switch (command) {
+        case PASS_DATA_TO_VUEX:
+          await store.dispatch(data.action, data.payload);
+          break;
+        default:
+          break;
+      }
     }
   });
 });
 
 chrome.runtime.onMessageExternal.addListener(async (request = {}, sender, sendResponse) => {
-  const { action = null, data = {} } = request;
-  console.log(request);
-  switch (action) {
+  const { command = null, data = {} } = request;
+  switch (command) {
     case SIGN_IN:
       try {
         await firebase.signIn(data.email, data.password);
@@ -82,15 +107,15 @@ chrome.runtime.onMessageExternal.addListener(async (request = {}, sender, sendRe
         sendResponse({ status: ERROR, message: e.message });
       }
       break;
-    case GET_EXT_VERSION:
+    case VERSION:
       sendResponse({ status: OK, message: chrome.runtime.getManifest().version });
       break;
     default:
-      throw Error('unknown action');
+      throw Error('unknown command');
   }
   return true;
 });
 
-window.onload = () => {
-  store.dispatch('setActive', false);
+window.onload = async () => {
+  await store.dispatch('setActive', false);
 };

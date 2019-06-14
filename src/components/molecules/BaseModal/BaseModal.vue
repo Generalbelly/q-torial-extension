@@ -1,15 +1,15 @@
 <template>
-  <b-modal v-bind="$attrs" v-on="$listeners">
-    <div class="has-background-white-ter has-padding-4">
+  <b-modal v-bind="$attrs" @close="$emit('click:close')">
+    <div class="has-background-white-ter has-padding-5">
       <div class="content">
         <slot></slot>
       </div>
-      <grouped-buttons-layout is-right>
+      <grouped-buttons-layout v-if="!hideFooter" is-right>
         <slot name="secondary-action-button">
-          <cancel-button class="is-neutral-100" @click="$emit('click:cancel')"> </cancel-button>
+          <cancel-button v-if="modalType === 'dialog'" class="is-neutral-100" @click="$emit('click:cancel')" />
         </slot>
         <slot name="primary-action-button">
-          <confirm-button class="is-primary" @click="$emit('click:confirm')"></confirm-button>
+          <confirm-button class="is-primary" @click="$emit('click:confirm')" />
         </slot>
       </grouped-buttons-layout>
     </div>
@@ -17,15 +17,27 @@
 </template>
 
 <script>
-import GroupedButtonsLayout from '../../layouts/GroupedButtonsLayout';
+import GroupedButtonsLayout from '../layouts/GroupedButtonsLayout';
 import CancelButton from '../../atoms/buttons/CancelButton';
 import ConfirmButton from '../../atoms/buttons/ConfirmButton';
 
 export default {
   name: 'BaseModal',
-  components: { ConfirmButton, CancelButton, GroupedButtonsLayout },
-  props: {},
-  methods: {},
+  components: {
+    ConfirmButton,
+    CancelButton,
+    GroupedButtonsLayout,
+  },
+  props: {
+    hideFooter: {
+      type: Boolean,
+      default: false,
+    },
+    modalType: {
+      type: String,
+      default: 'dialog',
+    },
+  },
 };
 </script>
 

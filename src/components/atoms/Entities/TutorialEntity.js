@@ -1,53 +1,52 @@
 import Entity from './Entity';
-import TutorialStepEntity from './TutorialStepEntity';
-import ProjectEntity from './ProjectEntity';
+import StepEntity from './StepEntity';
+import { has } from '../../../utils';
 
 export default class TutorialEntity extends Entity {
-  name = null
+  name = null;
 
-  description = null
+  description = null;
 
-  operator = null
+  domain = null;
 
-  depth = 0
+  pathOperator = 'EQUAL';
 
-  path = null
+  pathValue = null;
 
-  query = null
+  parameters = [];
 
-  parameters = []
+  settings = {};
 
-  last_time_used_at = null
+  isActive = false;
 
-  settings = {}
+  steps = [];
 
-  project_id = null
+  createdAt = null;
 
-  projectEntity = null
+  createdAtAsDate = null;
 
-  tutorialStepEntities = []
+  updatedAt = null;
+
+  updatedAtAsDate = null;
 
   constructor(data = {}) {
     super();
-    const {
-      tutorialStepEntities = [],
-      path = null,
-      projectEntity = null,
-      ...props
-    } = data;
+    const { steps = [], ...props } = data;
 
     this.fill(props);
+    this.steps = steps.map(step => new StepEntity(step));
+  }
 
-    if (!path) {
-      const { pathname } = window.location;
-      this.path = pathname;
-      this.depth = pathname === '/' ? 0 : pathname.split('/').length - 1;
-    }
-    if (tutorialStepEntities) {
-      this.tutorialStepEntities = tutorialStepEntities.map(e => new TutorialStepEntity(e));
-    }
-    if (projectEntity) {
-      this.projectEntity = new ProjectEntity(projectEntity);
-    }
+  toPlainObject() {
+    const privateProperty = ['createdAtAsDate', 'updatedAtAsDate', 'createdAt', 'updatedAt'];
+    const object = {};
+    Object.keys(this).forEach(propertyName => {
+      if (propertyName === 'steps') {
+        object[propertyName] = this[propertyName].map(step => step.toPlainObject());
+      } else if (!privateProperty.includes(propertyName) && has.call(this, propertyName)) {
+        object[propertyName] = this[propertyName];
+      }
+    });
+    return object;
   }
 }

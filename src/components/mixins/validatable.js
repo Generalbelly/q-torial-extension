@@ -12,9 +12,7 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'serverSideErrors',
-    ]),
+    ...mapState(['serverSideErrors']),
     fieldErrors() {
       if (this.serverSideErrors[this.name]) {
         return this.serverSideErrors[this.name];

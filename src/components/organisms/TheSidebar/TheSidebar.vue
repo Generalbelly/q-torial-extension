@@ -1,6 +1,6 @@
 <template>
   <nav class="has-background-neutral-050 side-bar" :style="{ width: width }">
-    <div :class="isOnRight ? '' : 'side-bar__header--reverse'" class="has-background-neutral-700 has-text-white has-padding-x-4 has-padding-y-3 side-bar__header">
+    <div :class="isOnRight ? '' : 'side-bar__header--reverse'" class="has-background-grey-dark has-text-white has-padding-x-4 has-padding-y-3 side-bar__header">
       <close-icon size="is-large" class="side-bar__close-icon has-cursor-pointer" @click="$emit('click:close')" />
       <switch-icon class="side-bar__switch-icon has-cursor-pointer" @click="$emit('click:switch')" />
     </div>

@@ -1,9 +1,5 @@
 <template>
-  <b-message
-    v-bind="$attrs"
-    :active="active"
-    @close="$emit('close')"
-  >
+  <b-message v-bind="$attrs" v-on="$listeners" :active="active">
     <slot />
   </b-message>
 </template>

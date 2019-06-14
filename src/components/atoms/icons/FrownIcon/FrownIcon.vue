@@ -1,11 +1,5 @@
 <template>
-    <b-icon
-        icon="frown"
-        pack="far"
-        v-bind="$attrs"
-        @click.native="$emit('click')"
-    >
-    </b-icon>
+  <b-icon icon="frown" pack="far" v-bind="$attrs" @click.native="$emit('click')"> </b-icon>
 </template>
 
 <script>
@@ -14,6 +8,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

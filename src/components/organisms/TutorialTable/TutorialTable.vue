@@ -1,20 +1,16 @@
 <template>
   <base-table
-    :pagination="pagination"
-    :data="tutorialEntities"
-    :columns="columns"
-    :loading="isLoading"
-    :total="total"
-    item-type="tutorial"
     v-bind="$attrs"
-    @change:pagination="$emit('change:pagination', $event)"
+    :columns="columns"
+    item-type="tutorial"
+    @sort="$emit('sort', $event)"
     @select="$emit('select', $event)"
     @click:create-first-item="$emit('click:create-first-tutorial')"
+    @click:show-more="$emit('click:show-more')"
   >
   </base-table>
 </template>
 <script>
-
 import BaseTable from '../../molecules/BaseTable';
 
 const columns = [
@@ -39,7 +35,7 @@ const columns = [
     sortable: false,
   },
   {
-    field: 'created_at',
+    field: 'createdAtAsDate',
     label: 'Created at',
     sortable: true,
   },
@@ -49,32 +45,6 @@ export default {
   name: 'TutorialTable',
   components: {
     BaseTable,
-  },
-  props: {
-    query: {
-      type: String,
-      default: null,
-    },
-    pagination: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
-    total: {
-      type: Number,
-      default: 0,
-    },
-    isLoading: {
-      type: Boolean,
-      default: false,
-    },
-    tutorialEntities: {
-      type: Array,
-      default() {
-        return [];
-      },
-    },
   },
   data() {
     return {

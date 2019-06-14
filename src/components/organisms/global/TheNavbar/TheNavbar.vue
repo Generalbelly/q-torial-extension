@@ -1,42 +1,24 @@
 <template>
-  <nav
-    class="navbar is-spaced has-shadow"
-    role="navigation"
-    aria-label="main navigation"
-  >
+  <nav class="navbar is-spaced has-shadow" role="navigation" aria-label="main navigation">
     <div class="container">
       <template>
         <base-navbar-brand>
           <base-navbar-item el="a">
             <base-logo></base-logo>
           </base-navbar-item>
-          <base-navbar-burger
-            :is-active="burgerMenuActive"
-            @click="burgerMenuActive = !burgerMenuActive"
-          ></base-navbar-burger>
+          <base-navbar-burger :is-active="burgerMenuActive" @click="burgerMenuActive = !burgerMenuActive"></base-navbar-burger>
         </base-navbar-brand>
         <base-navbar-menu :is-active="burgerMenuActive">
           <base-navbar-start>
             <template v-for="item in navItems">
-              <router-link
-                :class="routerLinkClass('/projects')"
-                :to="item.to"
-                :key="item.text"
-              >
-                <b-icon
-                  :icon="item.icon"
-                  :class="item.iconClass"
-                  size="is-small"
-                >
-                </b-icon>
+              <router-link :class="routerLinkClass('/projects')" :to="item.to" :key="item.text">
+                <b-icon :icon="item.icon" :class="item.iconClass" size="is-small"> </b-icon>
                 <span>{{ item.text }}</span>
               </router-link>
             </template>
           </base-navbar-start>
           <base-navbar-end class="has-text-centered-mobile">
-            <base-navbar-item
-              @click="$emit('click:sign-out', $event)"
-            >
+            <base-navbar-item @click="$emit('click:sign-out', $event)">
               <b-icon icon="sign-out-alt" size="is-small"></b-icon>
               <span>Sign out</span>
             </base-navbar-item>
@@ -93,8 +75,8 @@ export default {
 </script>
 
 <style scoped>
-    .navbar-item >>> .icon {
-        margin-left: -.25em;
-        margin-right: .25em;
-    }
+.navbar-item >>> .icon {
+  margin-left: -0.25em;
+  margin-right: 0.25em;
+}
 </style>

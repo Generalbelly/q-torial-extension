@@ -1,64 +1,54 @@
 <template>
   <b-table
     v-bind="$attrs"
+    backend-sorting
+    :default-sort="orderBy"
     :data="data"
     :columns="columns"
-    :per-page="pagination.perPage"
-    :default-sort="pagination.orderBy"
     :hoverable="hoverable"
-    :striped="striped"
     :mobile-cards="mobileCards"
-    :paginated="paginated"
-    :backend-pagination="backendPagination"
-    :backend-sorting="backendSorting"
-    @page-change="onPageChange"
     @sort="onSort"
-    @select="onSelect"
-    @details-open="onDetailsOpen"
-    @details-close="onDetailsClose"
+    @select="$emit('select', $event)"
   >
-    <template slot="empty">
+    <template v-slot:empty>
       <section class="section">
         <div class="content has-text-grey has-text-centered">
-<!--                    <p>-->
-<!--                        <frown-icon size="is-large">-->
-<!--                        </frown-icon>-->
-<!--                    </p>-->
           <p>No {{ itemType }} found</p>
-          <create-first-button
-            @click="$emit('click:create-first-item')"
-          >
-            Create your first {{ itemType }}
-          </create-first-button>
+          <create-first-button @click="$emit('click:create-first-item')"> Create your first {{ itemType }} </create-first-button>
         </div>
       </section>
     </template>
-    <template
-      v-for="slot in Object.keys($scopedSlots)"
-      :slot="slot"
-      slot-scope="scope"
-    >
-      <slot
-        :name="slot"
-        v-bind="scope"
-      >
-      </slot>
+    <template v-slot:footer>
+      <div class="has-text-centered" v-if="loadable">
+        <show-more-button @click="$emit('click:show-more', $event)" />
+      </div>
+    </template>
+    <template v-for="slot in Object.keys($scopedSlots)" :slot="slot" slot-scope="scope">
+      <slot :name="slot" v-bind="scope"> </slot>
     </template>
   </b-table>
 </template>
 
 <script>
-import FrownIcon from '../../atoms/icons/FrownIcon';
-import AddButton from '../../atoms/buttons/AddButton/AddButton';
-import CreateFirstButton from '../../atoms/buttons/CreateFirstButton/CreateFirstButton';
+import CreateFirstButton from '../../atoms/buttons/CreateFirstButton';
+import ShowMoreButton from '../../atoms/buttons/ShowMoreButton';
 
 export default {
   name: 'BaseTable',
-  components: { CreateFirstButton, AddButton, FrownIcon },
+  components: {
+    ShowMoreButton,
+    CreateFirstButton,
+  },
   props: {
     itemType: {
       type: String,
       default: 'item',
+    },
+    orderBy: {
+      type: Array,
+      default() {
+        return [];
+      },
     },
     data: {
       type: Array,
@@ -72,22 +62,7 @@ export default {
         return [];
       },
     },
-    pagination: {
-      type: Object,
-      default() {
-        return {
-          page: 0,
-          perPage: 20,
-          orderBy: [],
-          total: 0,
-        };
-      },
-    },
     hoverable: {
-      type: Boolean,
-      default: true,
-    },
-    striped: {
       type: Boolean,
       default: true,
     },
@@ -95,49 +70,21 @@ export default {
       type: Boolean,
       default: true,
     },
-    paginated: {
-      type: Boolean,
-      default: true,
-    },
-    backendPagination: {
-      type: Boolean,
-      default: true,
-    },
-    backendSorting: {
+    loadable: {
       type: Boolean,
       default: true,
     },
   },
   methods: {
-    onSelect(row, oldRow) {
-      this.$emit('select', row);
-    },
-    onPageChange(page) {
-      this.emitPagination({
-        page,
-      });
-    },
-    onSort(column, direction) {
-      this.emitPagination({
-        orderBy: [column, direction],
-      });
-    },
-    onDetailsOpen(row) {
-      this.$emit('details-open', row);
-    },
-    onDetailsClose(row) {
-      this.$emit('details-close', row);
-    },
-    emitPagination(data) {
-      this.$emit('change:pagination', {
-        ...this.pagination,
-        ...data,
-      });
+    onSort(orderBy, direction) {
+      this.$emit('sort', [orderBy, direction]);
     },
   },
 };
 </script>
 
-<style>
-
+<style scoped>
+>>> .pagination.is-simple > small.info {
+  display: none;
+}
 </style>

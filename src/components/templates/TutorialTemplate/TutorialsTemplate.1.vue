@@ -31,7 +31,7 @@
 <!--                :query="query"-->
 <!--                :pagination="pagination"-->
 <!--                :tutorial-entities="tutorialEntities"-->
-<!--                :is-loading="isRequesting"-->
+<!--                :is-loading="requesting"-->
 <!--                @select="$emit('select', $event)"-->
 <!--                @click:search="$emit('click:search', $event)"-->
 <!--                @change:query="$emit('change:query', $event)"-->
@@ -102,13 +102,13 @@
 <!--        &lt;!&ndash;&lt;!&ndash;</message>&ndash;&gt;&ndash;&gt;-->
 
 <!--        &lt;!&ndash;&lt;!&ndash;<loading-modal&ndash;&gt;&ndash;&gt;-->
-<!--            &lt;!&ndash;&lt;!&ndash;v-show="isRequesting && requestState !== 'REQUEST_LIST_TUTORIALS'"&ndash;&gt;&ndash;&gt;-->
+<!--            &lt;!&ndash;&lt;!&ndash;v-show="requesting && requestState !== 'REQUEST_LIST_TUTORIALS'"&ndash;&gt;&ndash;&gt;-->
 <!--        &lt;!&ndash;&lt;!&ndash;&gt;</loading-modal>&ndash;&gt;&ndash;&gt;-->
 
 <!--        &lt;!&ndash;<project-not-found-modal&ndash;&gt;-->
 <!--            &lt;!&ndash;v-show="showProjectNotFoundModal"&ndash;&gt;-->
 <!--            &lt;!&ndash;@click:retry="$emit('click:retry')"&ndash;&gt;-->
-<!--            &lt;!&ndash;:isRequesting="isRequesting"&ndash;&gt;-->
+<!--            &lt;!&ndash;:requesting="requesting"&ndash;&gt;-->
 <!--        &lt;!&ndash;&gt;&ndash;&gt;-->
 <!--        &lt;!&ndash;</project-not-found-modal>&ndash;&gt;-->
 <!--    </div>-->
@@ -181,7 +181,7 @@
 <!--                type: Number,-->
 <!--                default: 0,-->
 <!--            },-->
-<!--            isRequesting: {-->
+<!--            requesting: {-->
 <!--                type: Boolean,-->
 <!--                default: false,-->
 <!--            },-->

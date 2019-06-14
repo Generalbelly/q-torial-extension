@@ -1,11 +1,15 @@
 <template>
-  <b-dropdown aria-role="list">
+  <b-dropdown aria-role="list" v-on="$listeners" v-bind="$attrs">
     <template v-slot:trigger>
       <slot />
     </template>
     <template v-for="item in items">
       <b-dropdown-item aria-role="listitem" @click="$emit('click:item', item.value)">
-        {{ item.text }}
+        <template>
+          <slot :name="item.value">
+            {{ item.text }}
+          </slot>
+        </template>
       </b-dropdown-item>
     </template>
   </b-dropdown>

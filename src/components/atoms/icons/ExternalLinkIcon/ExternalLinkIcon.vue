@@ -1,10 +1,5 @@
 <template>
-    <b-icon
-        icon="external-link-alt"
-        v-bind="$attrs"
-        @click.native="$emit('click')"
-    >
-    </b-icon>
+  <b-icon icon="external-link-alt" v-bind="$attrs" @click.native="$emit('click')" />
 </template>
 
 <script>
@@ -13,6 +8,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

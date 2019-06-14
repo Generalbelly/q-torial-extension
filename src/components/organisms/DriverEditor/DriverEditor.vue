@@ -5,36 +5,28 @@
 <script>
 import finder from '@medv/finder';
 import purify from 'dompurify';
-import {
-  EDIT,
-  PREVIEW,
-  SHOW_STEP_EDITOR_OPTIONS,
-  // SHOW_CLICK_TO_ADD_STEP_MESSAGE,
-  SHOW_NO_STEP_ADDED_YET_MESSAGE,
-  SAVE_STEP,
-  CANCEL_EDITING,
-} from '../../../constants/drvier-editor-comman-types';
-import TutorialStepEntity from '../../atoms/Entities/TutorialStepEntity';
+import { ADD, EDIT, PREVIEW, SHOW_NO_STEP_ADDED_YET_MESSAGE, SAVE, CANCEL } from '../../../constants/drvier-editor-command-types';
+import StepEntity from '../../atoms/Entities/StepEntity';
 
+const MAX_RETRIES = 5;
 export default {
   name: 'DriverEditor',
-  props: {
-    steps: {
-      type: Array,
-      default() {
-        return [];
-      },
-    },
-  },
+  // props: {
+  //   steps: {
+  //     type: Array,
+  //     default() {
+  //       return [];
+  //     },
+  //   },
+  // },
   data() {
     return {
       driver: null,
       selectorChoices: [],
       selectorChoiceIndex: 0,
-      maxRetries: 5,
-      step: new TutorialStepEntity(),
-      iframeEl: null,
-      shouldHideIframe: false,
+      step: new StepEntity(),
+      // iframeEl: null,
+      // shouldHideIframe: false,
       source: null,
       isEditing: false,
     };
@@ -47,17 +39,17 @@ export default {
         this.driver.options.editable = false;
         this.selectorChoices = [];
         this.selectorChoiceIndex = 0;
-        this.step = null;
+        this.step = new StepEntity();
         this.$emit('editDone');
       }
     },
-    shouldHideIframe(value) {
-      if (value) {
-        this.iframeEl.style.display = 'none';
-      } else {
-        this.iframeEl.style.display = 'unset';
-      }
-    },
+    // shouldHideIframe(value) {
+    //   if (value) {
+    //     this.iframeEl.style.display = 'none';
+    //   } else {
+    //     this.iframeEl.style.display = 'unset';
+    //   }
+    // },
   },
   created() {
     window.addEventListener('message', this.onReceiveMessage);
@@ -65,8 +57,8 @@ export default {
       animate: false,
     });
   },
-  mounted() {
-    this.iframeEl = window.document.querySelector(`iframe#${process.env.VUE_APP_NAME}`);
+  beforeDestroy() {
+    window.removeEventListener('message', this.onReceiveMessage);
   },
   destroyed() {
     this.driver = null;
@@ -93,15 +85,21 @@ export default {
       );
     },
     handleCommand(command, data) {
-      switch (command) {
-        case EDIT:
-          this.isEditing = true;
+      if (command === ADD) {
+        this.isEditing = true;
+        const { type } = data;
+        if (type === 'tooltip') {
           this.addUserScreenClickHandler();
-          break;
-        case PREVIEW:
-          break;
-        default:
-          break;
+        } else if (type === 'modal') {
+          this.highlight();
+        }
+      } else if (command === EDIT) {
+        const { step } = data;
+        this.isEditing = true;
+        this.step = step;
+        this.highlight(step.highlightTarget, {
+          content: step.config.content,
+        });
       }
     },
     addUserScreenClickHandler() {
@@ -123,6 +121,9 @@ export default {
       });
     },
     getSelector(node) {
+      if (node === 'modal') {
+        return node;
+      }
       if (node) {
         return finder(node, {
           root: document.body,
@@ -136,7 +137,7 @@ export default {
       }
       return null;
     },
-    getDriverArguments() {
+    getDriverConfig() {
       const activeElement = this.driver.getHighlightedElement();
       const popover = activeElement.getPopover();
       const content = purify.sanitize(popover.getContentNode().input);
@@ -150,28 +151,35 @@ export default {
         },
       };
     },
-    onNext(el) {
+    onClickNext(el) {
       if (this.isEditing) {
-        this.onClickSave();
+        this.onClickSave(el);
       }
     },
-    onPrevious(el) {
-      console.log('onPrevious');
+    onClickPrevious(el) {
       if (this.isEditing) {
-        this.onClickCancel();
+        this.onClickCancel(el);
       }
     },
-    onClickCancel() {
-      this.removeUserScreenClickHandler();
+    onClickCancel(el) {
+      if (el !== 'modal') {
+        this.removeUserScreenClickHandler();
+      }
       this.isEditing = false;
+      this.sendCommand(CANCEL);
     },
-    onClickSave() {
-      const { element, popover } = this.getDriverArguments();
+    onClickSave(el) {
+      if (el !== 'modal') {
+        this.removeUserScreenClickHandler();
+      }
+      this.isEditing = false;
+      const { element, popover } = this.getDriverConfig();
       this.sendCommand(
-        SAVE_STEP,
-        new TutorialStepEntity({
+        SAVE,
+        new StepEntity({
           ...this.step,
-          trigger_target: element,
+          highlightTarget: element,
+          type: element === 'modal' ? 'modal' : 'tooltip',
           config: popover,
         })
       );
@@ -197,7 +205,6 @@ export default {
     userScreenClickHandler(e) {
       e.preventDefault(); // for driver.js
       e.stopPropagation(); // for driver.js
-      // this.sendCommand(SHOW_CLICK_TO_ADD_STEP_MESSAGE);
 
       if (this.selectorChoices.length === 0) {
         this.selectorChoices = this.extractSelectorChoices(e);
@@ -205,46 +212,30 @@ export default {
 
       this.showDriverChoice();
     },
-    highlight({ id = null, element, popover = { content: '<div><h1>Title</h1><div>Description</div></div>' } }) {
-      let _element = element;
-      let _popover = popover;
-
-      if (!this.step) {
-        this.step = id ? this.steps.find(s => s.id === id) : this.steps.find(s => s.element === element);
-
-        if (this.step) {
-          _element = this.step.element;
-          _popover = this.step.popover;
-        }
-      }
-
-      // watchdeでセットすると遅いのでここでやってる
-      this.driver.options.allowClose = false;
-      this.driver.options.editable = true;
-
-      this.driver.defineSteps([
-        {
-          element: _element,
-          popover: _popover,
-          onNext: el => {
-            console.log('next');
-            this.onNext(el);
-            this.driver.preventMove();
+    async highlight(element = 'modal', popover = { content: '<div><h1>Title</h1><div>Description</div></div>' }) {
+      console.log(element);
+      console.log(popover);
+      return new Promise(resolve => {
+        // watchでセットすると遅いのでここでやってる
+        this.driver.options.allowClose = false;
+        this.driver.options.editable = true;
+        this.driver.defineSteps([
+          {
+            element,
+            popover: popover,
+            onNext: el => {
+              this.onClickNext(el);
+              this.driver.preventMove();
+            },
+            onPrevious: el => {
+              this.onClickPrevious(el);
+              this.driver.preventMove();
+            },
           },
-          onPrevious: el => {
-            console.log('prev');
-            this.onPrevious(el);
-            this.driver.preventMove();
-          },
-        },
-      ]);
-      this.driver.start();
-      const activeElement = this.driver.getHighlightedElement();
-      this.sendCommand(SHOW_STEP_EDITOR_OPTIONS, activeElement.getCalculatedPosition());
-
-      if (this.isEditing) {
-        this.selectorChoiceIndex += 1;
-      }
+        ]);
+        this.driver.start();
+        resolve(this.driver.hasHighlightedElement());
+      });
     },
     preview() {
       if (this.steps.length === 0) {
@@ -257,14 +248,16 @@ export default {
       this.driver.defineSteps(this.steps);
       this.driver.start();
     },
-    showDriverChoice() {
+    async showDriverChoice() {
       if (this.selectorChoices.length === 0) return;
-      if (this.selectorChoiceIndex === this.selectorChoices.length - 1 || this.selectorChoiceIndex + 1 > this.maxRetries) {
+      if (this.selectorChoiceIndex === this.selectorChoices.length - 1 || this.selectorChoiceIndex + 1 > MAX_RETRIES) {
         this.selectorChoiceIndex = 0;
       }
-      this.highlight({
-        element: this.selectorChoices[this.selectorChoiceIndex],
-      });
+      const hasHighlightedElement = await this.highlight(this.selectorChoices[this.selectorChoiceIndex]);
+      this.selectorChoiceIndex += 1;
+      if (!hasHighlightedElement) {
+        this.showDriverChoice();
+      }
     },
   },
 };

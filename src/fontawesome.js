@@ -21,12 +21,13 @@ import {
   faKey,
   faTimes,
   faExchangeAlt,
+  faChevronLeft,
+  faChevronRight,
+  faPlay,
+  faArrowDown,
 } from '@fortawesome/free-solid-svg-icons';
 
-import {
-  faFrown,
-  faQuestionCircle,
-} from '@fortawesome/free-regular-svg-icons';
+import { faFrown, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 
 library.add(
   faCode,
@@ -52,5 +53,9 @@ library.add(
   faEnvelope,
   faKey,
   faTimes,
-  faExchangeAlt
+  faExchangeAlt,
+  faChevronLeft,
+  faChevronRight,
+  faPlay,
+  faArrowDown
 );

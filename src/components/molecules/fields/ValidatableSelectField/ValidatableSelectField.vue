@@ -1,23 +1,13 @@
 <template>
-    <validation-provider
-        :name="name"
-        :rules="rules"
-    >
-        <select-field
-            v-model="inputValue"
-            v-bind="$attrs"
-            :items="items"
-            slot-scope="{ errors, valid }"
-            :message="errors"
-            :type="getType(errors, valid)"
-        ></select-field>
-    </validation-provider>
+  <validation-provider :name="name" :rules="rules" ref="provider">
+    <select-field v-model="inputValue" v-bind="$attrs" :items="items" slot-scope="{ errors, valid }" :message="errors" :type="getType(errors, valid)" />
+  </validation-provider>
 </template>
 
 <script>
 import { ValidationProvider } from 'vee-validate';
 import validatable from '../../../mixins/validatable';
-import SelectField from '../../../atoms/fields/SelectField/SelectField';
+import SelectField from '../SelectField';
 
 export default {
   name: 'ValidatableSelectField',
@@ -51,11 +41,8 @@ export default {
         return this.$emit('input', newValue);
       },
     },
-
   },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

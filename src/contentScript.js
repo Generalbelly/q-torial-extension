@@ -7,8 +7,8 @@ import '../sass/main.scss';
 import './fontawesome';
 import store from './store';
 import App from './App';
-import { START_APP, REDIRECT_USER, UPDATE_AUTH_STATE } from './constants/action-types';
-import { ERROR } from './constants/status-types';
+import { START_APP, REDIRECT_USER, UPDATE_AUTH_STATE, PASS_DATA_TO_VUEX, UPDATE_DATA } from './constants/command-types';
+import { ERROR, OK } from './constants/status-types';
 
 // Buefy
 Vue.use(Buefy, {
@@ -104,42 +104,102 @@ port.onDisconnect.addListener(() => {
   connected = false;
 });
 
+let isWebListenerAttached = false;
 port.onMessage.addListener(async request => {
-  const { action = null, data = {} } = request;
-  console.log(request);
-  const postMessage = (status, message) => {
-    if (!connected) return;
-    port.postMessage({
-      status,
-      message,
-    });
+  const sendCommand = ({ status = null, message = null, data = null, command = null }, to = 'background') => {
+    if (to === 'background') {
+      if (!connected) return;
+      port.postMessage({
+        status,
+        message,
+        command,
+        data,
+      });
+    } else if (to === 'web') {
+      window.postMessage(
+        {
+          app: process.env.VUE_APP_NAME,
+          command: UPDATE_DATA,
+          data,
+        },
+        window.location.origin
+      );
+    }
   };
 
-  switch (action) {
-    case START_APP:
-      try {
-        if (window.location.origin !== process.env.VUE_APP_URL) {
-          await startApp();
+  const handleCommand = async (command, data) => {
+    switch (command) {
+      case START_APP:
+        try {
+          if (window.location.origin !== process.env.VUE_APP_URL) {
+            await startApp();
+            sendCommand({
+              status: OK,
+            });
+          }
+        } catch (e) {
+          sendCommand({
+            status: ERROR,
+            message: e.message,
+          });
         }
-      } catch (e) {
-        postMessage(ERROR, e.message);
-      }
-      break;
-    case REDIRECT_USER:
-      if (window.location.origin !== process.env.VUE_APP_URL) {
-        window.location.href = `${process.env.VUE_APP_URL}?source=extension&redirect=${window.location.href}`;
-      }
-      break;
-    case UPDATE_AUTH_STATE:
-      console.log('UPDATE_AUTH_STATE');
-      console.log(data);
-      try {
-        await store.dispatch('setUser', data);
-      } catch (e) {
-        postMessage(ERROR, e.message);
-      }
-      break;
-    default:
-      break;
+        break;
+      case REDIRECT_USER:
+        if (window.location.origin !== process.env.VUE_APP_URL) {
+          window.location.href = `${process.env.VUE_APP_URL}?source=extension&redirect=${window.location.href}`;
+        }
+        break;
+      case UPDATE_AUTH_STATE:
+        try {
+          await store.dispatch('setUser', data);
+          sendCommand({
+            status: OK,
+          });
+        } catch (e) {
+          sendCommand({
+            status: ERROR,
+            message: e.message,
+          });
+        }
+        break;
+      case PASS_DATA_TO_VUEX:
+        sendCommand({
+          command,
+          data,
+        });
+        break;
+      case UPDATE_DATA:
+        sendCommand(
+          {
+            command,
+            data,
+          },
+          'web'
+        );
+        break;
+      default:
+        break;
+    }
+  };
+
+  const addWebListner = async () => {
+    window.addEventListener('message', async event => {
+      if (event.source !== window) return;
+      if (typeof event.data !== 'object' || Array.isArray(event.data)) return;
+      const { app = null, command = null, data = null } = event.data;
+      if (app !== process.env.VUE_APP_NAME) return;
+      sendCommand({
+        command,
+        data,
+      });
+    });
+    isWebListenerAttached = true;
+  };
+
+  if (!isWebListenerAttached) {
+    await addWebListner();
   }
+
+  const { command = null, data = {} } = request;
+  await handleCommand(command, data);
 });

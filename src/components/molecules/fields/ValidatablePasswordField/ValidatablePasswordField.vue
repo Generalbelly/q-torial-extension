@@ -1,24 +1,13 @@
 <template>
-  <validation-provider
-    :name="name"
-    :rules="rules"
-    :vid="confirmation ? 'confirmation' : 'password'"
-    ref="provider"
-  >
-    <password-field
-      v-bind="$attrs"
-      slot-scope="{ errors, valid }"
-      :message="errors"
-      v-model="inputValue"
-      :type="getType(errors, valid)"
-    ></password-field>
+  <validation-provider :name="name" :rules="rules" :vid="confirmation ? 'confirmation' : 'password'" ref="provider">
+    <password-field v-bind="$attrs" slot-scope="{ errors, valid }" :message="errors" v-model="inputValue" :type="getType(errors, valid)" />
   </validation-provider>
 </template>
 
 <script>
 import { ValidationProvider } from 'vee-validate';
 import validatable from '../../../mixins/validatable';
-import PasswordField from '../../../atoms/fields/PasswordField/PasswordField';
+import PasswordField from '../PasswordField';
 
 export default {
   name: 'ValidatablePasswordField',
@@ -55,6 +44,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

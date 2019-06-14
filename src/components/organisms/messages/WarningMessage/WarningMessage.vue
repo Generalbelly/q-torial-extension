@@ -1,10 +1,5 @@
 <template>
-  <base-message
-    v-bind="$attrs"
-    v-on="$listeners"
-    type="warning"
-    title="Oops"
-  >
+  <base-message v-bind="$attrs" v-on="$listeners" type="warning" title="Oops">
     <slot></slot>
   </base-message>
 </template>
@@ -16,9 +11,7 @@ export default {
   components: {
     BaseMessage,
   },
-}
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

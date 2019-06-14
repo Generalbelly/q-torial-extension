@@ -1,13 +1,23 @@
-export default class Entity {
-    id = null
-    created_at = null
-    updated_at = null
+import { has } from '../../../utils';
 
-    fill(data = {}) {
-      Object.keys(data).forEach((field) => {
-        if (this.hasOwnProperty(field)) {
-          this[field] = data[field];
-        }
-      });
-    }
+export default class Entity {
+  id = null;
+
+  fill(data = {}) {
+    Object.keys(data).forEach(field => {
+      if (has.call(this, field)) {
+        this[field] = data[field];
+      }
+    });
+  }
+
+  toPlainObject() {
+    const object = {};
+    Object.keys(this).forEach(propertyName => {
+      if (has.call(this, propertyName)) {
+        object[propertyName] = this[propertyName];
+      }
+    });
+    return object;
+  }
 }

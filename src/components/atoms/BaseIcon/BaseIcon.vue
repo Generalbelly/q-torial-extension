@@ -1,12 +1,6 @@
 <template>
-  <span
-    class="icon"
-    @click="$emit('click')"
-    :class="size"
-  >
-    <font-awesome-icon
-      :icon="icon"
-    ></font-awesome-icon>
+  <span class="icon" @click="$emit('click')" :class="size">
+    <font-awesome-icon :icon="icon"></font-awesome-icon>
   </span>
 </template>
 

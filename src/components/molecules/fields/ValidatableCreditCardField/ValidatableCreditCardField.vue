@@ -1,22 +1,13 @@
 <template>
-    <validation-provider
-        :name="name"
-        :rules="rules"
-    >
-        <credit-card-field
-            v-bind="$attrs"
-            slot-scope="{ errors, valid }"
-            :message="errors"
-            v-model="inputValue"
-            :type="getType(errors, valid)"
-        ></credit-card-field>
-    </validation-provider>
+  <validation-provider :name="name" :rules="rules" ref="provider">
+    <credit-card-field v-bind="$attrs" slot-scope="{ errors, valid }" :message="errors" v-model="inputValue" :type="getType(errors, valid)" />
+  </validation-provider>
 </template>
 
 <script>
 import { ValidationProvider } from 'vee-validate';
 import validatable from '../../../mixins/validatable';
-import CreditCardField from '../../../atoms/fields/CreditCardField';
+import CreditCardField from '../CreditCardField';
 
 export default {
   name: 'ValidatableCreditCardField',
@@ -44,6 +35,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

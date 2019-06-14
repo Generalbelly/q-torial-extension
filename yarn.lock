@@ -857,11 +857,6 @@
   dependencies:
     cssesc "^2.0.0"
 
-"@posva/vuefire-core@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@posva/vuefire-core/-/vuefire-core-1.1.1.tgz#b158cc5537840c30c9b98ed8066044e264fffae2"
-  integrity sha512-/wb9qfjN82RDYVDLKR5B+rEcl2y5+AlOpQqEygxxNq7+SPwVtgTqesZSoxuGTeYgGdRMU+S0PwiRonq1e/tXaA==
-
 "@vue/component-compiler-utils@^2.5.1":
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/@vue/component-compiler-utils/-/component-compiler-utils-2.6.0.tgz#aa46d2a6f7647440b0b8932434d22f12371e543b"
@@ -7001,13 +6996,6 @@ vuex@^3.0.1:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-3.1.0.tgz#634b81515cf0cfe976bd1ffe9601755e51f843b9"
   integrity sha512-mdHeHT/7u4BncpUZMlxNaIdcN/HIt1GsGG5LKByArvYG/v6DvHcOxvDCts+7SRdCoIRGllK8IMZvQtQXLppDYg==
-
-vuexfire@^3.0.0-alpha.16:
-  version "3.0.0-alpha.16"
-  resolved "https://registry.yarnpkg.com/vuexfire/-/vuexfire-3.0.0-alpha.16.tgz#e12c165d074e619b508b569288bdf130a862e198"
-  integrity sha512-S3eE/FMyhBZaH6HG3h0wLsq+YTAmK5dS20P9OVXiAmrhX6xW4atfrL7UFxWJ/KTGz7/JIFuHxZPvJqWASJW6UA==
-  dependencies:
-    "@posva/vuefire-core" "^1.1.1"
 
 watchpack@^1.5.0:
   version "1.6.0"

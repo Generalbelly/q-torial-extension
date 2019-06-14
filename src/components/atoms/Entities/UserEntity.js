@@ -1,6 +1,4 @@
-import Entity from './Entity';
-
-export default class UserEntity extends Entity {
+export default class UserEntity {
   uid = null;
 
   email = null;
@@ -10,7 +8,14 @@ export default class UserEntity extends Entity {
   emailVerified = false;
 
   constructor(data = {}) {
-    super();
     this.fill(data);
+  }
+
+  fill(data = {}) {
+    Object.keys(data).forEach(field => {
+      if (Object.prototype.hasOwnProperty.call(this, field)) {
+        this[field] = data[field];
+      }
+    });
   }
 }

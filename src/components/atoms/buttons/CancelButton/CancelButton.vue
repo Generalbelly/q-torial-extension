@@ -1,18 +1,15 @@
 <template>
-  <button
-    class="button"
-    @click="$emit('click')"
-  >
+  <base-button @click="$emit('click')">
     Cancel
-  </button>
+  </base-button>
 </template>
 
 <script>
+import BaseButton from '../../BaseButton';
 export default {
   name: 'CancelButton',
+  components: { BaseButton },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

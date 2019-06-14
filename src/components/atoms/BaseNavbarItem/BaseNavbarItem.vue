@@ -21,7 +21,7 @@ export default {
           },
         },
       },
-      self.$slots.default,
+      self.$slots.default
     );
   },
 };

@@ -1,7 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
-import store from './backgroundStore'
+import store from './store/backgroundStore'
 
 export const { Timestamp, FieldValue } = firebase.firestore
 
@@ -11,10 +11,10 @@ export const convertDocToObject = doc => {
     ...doc.data(),
   }
   if (data.createdAt) {
-    data.createdAtAsDate = data.createdAt.toDate().toLocaleDateString()
+    data.createdAtAsDateString = data.createdAt.toDate().toLocaleDateString()
   }
   if (data.updatedAt) {
-    data.updatedAtAsDate = data.updatedAt.toDate().toLocaleDateString()
+    data.updatedAtAsDateString = data.updatedAt.toDate().toLocaleDateString()
   }
   return data
 }

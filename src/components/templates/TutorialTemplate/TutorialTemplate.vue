@@ -9,9 +9,20 @@
       @click:close="$emit('click:close')"
       @click:switch="shouldShowSideNavRight = !shouldShowSideNavRight"
     >
-      <base-heading v-if="innerTutorial.id">
-        {{ innerTutorial.name }}
-      </base-heading>
+      <div
+        v-if="innerTutorial.id"
+        @click="shouldShowTutorialForm = true"
+        class="has-margin-bottom-5"
+      >
+        <base-tooltip
+          label="Click to edit tutorial settings"
+          type="is-neutral-050"
+        >
+          <base-heading>
+            {{ innerTutorial.name }}
+          </base-heading>
+        </base-tooltip>
+      </div>
       <div>
         <p v-if="innerTutorial.steps.length === 0">
           You haven't added any steps yet.
@@ -26,14 +37,22 @@
             >
               <modal-icon v-if="step.type === 'modal'" />
               <tooltip-icon v-else-if="step.type === 'tooltip'" />
-              <base-fade-transition>
+              <base-fade-transition-group>
                 <trash-button
+                  key="trash"
                   v-show="hoveredStepIndex === stepIndex"
                   class="step-definition__delete"
                   type="is-neutral"
                   @click.stop="onStepDeleteClick(step)"
                 />
-              </base-fade-transition>
+                <pen-button
+                  key="pen"
+                  v-show="hoveredStepIndex === stepIndex"
+                  class="step-definition__edit"
+                  type="is-neutral"
+                  @click.stop="onStepEditClick(step)"
+                />
+              </base-fade-transition-group>
             </span>
             <span class="step-definition">
               <base-icon
@@ -56,65 +75,38 @@
         </div>
       </div>
     </the-sidebar>
-    <validation-observer ref="observer">
+    <validation-observer ref="tutorialObserver">
       <base-modal
-        :active="shouldShowModal"
+        :active="shouldShowTutorialForm"
         :can-cancel="false"
-        @click:close="shouldShowModal = false"
-        @click:confirm="onClickConfirm"
-        @click:cancel="onClickCancel"
+        @click:close="shouldShowTutorialForm = false"
+        @click:confirm="onClickTutorialConfirm"
+        @click:cancel="onClickTutorialCancel"
       >
-        <validatable-text-field
-          label="Tutorial Name"
-          v-model="innerTutorial.name"
-          placeholder="First timers"
-          name="tutorial name"
-          rules="required"
+        <tutorial-form
+          :name.sync="innerTutorial.name"
+          :description.sync="innerTutorial.description"
+          :path-value.sync="innerTutorial.pathValue"
+          :path-operator.sync="innerTutorial.pathOperator"
+          :parameters.sync="innerTutorial.parameters"
+          :domain.sync="innerTutorial.domain"
         />
-        <textarea-field
-          label="Tutorial Description"
-          v-model="innerTutorial.description"
-          placeholder="Tutorial for first time customers."
-          name="tutorial description"
+      </base-modal>
+    </validation-observer>
+    <validation-observer ref="stepObserver">
+      <base-modal
+        :active="shouldShowStepForm && innerStep"
+        :can-cancel="false"
+        @click:close="shouldShowStepForm = false"
+        @click:confirm="onClickStepConfirm"
+        @click:cancel="onClickStepCancel"
+      >
+        <step-form
+          :path-value.sync="innerStep.pathValue"
+          :path-operator.sync="innerStep.pathOperator"
+          :parameters.sync="innerStep.parameters"
+          :domain.sync="innerStep.domain"
         />
-        <div>
-          <div class="label">
-            Start this tutorial for a user visiting the following condition(s).
-          </div>
-          <base-columns>
-            <base-column>
-              <select-field
-                :items="pathOperators"
-                v-model="innerTutorial.pathOperator"
-              />
-            </base-column>
-            <base-column>
-              <validatable-text-field
-                v-model="innerTutorial.pathValue"
-                name="path value"
-                rules="required"
-              />
-            </base-column>
-          </base-columns>
-          <base-columns>
-            <base-column>
-              <checkbox-field v-model="parametersRequired">
-                with parameters
-              </checkbox-field>
-              <parameter-fields
-                v-show="parametersRequired"
-                v-model="innerTutorial.parameters"
-              />
-            </base-column>
-          </base-columns>
-          <base-columns>
-            <base-column>
-              <checkbox-field v-model="domainRequired">
-                Only apply for the domain ({{ domain }})
-              </checkbox-field>
-            </base-column>
-          </base-columns>
-        </div>
       </base-modal>
     </validation-observer>
     <screen-overlay-layout
@@ -155,8 +147,8 @@ import DriverEditor from '../../organisms/DriverEditor'
 import TutorialEntity from '../../atoms/Entities/TutorialEntity'
 import BaseHeading from '../../atoms/BaseHeading'
 import {
-  CANCEL,
   ADD,
+  CANCEL,
   EDIT,
   PREVIEW,
   PREVIEW_DONE,
@@ -164,84 +156,56 @@ import {
 } from '../../../constants/drvier-editor-command-types'
 import AddStepButton from '../../organisms/AddStepButton/AddStepButton'
 import BaseModal from '../../molecules/BaseModal/BaseModal'
-import ValidatableTextField from '../../molecules/fields/ValidatableTextField'
-import ValidatableTextareaField from '../../molecules/fields/ValidatableTextareaField'
 import iframeStyler from '../../mixins/iframeStyler'
 import ScreenOverlayLayout from '../../molecules/layouts/ScreenOverlayLayout'
 import TipsMessage from '../../organisms/messages/TipsMessage'
 import WarningMessage from '../../organisms/messages/WarningMessage'
 import TheSidebar from '../../organisms/TheSidebar/TheSidebar'
-import BaseColumn from '../../atoms/BaseColumn/BaseColumn'
-import BaseColumns from '../../atoms/BaseColumns/BaseColumns'
-import ParameterFields from '../../molecules/fields/ParameterFields'
-import SelectField from '../../molecules/fields/SelectField'
-import CheckboxField from '../../molecules/fields/CheckboxField'
-import TextareaField from '../../molecules/fields/TextareaField/TextareaField'
 import BaseLoading from '../../atoms/BaseLoading/BaseLoading'
 import ModalIcon from '../../atoms/icons/ModalIcon/ModalIcon'
 import TooltipIcon from '../../atoms/icons/TooltipIcon/TooltipIcon'
 import BaseIcon from '../../atoms/icons/BaseIcon/BaseIcon'
 import StepEntity from '../../atoms/Entities/StepEntity'
 import PreviewButton from '../../atoms/buttons/PreviewButton/PreviewButton'
-import BaseButton from '../../atoms/BaseButton/BaseButton'
 import TrashButton from '../../atoms/buttons/TrashButton/TrashButton'
 import BaseFadeTransition from '../../atoms/transitions/BaseFadeTransition/BaseFadeTransition'
+import TutorialForm from '../../organisms/forms/TutorialForm/TutorialForm'
+import BaseLevel from '../../atoms/BaseLevel/BaseLevel'
+import BaseLevelItem from '../../atoms/BaseLevelItem/BaseLevelItem'
+import BaseLevelRight from '../../atoms/BaseLevelRight/BaseLevelRight'
+import BaseLevelLeft from '../../atoms/BaseLevelLeft/BaseLevelLeft'
+import SettingButton from '../../atoms/buttons/SettingButton/TrashButton'
+import BaseTooltip from '../../atoms/BaseTooltip/BaseTooltip'
+import PenButton from '../../atoms/buttons/PenButton/PenButton'
+import BaseFadeTransitionGroup from '../../atoms/transitions/BaseFadeTransitionGroup/BaseFadeTransitionGroup'
+import StepForm from '../../organisms/forms/StepForm/StepForm'
 
-const pathOperators = [
-  {
-    value: 'ALL',
-    text: 'All the path names',
-  },
-  {
-    value: 'EQUAL',
-    text: 'A path name that is equal to',
-  },
-  {
-    value: 'STARTS_WITH',
-    text: 'Path names that starts with',
-  },
-  {
-    value: 'ENDS_WITH',
-    text: 'Path names that ends with',
-  },
-  {
-    value: 'CONTAINS',
-    text: 'Path names that contains',
-  },
-  {
-    value: 'REGEX',
-    text: 'Path names that matches the following regular expression: ',
-  },
-  {
-    value: 'NOT_EQUAL',
-    text: 'Path names that are not equal to',
-  },
-]
 export default {
   name: 'TutorialTemplate',
   mixins: [iframeStyler],
   components: {
+    StepForm,
+    BaseFadeTransitionGroup,
+    PenButton,
+    BaseTooltip,
+    SettingButton,
+    BaseLevelLeft,
+    BaseLevelRight,
+    BaseLevelItem,
+    BaseLevel,
+    TutorialForm,
     BaseFadeTransition,
     TrashButton,
-    BaseButton,
     PreviewButton,
     BaseIcon,
     TooltipIcon,
     ModalIcon,
     BaseLoading,
     ValidationObserver,
-    TextareaField,
-    CheckboxField,
-    SelectField,
-    ParameterFields,
-    BaseColumns,
-    BaseColumn,
     TheSidebar,
     WarningMessage,
     TipsMessage,
     ScreenOverlayLayout,
-    ValidatableTextareaField,
-    ValidatableTextField,
     BaseModal,
     AddStepButton,
     BaseHeading,
@@ -260,14 +224,12 @@ export default {
     return {
       shouldShowSideNav: true,
       shouldShowSideNavRight: true,
-      shouldShowModal: false,
+      shouldShowTutorialForm: false,
+      shouldShowStepForm: false,
       showClickToAddStepMessage: false,
       showNoStepAddedYetMessage: false,
-      parametersRequired: false,
-      domainRequired: false,
-      pathOperators,
       innerTutorial: new TutorialEntity(),
-      domain: window.parent.location.hostname,
+      innerStep: new StepEntity(),
       driverEditorID: `${process.env.VUE_APP_NAME}-editor`,
       hoveredStepIndex: null,
     }
@@ -278,27 +240,20 @@ export default {
       handler(value) {
         if (value) {
           this.innerTutorial = value
+        } else {
+          this.innerTutorial = new TutorialEntity()
         }
       },
     },
-    domainRequired: {
+    hoveredStepIndex: {
       handler(value) {
-        if (value) {
-          this.innerTutorial.domain = value
-            ? window.parent.location.origin
-            : null
-        }
-      },
-    },
-    parametersRequired: {
-      handler(value) {
-        if (value && this.innerTutorial.parameters.length === 0) {
-          this.innerTutorial.parameters = [
-            {
-              key: '',
-              value: '',
-            },
-          ]
+        if (value !== null && value > -1) {
+          this.innerStep = this.innerTutorial.steps.find(
+            _,
+            index => index === this.hoveredStepIndex
+          )
+        } else {
+          this.innerStep = new StepEntity()
         }
       },
     },
@@ -331,27 +286,12 @@ export default {
     },
     handleCommand(command, data) {
       if (command === SAVE) {
-        const index = this.innerTutorial.steps.findIndex(s => s.id === data.id)
-        if (index === -1) {
-          this.innerTutorial.steps = [
-            ...this.innerTutorial.steps,
-            new StepEntity(data),
-          ]
-        } else {
-          this.innerTutorial.steps = [
-            ...this.innerTutorial.steps.slice(0, index),
-            new StepEntity({
-              ...this.innerTutorial.steps[index],
-              ...data,
-            }),
-            ...this.innerTutorial.steps.slice(index + 1),
-          ]
-        }
         if (!this.innerTutorial.id) {
+          this.innerTutorial.steps = [new StepEntity(data)]
           this.innerTutorial.pathValue = window.parent.location.pathname
-          this.shouldShowModal = true
+          this.shouldShowTutorialForm = true
         } else {
-          this.$emit('update:tutorial', this.innerTutorial)
+          this.$emit('upsert:step', new StepEntity(data))
           this.shouldShowSideNav = true
         }
         this.showIframe()
@@ -385,21 +325,27 @@ export default {
       this.showClickToAddStepMessage = false
       this.hideIframe()
     },
-    async onClickConfirm() {
-      const valid = await this.$refs.observer.validate()
+    async onClickTutorialConfirm() {
+      const valid = await this.$refs.tutorialObserver.validate()
       if (valid) {
-        this.$emit(
-          'update:tutorial',
-          new TutorialEntity({
-            ...this.innerTutorial,
-          })
-        )
-        this.shouldShowModal = false
+        this.$emit('add:tutorial', this.innerTutorial)
+        this.shouldShowTutorialForm = false
         this.shouldShowSideNav = true
       }
     },
-    onClickCancel() {
-      this.shouldShowModal = false
+    onClickTutorialCancel() {
+      this.shouldShowTutorialForm = false
+    },
+    async onClickStepConfirm() {
+      const valid = await this.$refs.stepObserver.validate()
+      if (valid) {
+        this.$emit('upsert:step', this.innerStep)
+        this.shouldShowStepForm = false
+        this.shouldShowSideNav = true
+      }
+    },
+    onClickStepCancel() {
+      this.shouldShowStepForm = false
     },
     onStepClick(step) {
       this.hideIframe()
@@ -414,13 +360,11 @@ export default {
       })
       this.hideIframe()
     },
+    onStepEditClick(step) {
+      this.$emit('upsert:step', step)
+    },
     onStepDeleteClick(step) {
-      const index = this.innerTutorial.steps.findIndex(s => s.id === step.id)
-      this.innerTutorial.steps = [
-        ...this.innerTutorial.steps.slice(0, index),
-        ...this.innerTutorial.steps.slice(index + 1),
-      ]
-      this.$emit('update:tutorial', this.innerTutorial)
+      this.$emit('delete:step', step)
     },
   },
 }
@@ -463,10 +407,9 @@ export default {
 .step-definition__step > svg {
   width: 45px;
 }
-.step-definition__delete {
+.step-definition__delete,
+.step-definition__edit {
   position: absolute;
-  top: -30px;
-  right: -30px;
   border-radius: 50%;
   display: inline-flex;
   justify-content: center;
@@ -474,5 +417,13 @@ export default {
   width: 40px;
   height: 40px;
   font-size: 8px;
+}
+.step-definition__edit {
+  top: -30px;
+  right: -30px;
+}
+.step-definition__delete {
+  right: -50px;
+  top: 15px;
 }
 </style>

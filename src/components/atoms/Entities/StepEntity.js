@@ -1,20 +1,37 @@
 import Entity from './Entity'
 
 export default class StepEntity extends Entity {
-  type = 'tooltip'
+  type = 'tooltip' // tooltip, modal
 
-  triggerTarget = 'window'
+  triggerTarget = 'window' // #id, .class, window
 
-  triggerEvent = 'load'
+  triggerEvent = null // load, click, focus, error, null
 
-  highlightTarget = null
+  highlightTarget = null // #id, .class, modal
 
   waitingTime = 0
 
   config = {}
 
+  order = 0
+
+  pathOperator = 'EQUALS' // ALL, EQUALS, STARTS_WITH, ENDS_WITH, CONTAINS, REGEX, NOT_EQUALS
+
+  pathValue = null
+
+  parameters = []
+
   constructor(data = {}) {
     super()
     this.fill(data)
+  }
+
+  toPlainObject() {
+    return super.toPlainObject([
+      'createdAtAsDateString',
+      'updatedAtAsDateString',
+      'createdAt',
+      'updatedAt',
+    ])
   }
 }

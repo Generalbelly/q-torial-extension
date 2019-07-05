@@ -87,9 +87,8 @@ export default {
       if (command === ADD) {
         this.isEditing = true
         const { type } = data
-        if (type === 'tooltip') {
-          this.addUserScreenClickHandler()
-        } else if (type === 'modal') {
+        this.addUserScreenClickHandler()
+        if (type === 'modal') {
           this.highlight()
         }
       } else if (command === EDIT) {
@@ -162,16 +161,12 @@ export default {
       }
     },
     onClickCancel(el) {
-      if (el !== 'modal') {
-        this.removeUserScreenClickHandler()
-      }
+      this.removeUserScreenClickHandler()
       this.isEditing = false
       this.sendCommand(CANCEL)
     },
     onClickSave(el) {
-      if (el !== 'modal') {
-        this.removeUserScreenClickHandler()
-      }
+      this.removeUserScreenClickHandler()
       this.isEditing = false
       const { element, popover } = this.getDriverConfig()
       this.sendCommand(

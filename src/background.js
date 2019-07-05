@@ -1,18 +1,17 @@
 import browser from 'webextension-polyfill'
 import {
-  START_APP,
+  START_EXT,
   SIGN_IN,
   SIGN_OUT,
   VERSION,
-  REDIRECT_USER,
+  REDIRECT_TO_APP,
   UPDATE_AUTH_STATE,
-  PASS_DATA_TO_VUEX,
-  UPDATE_DATA,
+  PASS_DATA_TO_BACKGROUND,
+  UPDATE_STATE,
 } from './constants/command-types'
 import { ERROR, OK } from './constants/status-types'
 import firebase from './firebase'
-import store from './backgroundStore'
-import { RESET_STATE } from './backgroundStore/mutation-types'
+import store from './store/backgroundStore'
 
 global.browser = browser
 
@@ -42,13 +41,13 @@ chrome.runtime.onConnect.addListener(async port => {
 
   const startApp = async (resetState = false) => {
     if (resetState) {
-      store.commit(`tutorial/${RESET_STATE}`)
+      await store.dispatch(`resetState`)
     }
     const user = await firebase.checkAuth()
     if (user) {
-      sendCommand(START_APP)
+      sendCommand(START_EXT)
     } else {
-      sendCommand(REDIRECT_USER)
+      sendCommand(REDIRECT_TO_APP)
     }
   }
 
@@ -63,13 +62,36 @@ chrome.runtime.onConnect.addListener(async port => {
   })
 
   store.watch(
-    state => state.tutorial,
+    (state, getters) => ({
+      ...state,
+      ...getters,
+    }),
     value => {
-      const { requesting } = value
-      console.log('watch', value)
+      const { requesting, tutorials = [], steps = [], ...meta } = value
       if (!requesting) {
-        console.log('send', value)
-        sendCommand(UPDATE_DATA, value)
+        sendCommand(UPDATE_STATE, {
+          ...meta,
+          tutorials: tutorials.map(tutorial => ({
+            ...tutorial,
+            id: tutorial.id,
+            createdAtAsDateString: tutorial.createdAt
+              ? tutorial.createdAt.toDate().toLocaleDateString()
+              : null,
+            updatedAtAsDateString: tutorial.updatedAt
+              ? tutorial.updatedAt.toDate().toLocaleDateString()
+              : null,
+          })),
+          steps: steps.map(step => ({
+            ...step,
+            id: step.id,
+            createdAtAsDateString: step.createdAt
+              ? step.createdAt.toDate().toLocaleDateString()
+              : null,
+            updatedAtAsDateString: step.updatedAt
+              ? step.updatedAt.toDate().toLocaleDateString()
+              : null,
+          })),
+        })
       }
     },
     { deep: true }
@@ -87,7 +109,7 @@ chrome.runtime.onConnect.addListener(async port => {
     }
     if (command) {
       switch (command) {
-        case PASS_DATA_TO_VUEX:
+        case PASS_DATA_TO_BACKGROUND:
           await store.dispatch(data.action, data.payload)
           break
         default:

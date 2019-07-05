@@ -5,14 +5,15 @@ import VeeValidate from 'vee-validate'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import '../sass/main.scss'
 import './fontawesome'
-import store from './store'
+import store from './store/store'
 import App from './App'
 import {
-  START_APP,
-  REDIRECT_USER,
+  START_EXT,
+  ROUTE,
+  REDIRECT_TO_APP,
   UPDATE_AUTH_STATE,
-  PASS_DATA_TO_VUEX,
-  UPDATE_DATA,
+  PASS_DATA_TO_BACKGROUND,
+  UPDATE_STATE,
 } from './constants/command-types'
 import { ERROR, OK } from './constants/status-types'
 
@@ -128,7 +129,7 @@ port.onMessage.addListener(async request => {
       window.postMessage(
         {
           app: process.env.VUE_APP_NAME,
-          command: UPDATE_DATA,
+          command: UPDATE_STATE,
           data,
         },
         window.location.origin
@@ -138,7 +139,7 @@ port.onMessage.addListener(async request => {
 
   const handleCommand = async (command, data) => {
     switch (command) {
-      case START_APP:
+      case START_EXT:
         try {
           if (window.location.origin !== process.env.VUE_APP_URL) {
             await startApp()
@@ -153,10 +154,13 @@ port.onMessage.addListener(async request => {
           })
         }
         break
-      case REDIRECT_USER:
+      case REDIRECT_TO_APP:
         if (window.location.origin !== process.env.VUE_APP_URL) {
           window.location.href = `${process.env.VUE_APP_URL}?source=extension&redirect=${window.location.href}`
         }
+        break
+      case ROUTE:
+        window.location.href = data
         break
       case UPDATE_AUTH_STATE:
         try {
@@ -171,13 +175,13 @@ port.onMessage.addListener(async request => {
           })
         }
         break
-      case PASS_DATA_TO_VUEX:
+      case PASS_DATA_TO_BACKGROUND:
         sendCommand({
           command,
           data,
         })
         break
-      case UPDATE_DATA:
+      case UPDATE_STATE:
         sendCommand(
           {
             command,

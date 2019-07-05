@@ -9,7 +9,7 @@ export default class TutorialEntity extends Entity {
 
   domain = null
 
-  pathOperator = 'EQUAL'
+  pathOperator = 'EQUALS'
 
   pathValue = null
 
@@ -21,14 +21,6 @@ export default class TutorialEntity extends Entity {
 
   steps = []
 
-  createdAt = null
-
-  createdAtAsDate = null
-
-  updatedAt = null
-
-  updatedAtAsDate = null
-
   constructor(data = {}) {
     super()
     const { steps = [], ...props } = data
@@ -39,17 +31,15 @@ export default class TutorialEntity extends Entity {
 
   toPlainObject() {
     const privateProperty = [
-      'createdAtAsDate',
-      'updatedAtAsDate',
+      'createdAtAsDateString',
+      'updatedAtAsDateString',
       'createdAt',
       'updatedAt',
     ]
     const object = {}
     Object.keys(this).forEach(propertyName => {
       if (propertyName === 'steps') {
-        object[propertyName] = this[propertyName].map(step =>
-          step.toPlainObject()
-        )
+        object[propertyName] = this.steps.map(step => step.toPlainObject())
       } else if (
         !privateProperty.includes(propertyName) &&
         has.call(this, propertyName)

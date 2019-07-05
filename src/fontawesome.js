@@ -25,6 +25,7 @@ import {
   faChevronRight,
   faPlay,
   faArrowDown,
+  faCog,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { faFrown, faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
@@ -57,5 +58,6 @@ library.add(
   faChevronLeft,
   faChevronRight,
   faPlay,
-  faArrowDown
+  faArrowDown,
+  faCog
 )

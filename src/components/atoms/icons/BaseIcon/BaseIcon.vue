@@ -1,6 +1,9 @@
 <template>
-  <b-icon v-on="$listeners" v-bind="$attrs" @click.native="$emit('click')">
-  </b-icon>
+  <b-icon
+    v-on="$listeners"
+    v-bind="$attrs"
+    @click.native="$emit('click', $event)"
+  />
 </template>
 
 <script>

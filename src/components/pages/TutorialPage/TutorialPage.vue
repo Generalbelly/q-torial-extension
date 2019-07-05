@@ -3,12 +3,14 @@
     :tutorial="tutorial"
     :loading="requesting"
     @click:add="$emit('click:add')"
+    @add:tutorial="onAddTutorial"
     @update:tutorial="onUpdateTutorial"
+    @upsert:step="onUpsertStep"
     @click:close="$emit('click:close')"
-  ></tutorial-template>
+  />
 </template>
 <script>
-import { mapGetters, mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import TutorialTemplate from '../../templates/TutorialTemplate'
 
 export default {
@@ -17,14 +19,25 @@ export default {
     TutorialTemplate,
   },
   computed: {
-    ...mapGetters(['tutorial']),
-    ...mapState(['requesting', 'user']),
+    ...mapState(['requesting', 'user', 'tutorial']),
   },
   methods: {
-    ...mapActions(['upsertTutorial', 'upsertStep']),
+    ...mapActions([
+      'addTutorial',
+      'updeleteTutorialdateTutorial',
+      'upsertStep',
+    ]),
+    onUpsertStep(step) {
+      const data = step.toPlainObject()
+      this.upsertStep(data)
+    },
+    onAddTutorial(tutorial) {
+      const data = tutorial.toPlainObject()
+      this.addTutorial(data)
+    },
     onUpdateTutorial(tutorial) {
       const data = tutorial.toPlainObject()
-      this.upsertTutorial(data)
+      this.updateTutorial(data)
     },
   },
 }

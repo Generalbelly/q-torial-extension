@@ -12,7 +12,8 @@
     @click:show-more="onClickShowMore"
     @sort="onSort"
     @click:close="$emit('click:close')"
-  ></tutorials-template>
+    @click:delete="onClickDelete"
+  />
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
@@ -38,11 +39,13 @@ export default {
       'user',
     ]),
   },
-  created() {
-    this.listTutorials()
-  },
   methods: {
-    ...mapActions(['listTutorials', 'selectTutorial', 'sortTutorials']),
+    ...mapActions([
+      'listTutorials',
+      'deleteTutorial',
+      'selectTutorial',
+      'sortTutorials',
+    ]),
     async onClickAdd() {
       this.selectTutorial({ id: null })
       this.$emit('click:add')
@@ -62,6 +65,9 @@ export default {
     },
     onClickShowMore() {
       this.listTutorials()
+    },
+    onClickDelete(tutorial) {
+      this.deleteTutorial(tutorial.toPlainObject())
     },
     onChangeQuery: debounce(function(query) {
       this.listTutorials({

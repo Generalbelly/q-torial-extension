@@ -6,78 +6,80 @@
       @click:logo="onClickLogo"
     ></the-navbar>
     <tutorials-page
-      v-show="shouldTutorialsPage"
+      v-show="shouldShowTutorialsPage"
       @click:close="onTutorialsClickClose"
       @click:add="onClickAdd"
       @select="onSelect"
     ></tutorials-page>
     <tutorial-page
-      v-show="shouldTutorialPage"
+      v-show="shouldShowTutorialPage"
       @click:close="onTutorialClickClose"
     ></tutorial-page>
   </div>
 </template>
 <script>
+import { mapActions, mapState } from 'vuex'
 import TutorialsPage from './components/pages/TutorialsPage'
 import TheNavbar from './components/organisms/TheNavbar'
-import TheMain from './components/organisms/global/TheMain'
-import TheSidebar from './components/organisms/TheSidebar'
 import TutorialPage from './components/pages/TutorialPage'
-import WarningMessage from './components/organisms/messages/WarningMessage'
-import TipsMessage from './components/organisms/messages/TipsMessage'
-import ScreenOverlayLayout from './components/molecules/layouts/ScreenOverlayLayout'
 import iframeStyler from './components/mixins/iframeStyler'
 
 export default {
   name: 'App',
   mixins: [iframeStyler],
   components: {
-    ScreenOverlayLayout,
-    TipsMessage,
-    WarningMessage,
     TutorialPage,
-    TheSidebar,
-    TheMain,
     TheNavbar,
     TutorialsPage,
   },
   data() {
     return {
       shouldShowNav: true,
-      shouldTutorialsPage: false,
-      shouldTutorialPage: false,
+      shouldShowTutorialsPage: false,
+      shouldShowTutorialPage: false,
     }
   },
+  computed: {
+    ...mapState(['tutorials']),
+  },
+  watch: {
+    shouldShowTutorialsPage(value) {
+      if (value && this.tutorials.length === 0) {
+        this.listTutorials()
+      }
+    },
+  },
   methods: {
+    ...mapActions(['listTutorials']),
     onSelect() {
       this.shouldShowNav = false
-      this.shouldTutorialsPage = false
-      this.shouldTutorialPage = true
+      this.shouldShowTutorialsPage = false
+      this.shouldShowTutorialPage = true
     },
     onClickLogo() {
       window.open(process.env.VUE_APP_URL, '_blank')
     },
     showMain() {
       this.shouldShowNav = false
-      this.shouldTutorialPage = false
+      this.shouldShowTutorialPage = false
       this.changeIframeStyle({
         height: '100%',
       })
-      this.shouldTutorialsPage = true
+      this.shouldShowTutorialsPage = true
     },
     onTutorialsClickClose() {
-      this.shouldTutorialsPage = false
-      this.shouldTutorialPage = false
+      this.shouldShowTutorialsPage = false
+      this.shouldShowTutorialPage = false
       this.shouldShowNav = true
     },
     onClickAdd() {
       this.shouldShowNav = false
-      this.shouldTutorialsPage = false
-      this.shouldTutorialPage = true
+      this.shouldShowTutorialsPage = false
+      this.shouldShowTutorialPage = true
     },
     onTutorialClickClose() {
-      this.shouldTutorialPage = false
-      this.shouldTutorialsPage = true
+      this.shouldShowTutorialPage = false
+      this.shouldShowTutorialsPage = true
       this.shouldShowNav = false
     },
   },

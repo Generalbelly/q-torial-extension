@@ -2,14 +2,14 @@
   <div class="has-background-neutral-050">
     <the-navbar
       v-show="shouldShowNav"
-      @click:tutorials-button="showMain"
+      @click:tutorials="onClickTutorials"
       @click:logo="onClickLogo"
     ></the-navbar>
     <tutorials-page
       v-show="shouldShowTutorialsPage"
       @click:close="onTutorialsClickClose"
       @click:add="onClickAdd"
-      @select="onSelect"
+      @select:tutorial="onSelectTutorial"
     ></tutorials-page>
     <tutorial-page
       v-show="shouldShowTutorialPage"
@@ -40,7 +40,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['tutorials']),
+    ...mapState(['tutorials', 'tutorial']),
   },
   watch: {
     shouldShowTutorialsPage(value) {
@@ -48,23 +48,52 @@ export default {
         this.listTutorials()
       }
     },
+    shouldShowNav(value) {
+      if (value) {
+        this.changeIframeStyle({
+          height: '100px',
+        })
+      } else {
+        this.changeIframeStyle({
+          height: '100%',
+        })
+      }
+    },
+    // tutorial(newValue, oldValue) {
+    //   if (!oldValue && newValue) {
+    //     if (newValue.couldBeShownOn(window.parent.location.pathname)) {
+    //       this.onSelectTutorial();
+    //     }
+    //   }
+    // },
+  },
+  async mounted() {
+    await this.syncData()
+    if (this.tutorial) {
+      if (this.tutorial.couldBeShownOn(window.parent.location.pathname)) {
+        this.onSelectTutorial()
+      }
+    }
   },
   methods: {
-    ...mapActions(['listTutorials']),
-    onSelect() {
+    ...mapActions(['listTutorials', 'syncData']),
+    onSelectTutorial() {
       this.shouldShowNav = false
       this.shouldShowTutorialsPage = false
+      // this.changeIframeStyle({
+      //   height: '100%',
+      // })
       this.shouldShowTutorialPage = true
     },
     onClickLogo() {
       window.open(process.env.VUE_APP_URL, '_blank')
     },
-    showMain() {
+    onClickTutorials() {
       this.shouldShowNav = false
       this.shouldShowTutorialPage = false
-      this.changeIframeStyle({
-        height: '100%',
-      })
+      // this.changeIframeStyle({
+      //   height: '100%',
+      // })
       this.shouldShowTutorialsPage = true
     },
     onTutorialsClickClose() {

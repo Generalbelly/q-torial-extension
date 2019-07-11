@@ -1,5 +1,6 @@
 import Entity from './Entity'
 import StepEntity from './StepEntity'
+import { validateTutorialPath } from './PathOperators'
 import { has } from '../../../utils'
 
 export default class TutorialEntity extends Entity {
@@ -48,5 +49,14 @@ export default class TutorialEntity extends Entity {
       }
     })
     return object
+  }
+
+  couldBeShownOn(urlPath) {
+    return (
+      validateTutorialPath(this.pathOperator, this.pathValue, urlPath) ||
+      this.steps.some(step =>
+        validateTutorialPath(step.pathOperator, step.pathValue, urlPath)
+      )
+    )
   }
 }

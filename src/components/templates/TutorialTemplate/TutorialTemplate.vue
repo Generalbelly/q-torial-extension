@@ -37,7 +37,7 @@
             >
               <modal-icon v-if="step.type === 'modal'" />
               <tooltip-icon v-else-if="step.type === 'tooltip'" />
-              <base-fade-transition-group>
+              <base-fade-transition>
                 <trash-button
                   key="trash"
                   v-show="hoveredStepIndex === stepIndex"
@@ -45,14 +45,14 @@
                   type="is-neutral"
                   @click.stop="onStepDeleteClick(step)"
                 />
-                <pen-button
-                  key="pen"
-                  v-show="hoveredStepIndex === stepIndex"
-                  class="step-definition__edit"
-                  type="is-neutral"
-                  @click.stop="onStepEditClick(step)"
-                />
-              </base-fade-transition-group>
+                <!--                <pen-button-->
+                <!--                  key="pen"-->
+                <!--                  v-show="hoveredStepIndex === stepIndex"-->
+                <!--                  class="step-definition__edit"-->
+                <!--                  type="is-neutral"-->
+                <!--                  @click.stop="onStepEditClick(step)"-->
+                <!--                />-->
+              </base-fade-transition>
             </span>
             <span class="step-definition">
               <base-icon
@@ -81,34 +81,38 @@
         :can-cancel="false"
         @click:close="shouldShowTutorialForm = false"
         @click:confirm="onClickTutorialConfirm"
-        @click:cancel="onClickTutorialCancel"
+        @click:cancel="shouldShowTutorialForm = false"
       >
-        <tutorial-form
-          :name.sync="innerTutorial.name"
-          :description.sync="innerTutorial.description"
-          :path-value.sync="innerTutorial.pathValue"
-          :path-operator.sync="innerTutorial.pathOperator"
-          :parameters.sync="innerTutorial.parameters"
-          :domain.sync="innerTutorial.domain"
-        />
+        <template v-slot:content>
+          <tutorial-form
+            :name.sync="innerTutorial.name"
+            :description.sync="innerTutorial.description"
+            :path-value.sync="innerTutorial.pathValue"
+            :path-operator.sync="innerTutorial.pathOperator"
+            :parameters.sync="innerTutorial.parameters"
+            :domain.sync="innerTutorial.domain"
+          />
+        </template>
       </base-modal>
     </validation-observer>
-    <validation-observer ref="stepObserver">
-      <base-modal
-        :active="shouldShowStepForm && innerStep"
-        :can-cancel="false"
-        @click:close="shouldShowStepForm = false"
-        @click:confirm="onClickStepConfirm"
-        @click:cancel="onClickStepCancel"
-      >
-        <step-form
-          :path-value.sync="innerStep.pathValue"
-          :path-operator.sync="innerStep.pathOperator"
-          :parameters.sync="innerStep.parameters"
-          :domain.sync="innerStep.domain"
-        />
-      </base-modal>
-    </validation-observer>
+    <!--    <validation-observer ref="stepObserver">-->
+    <!--      <base-modal-->
+    <!--        :active="shouldShowStepForm"-->
+    <!--        :can-cancel="false"-->
+    <!--        @click:close="shouldShowStepForm = false"-->
+    <!--        @click:confirm="onClickStepConfirm"-->
+    <!--        @click:cancel="shouldShowStepForm = false"-->
+    <!--      >-->
+    <!--        <template v-slot:content>-->
+    <!--          <step-form-->
+    <!--            :path-value.sync="innerStep.pathValue"-->
+    <!--            :path-operator.sync="innerStep.pathOperator"-->
+    <!--            :parameters.sync="innerStep.parameters"-->
+    <!--            :domain.sync="innerStep.domain"-->
+    <!--          />-->
+    <!--        </template>-->
+    <!--      </base-modal>-->
+    <!--    </validation-observer>-->
     <screen-overlay-layout
       v-if="showClickToAddStepMessage"
       @click="onCloseClickToAddStepMessage"
@@ -168,33 +172,23 @@ import BaseIcon from '../../atoms/icons/BaseIcon/BaseIcon'
 import StepEntity from '../../atoms/Entities/StepEntity'
 import PreviewButton from '../../atoms/buttons/PreviewButton/PreviewButton'
 import TrashButton from '../../atoms/buttons/TrashButton/TrashButton'
-import BaseFadeTransition from '../../atoms/transitions/BaseFadeTransition/BaseFadeTransition'
 import TutorialForm from '../../organisms/forms/TutorialForm/TutorialForm'
-import BaseLevel from '../../atoms/BaseLevel/BaseLevel'
-import BaseLevelItem from '../../atoms/BaseLevelItem/BaseLevelItem'
-import BaseLevelRight from '../../atoms/BaseLevelRight/BaseLevelRight'
-import BaseLevelLeft from '../../atoms/BaseLevelLeft/BaseLevelLeft'
-import SettingButton from '../../atoms/buttons/SettingButton/TrashButton'
 import BaseTooltip from '../../atoms/BaseTooltip/BaseTooltip'
 import PenButton from '../../atoms/buttons/PenButton/PenButton'
 import BaseFadeTransitionGroup from '../../atoms/transitions/BaseFadeTransitionGroup/BaseFadeTransitionGroup'
 import StepForm from '../../organisms/forms/StepForm/StepForm'
+import BaseFadeTransition from '../../atoms/transitions/BaseFadeTransition/BaseFadeTransition'
 
 export default {
   name: 'TutorialTemplate',
   mixins: [iframeStyler],
   components: {
+    BaseFadeTransition,
     StepForm,
     BaseFadeTransitionGroup,
     PenButton,
     BaseTooltip,
-    SettingButton,
-    BaseLevelLeft,
-    BaseLevelRight,
-    BaseLevelItem,
-    BaseLevel,
     TutorialForm,
-    BaseFadeTransition,
     TrashButton,
     PreviewButton,
     BaseIcon,
@@ -249,8 +243,7 @@ export default {
       handler(value) {
         if (value !== null && value > -1) {
           this.innerStep = this.innerTutorial.steps.find(
-            _,
-            index => index === this.hoveredStepIndex
+            (_, index) => index === this.hoveredStepIndex
           )
         } else {
           this.innerStep = new StepEntity()
@@ -291,7 +284,13 @@ export default {
           this.innerTutorial.pathValue = window.parent.location.pathname
           this.shouldShowTutorialForm = true
         } else {
-          this.$emit('upsert:step', new StepEntity(data))
+          this.$emit(
+            'upsert:step',
+            new StepEntity({
+              pathValue: window.parent.location.pathname,
+              ...data,
+            })
+          )
           this.shouldShowSideNav = true
         }
         this.showIframe()
@@ -333,20 +332,14 @@ export default {
         this.shouldShowSideNav = true
       }
     },
-    onClickTutorialCancel() {
-      this.shouldShowTutorialForm = false
-    },
-    async onClickStepConfirm() {
-      const valid = await this.$refs.stepObserver.validate()
-      if (valid) {
-        this.$emit('upsert:step', this.innerStep)
-        this.shouldShowStepForm = false
-        this.shouldShowSideNav = true
-      }
-    },
-    onClickStepCancel() {
-      this.shouldShowStepForm = false
-    },
+    // async onClickStepConfirm() {
+    //   const valid = await this.$refs.stepObserver.validate()
+    //   if (valid) {
+    //     this.$emit('upsert:step', this.innerStep)
+    //     this.shouldShowStepForm = false
+    //     this.shouldShowSideNav = true
+    //   }
+    // },
     onStepClick(step) {
       this.hideIframe()
       this.shouldShowSideNav = false
@@ -361,7 +354,7 @@ export default {
       this.hideIframe()
     },
     onStepEditClick(step) {
-      this.$emit('upsert:step', step)
+      this.shouldShowStepForm = true
     },
     onStepDeleteClick(step) {
       this.$emit('delete:step', step)
@@ -407,8 +400,26 @@ export default {
 .step-definition__step > svg {
   width: 45px;
 }
-.step-definition__delete,
-.step-definition__edit {
+/*.step-definition__delete,*/
+/*.step-definition__edit {*/
+/*  position: absolute;*/
+/*  border-radius: 50%;*/
+/*  display: inline-flex;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*  width: 40px;*/
+/*  height: 40px;*/
+/*  font-size: 8px;*/
+/*}*/
+/*.step-definition__edit {*/
+/*  top: -30px;*/
+/*  right: -30px;*/
+/*}*/
+/*.step-definition__delete {*/
+/*  right: -50px;*/
+/*  top: 15px;*/
+/*}*/
+.step-definition__delete {
   position: absolute;
   border-radius: 50%;
   display: inline-flex;
@@ -417,13 +428,7 @@ export default {
   width: 40px;
   height: 40px;
   font-size: 8px;
-}
-.step-definition__edit {
   top: -30px;
   right: -30px;
-}
-.step-definition__delete {
-  right: -50px;
-  top: 15px;
 }
 </style>

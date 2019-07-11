@@ -5,6 +5,7 @@
     :loadable="loadable"
     :tutorials="tutorials"
     :order-by="orderBy"
+    :tutorial-needs-to-be-redirected="tutorialNeedsToBeRedirected"
     @click:add="onClickAdd"
     @select="onSelect"
     @change:query="onChangeQuery"
@@ -20,11 +21,17 @@ import { mapState, mapActions } from 'vuex'
 import { debounce } from 'debounce'
 import TutorialsTemplate from '../../templates/TutorialsTemplate'
 import { QUERY_LIMIT } from '../../../constants/general'
+import { PATH_EQUALS } from '../../atoms/Entities/PathOperators'
 
 export default {
   name: 'TutorialsPage',
   components: {
     TutorialsTemplate,
+  },
+  data() {
+    return {
+      tutorialNeedsToBeRedirected: false,
+    }
   },
   computed: {
     loadable() {
@@ -51,8 +58,18 @@ export default {
       this.$emit('click:add')
     },
     async onSelect(tutorial) {
-      this.selectTutorial(tutorial)
-      this.$emit('select', tutorial)
+      await this.selectTutorial(tutorial)
+      if (tutorial.pathOperator === PATH_EQUALS) {
+        if (tutorial.pathValue !== window.parent.location.pathname) {
+          // TODO 遷移しますよっていうmodal出す
+          window.parent.location.href =
+            window.parent.location.origin + tutorial.pathValue
+        } else {
+          this.$emit('select:tutorial', tutorial)
+        }
+      } else {
+        this.tutorialNeedsToBeRedirected = true
+      }
     },
     async onSort(orderBy) {
       if (this.loadable) {

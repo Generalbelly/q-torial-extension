@@ -16,6 +16,7 @@ import {
   UPDATE_STATE,
 } from './constants/command-types'
 import { ERROR, OK } from './constants/status-types'
+import { SYNC_DATA } from './store/mutation-types'
 
 // Buefy
 Vue.use(Buefy, {
@@ -179,6 +180,11 @@ port.onMessage.addListener(async request => {
         sendCommand({
           command,
           data,
+        })
+        break
+      case SYNC_DATA:
+        sendCommand({
+          command,
         })
         break
       case UPDATE_STATE:

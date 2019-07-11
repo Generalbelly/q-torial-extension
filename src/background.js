@@ -12,6 +12,7 @@ import {
 import { ERROR, OK } from './constants/status-types'
 import firebase from './firebase'
 import store from './store/backgroundStore'
+import { SYNC_DATA } from './store/mutation-types'
 
 global.browser = browser
 
@@ -37,6 +38,33 @@ chrome.runtime.onConnect.addListener(async port => {
       command,
       data,
     })
+  }
+
+  const refineData = data => {
+    const { requesting, tutorials = [], steps = [], ...meta } = data
+    return {
+      ...meta,
+      tutorials: tutorials.map(tutorial => ({
+        ...tutorial,
+        id: tutorial.id,
+        createdAtAsDateString: tutorial.createdAt
+          ? tutorial.createdAt.toDate().toLocaleDateString()
+          : null,
+        updatedAtAsDateString: tutorial.updatedAt
+          ? tutorial.updatedAt.toDate().toLocaleDateString()
+          : null,
+      })),
+      steps: steps.map(step => ({
+        ...step,
+        id: step.id,
+        createdAtAsDateString: step.createdAt
+          ? step.createdAt.toDate().toLocaleDateString()
+          : null,
+        updatedAtAsDateString: step.updatedAt
+          ? step.updatedAt.toDate().toLocaleDateString()
+          : null,
+      })),
+    }
   }
 
   const startApp = async (resetState = false) => {
@@ -67,31 +95,8 @@ chrome.runtime.onConnect.addListener(async port => {
       ...getters,
     }),
     value => {
-      const { requesting, tutorials = [], steps = [], ...meta } = value
-      if (!requesting) {
-        sendCommand(UPDATE_STATE, {
-          ...meta,
-          tutorials: tutorials.map(tutorial => ({
-            ...tutorial,
-            id: tutorial.id,
-            createdAtAsDateString: tutorial.createdAt
-              ? tutorial.createdAt.toDate().toLocaleDateString()
-              : null,
-            updatedAtAsDateString: tutorial.updatedAt
-              ? tutorial.updatedAt.toDate().toLocaleDateString()
-              : null,
-          })),
-          steps: steps.map(step => ({
-            ...step,
-            id: step.id,
-            createdAtAsDateString: step.createdAt
-              ? step.createdAt.toDate().toLocaleDateString()
-              : null,
-            updatedAtAsDateString: step.updatedAt
-              ? step.updatedAt.toDate().toLocaleDateString()
-              : null,
-          })),
-        })
+      if (!value.requesting) {
+        sendCommand(UPDATE_STATE, refineData(value))
       }
     },
     { deep: true }
@@ -103,18 +108,17 @@ chrome.runtime.onConnect.addListener(async port => {
   }
 
   port.onMessage.addListener(async request => {
-    const { status, command = null, data = null } = request
+    const { status, command = '', data = null } = request
     if (status === ERROR) {
       console.log(request)
     }
-    if (command) {
-      switch (command) {
-        case PASS_DATA_TO_BACKGROUND:
-          await store.dispatch(data.action, data.payload)
-          break
-        default:
-          break
-      }
+    if (command === PASS_DATA_TO_BACKGROUND) {
+      await store.dispatch(data.action, data.payload)
+    } else if (command === SYNC_DATA) {
+      sendCommand(
+        UPDATE_STATE,
+        refineData({ ...store.state, ...store.getters })
+      )
     }
   })
 })

@@ -6,6 +6,7 @@
     @add:tutorial="onAddTutorial"
     @update:tutorial="onUpdateTutorial"
     @upsert:step="onUpsertStep"
+    @delete:step="onDeleteStep"
     @click:close="$emit('click:close')"
   />
 </template>
@@ -26,10 +27,15 @@ export default {
       'addTutorial',
       'updeleteTutorialdateTutorial',
       'upsertStep',
+      'deleteStep',
     ]),
     onUpsertStep(step) {
       const data = step.toPlainObject()
       this.upsertStep(data)
+    },
+    onDeleteStep(step) {
+      const data = step.toPlainObject()
+      this.deleteStep(data)
     },
     onAddTutorial(tutorial) {
       const data = tutorial.toPlainObject()

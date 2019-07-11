@@ -2,8 +2,8 @@ import { UPDATE_STATE } from '../constants/command-types'
 
 export const sendCommand = (c, d = {}) => {
   return new Promise(resolve => {
-    console.log(new Date().getTime(), c)
-    console.log('data', d)
+    console.log('sendCommand', c)
+    console.log(d)
     window.addEventListener('message', event => {
       if (event.origin !== window.parent.location.origin) return
       if (typeof event.data !== 'object' || Array.isArray(event.data)) return

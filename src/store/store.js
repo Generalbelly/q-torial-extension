@@ -12,9 +12,7 @@ import UserEntity from '../components/atoms/Entities/UserEntity'
 import { sendCommand } from '../api'
 import { PASS_DATA_TO_BACKGROUND } from '../constants/command-types'
 import TutorialEntity from '../components/atoms/Entities/TutorialEntity'
-import StepEntity from '../components/atoms/Entities/StepEntity'
 import { has } from '../utils'
-import { state as backgroundState } from './backgroundStore'
 
 Vue.use(Vuex)
 
@@ -35,15 +33,18 @@ const mutations = {
   [SYNC_DATA](state, payload) {
     Object.keys(payload).forEach(key => {
       if (has.call(state, key)) {
-        if (key === 'tutorials') {
+        if (key === 'tutorials' && payload.tutorials.length > 0) {
           state.tutorials = payload.tutorials.map(
             tutorial => new TutorialEntity(tutorial)
           )
+        } else if (key === 'tutorial' && payload.tutorial) {
+          state.tutorial = new TutorialEntity(payload.tutorial)
         } else {
           state[key] = payload[key]
         }
       }
     })
+    console.log(SYNC_DATA, state)
   },
   [UPDATE_TUTORIAL](state, payload) {
     const { id = null, ...data } = payload
@@ -53,7 +54,6 @@ const mutations = {
       ...state.tutorials[index],
       ...data,
     })
-    console.log(UPDATE_TUTORIAL, state.tutorial)
     state.tutorials = [
       ...state.tutorials.slice(0, index),
       tutorial,
@@ -83,13 +83,21 @@ const actions = {
   sortTutorials({ commit }, payload) {
     commit(SORT_TUTORIALS, payload)
   },
-  selectTutorial: async ({ commit, dispatch, state }, payload) => {
-    const data = await sendCommand(PASS_DATA_TO_BACKGROUND, {
-      action: 'selectTutorial',
-      payload,
+  selectTutorial({ commit, dispatch, state }, payload) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const data = await sendCommand(PASS_DATA_TO_BACKGROUND, {
+          action: 'selectTutorial',
+          payload,
+        })
+        const { tutorial } = data
+        commit(UPDATE_TUTORIAL, tutorial)
+        resolve(tutorial)
+      } catch (e) {
+        console.error(e)
+        reject(e)
+      }
     })
-    const { tutorial } = data
-    commit(UPDATE_TUTORIAL, tutorial)
   },
   listTutorials: async ({ commit, state }, payload) => {
     if (state.user) {
@@ -187,8 +195,36 @@ const actions = {
       commit(SET_REQUESTING, false)
     }
   },
-  syncData({ commit }, payload) {
-    commit(SYNC_DATA, payload)
+  deleteStep: async ({ commit, state }, payload) => {
+    if (state.user) {
+      commit(SET_REQUESTING, true)
+      const data = await sendCommand(PASS_DATA_TO_BACKGROUND, {
+        action: 'deleteStep',
+        payload: {
+          data: payload,
+        },
+      })
+      const { tutorial } = data
+      commit(UPDATE_TUTORIAL, tutorial)
+      commit(SET_REQUESTING, false)
+    }
+  },
+  syncData({ commit, state }, payload) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let data = {}
+        if (state.user) {
+          commit(SET_REQUESTING, true)
+          data = await sendCommand(SYNC_DATA)
+          commit(SYNC_DATA, data)
+          commit(SET_REQUESTING, false)
+        }
+        resolve(data)
+      } catch (e) {
+        console.error(e)
+        reject(e)
+      }
+    })
   },
   setServerSideErrors({ commit }, payload) {
     commit(SET_SERVER_SIDE_ERRORS, payload)

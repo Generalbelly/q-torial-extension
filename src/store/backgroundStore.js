@@ -78,9 +78,8 @@ const actions = {
       payload
     ) => {
       const { searchQuery = null, orderBy = ['createdAt', 'desc'] } = payload
-
-      unbindFirestoreRef('steps')
       commit(SET_REQUESTING, true)
+      unbindFirestoreRef('steps')
 
       if (searchQuery !== state.searchQuery) {
         tutorialsLatestSnapshot = null
@@ -142,8 +141,8 @@ const actions = {
   },
   addTutorial: firestoreAction(
     async ({ commit, state, unbindFirestoreRef }, payload) => {
-      unbindFirestoreRef('steps')
       commit(SET_REQUESTING, true)
+      unbindFirestoreRef('steps')
 
       const { saveSteps = false, data } = payload
       const { id, steps, ...fields } = data
@@ -208,10 +207,10 @@ const actions = {
   },
   deleteTutorial: firestoreAction(
     async ({ commit, state, unbindFirestoreRef }, payload) => {
+      commit(SET_REQUESTING, true)
       unbindFirestoreRef('steps')
       const { data } = payload
       const { id } = data
-      commit(SET_REQUESTING, true)
       await firebase
         .getDB()
         .collection('users')
@@ -239,9 +238,9 @@ const actions = {
     }
   ),
   addStep: async ({ commit, state }, payload) => {
+    commit(SET_REQUESTING, true)
     const { data } = payload
     const { id, ...fields } = data
-    commit(SET_REQUESTING, true)
 
     await firebase
       .getDB()
@@ -288,6 +287,7 @@ const actions = {
       .collection('steps')
       .doc(id)
       .delete()
+    commit(SET_REQUESTING, false)
   },
 }
 
@@ -314,7 +314,10 @@ const getters = {
       return {
         ...tutorial,
         id: tutorial.id,
-        steps: state.steps,
+        steps: state.steps.map(step => ({
+          id: step.id,
+          ...step,
+        })),
       }
     }
     return null

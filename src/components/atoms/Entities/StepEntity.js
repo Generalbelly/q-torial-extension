@@ -1,9 +1,10 @@
 import Entity from './Entity'
+import { validateTutorialPath } from './PathOperators'
 
 export default class StepEntity extends Entity {
   type = 'tooltip' // tooltip, modal
 
-  triggerTarget = 'window' // #id, .class, window
+  triggerTarget = null // window #id, .class
 
   triggerEvent = null // load, click, focus, error, null
 
@@ -33,5 +34,9 @@ export default class StepEntity extends Entity {
       'createdAt',
       'updatedAt',
     ])
+  }
+
+  couldBeShownOn(urlPath) {
+    return validateTutorialPath(this.pathOperator, this.pathValue, urlPath)
   }
 }

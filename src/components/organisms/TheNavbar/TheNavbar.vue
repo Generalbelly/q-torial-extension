@@ -12,10 +12,7 @@
     </div>
     <div class="level-right">
       <p class="level-item">
-        <base-button
-          class="is-primary"
-          @click="$emit('click:tutorials-button')"
-        >
+        <base-button class="is-primary" @click="$emit('click:tutorials')">
           Tutorials
         </base-button>
       </p>

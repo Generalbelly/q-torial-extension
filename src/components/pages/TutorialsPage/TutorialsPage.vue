@@ -1,5 +1,6 @@
 <template>
   <tutorials-template
+    :tutorial="tutorial"
     :query="searchQuery"
     :loading="requesting"
     :loadable="loadable"
@@ -38,6 +39,7 @@ export default {
       return !this.allFetched && this.tutorials.length >= QUERY_LIMIT
     },
     ...mapState([
+      'tutorial',
       'tutorials',
       'searchQuery',
       'requesting',
@@ -59,14 +61,12 @@ export default {
     },
     async onSelect(tutorial) {
       await this.selectTutorial(tutorial)
-      if (tutorial.pathOperator === PATH_EQUALS) {
-        if (tutorial.pathValue !== window.parent.location.pathname) {
-          // TODO 遷移しますよっていうmodal出す
-          window.parent.location.href =
-            window.parent.location.origin + tutorial.pathValue
-        } else {
-          this.$emit('select:tutorial', tutorial)
-        }
+      if (tutorial.couldBeShownOn(window.parent.location.pathname)) {
+        this.$emit('select:tutorial', tutorial)
+      } else if (tutorial.pathOperator === PATH_EQUALS) {
+        // TODO 遷移しますよっていうmodal出す
+        window.parent.location.href =
+          window.parent.location.origin + tutorial.pathValue
       } else {
         this.tutorialNeedsToBeRedirected = true
       }

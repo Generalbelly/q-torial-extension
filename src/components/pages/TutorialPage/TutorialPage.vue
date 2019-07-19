@@ -3,10 +3,11 @@
     :tutorial="tutorial"
     :loading="requesting"
     @click:add="$emit('click:add')"
-    @add:tutorial="onAddTutorial"
-    @update:tutorial="onUpdateTutorial"
-    @upsert:step="onUpsertStep"
+    @upsert:tutorial="onUpsertTutorial"
+    @add:step="onAddStep"
+    @update:step="onUpdateStep"
     @delete:step="onDeleteStep"
+    @click:navigate="$emit('click:navigate')"
     @click:close="$emit('click:close')"
   />
 </template>
@@ -25,25 +26,31 @@ export default {
   methods: {
     ...mapActions([
       'addTutorial',
-      'updeleteTutorialdateTutorial',
+      'updateTutorial',
+      'addStep',
+      'updateStep',
       'upsertStep',
       'deleteStep',
     ]),
-    onUpsertStep(step) {
+    onAddStep(step) {
       const data = step.toPlainObject()
-      this.upsertStep(data)
+      this.addStep(data)
+    },
+    onUpdateStep(step) {
+      const data = step.toPlainObject()
+      this.updateStep(data)
     },
     onDeleteStep(step) {
       const data = step.toPlainObject()
       this.deleteStep(data)
     },
-    onAddTutorial(tutorial) {
+    onUpsertTutorial(tutorial) {
       const data = tutorial.toPlainObject()
-      this.addTutorial(data)
-    },
-    onUpdateTutorial(tutorial) {
-      const data = tutorial.toPlainObject()
-      this.updateTutorial(data)
+      if (data.id) {
+        this.updateTutorial(data)
+      } else {
+        this.addTutorial(data)
+      }
     },
   },
 }

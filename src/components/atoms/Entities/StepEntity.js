@@ -1,5 +1,5 @@
 import Entity from './Entity'
-import { validateTutorialPath } from './PathOperators'
+import { validateUrlPath } from './PathOperators'
 
 export default class StepEntity extends Entity {
   type = 'tooltip' // tooltip, modal
@@ -37,6 +37,6 @@ export default class StepEntity extends Entity {
   }
 
   couldBeShownOn(urlPath) {
-    return validateTutorialPath(this.pathOperator, this.pathValue, urlPath)
+    return validateUrlPath(this.pathOperator, this.pathValue, urlPath)
   }
 }

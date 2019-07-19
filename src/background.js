@@ -89,6 +89,10 @@ chrome.runtime.onConnect.addListener(async port => {
     await startApp(true)
   })
 
+  // chrome.webNavigation.onHistoryStateUpdated.addListener(data => {
+  //   console.log(data)
+  // })
+
   store.watch(
     (state, getters) => ({
       ...state,
@@ -103,6 +107,7 @@ chrome.runtime.onConnect.addListener(async port => {
   )
 
   const user = await firebase.checkAuth()
+  console.log(store.state)
   if (user && store.state.active) {
     await startApp()
   }

@@ -11,36 +11,19 @@
     "default_title": "q-torial-extension"
   },
   "background": {
-    "scripts": [
-      "background.js"
-    ]
+    "scripts": ["background.js"]
   },
-  "permissions": [
-    "*://*/*",
-    "tabs",
-    "background"
-  ],
+  "permissions": ["*://*/*", "tabs", "background"],
   "content_scripts": [
     {
-      "matches": [
-        "*://*/*"
-      ],
-      "js": [
-        "contentScript.js",
-        "driver.js"
-      ],
-      "css": [
-        "driver.css"
-      ]
+      "matches": ["*://*/*"],
+      "js": ["contentScript.js", "driver.js"],
+      "css": ["driver.css"]
     }
   ],
   "externally_connectable": {
-    "matches": [
-      "*://localhost/*"
-    ]
+    "matches": ["*://localhost/*"]
   },
-  "web_accessible_resources": [
-    "contentScript.css"
-  ],
-  "content_security_policy":"script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
+  "web_accessible_resources": ["contentScript.css", "spaUrlWatcher.js"],
+  "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
 }

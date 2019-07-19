@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="label">
-      Show this step for a user visiting the following condition(s).
+      Show this step for a user visiting the following conditions.
     </div>
     <base-columns>
       <base-column>
@@ -67,9 +67,6 @@ export default {
     }
   },
   computed: {
-    hostname() {
-      return window.parent.location.hostname
-    },
     innerPathOperator: {
       get() {
         return this.pathOperator
@@ -80,6 +77,7 @@ export default {
     },
     innerPathValue: {
       get() {
+        console.log(this.pathValue)
         return this.pathValue
       },
       set(newValue) {

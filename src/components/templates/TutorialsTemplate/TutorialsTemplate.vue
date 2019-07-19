@@ -44,6 +44,7 @@
           <validation-observer key="tutorialForm" ref="tutorialForm">
             <tutorial-form
               v-show="shouldShowTutorialForm"
+              :id="innerTutorial.id"
               :name.sync="innerTutorial.name"
               :description.sync="innerTutorial.description"
               :path-value.sync="innerTutorial.pathValue"
@@ -55,36 +56,31 @@
         </base-fade-transition-group>
       </template>
     </base-modal>
-    <base-modal
-      :active="shouldShowUrlPathForm"
-      :can-cancel="false"
-      @click:cancel="shouldShowUrlPathForm = false"
-    >
-      <template v-slot:content>
-        <validation-observer key="pathForm" ref="pathForm">
-          <p>
-            The tutorial you selected could start at more than one url path.<br />
-            On which url path do you want to edit the tutorial?
-          </p>
-          <validatable-text-field
-            label="Url path"
-            name="path"
-            v-model="path"
-            rules="required|tutorial-path"
-          />
-        </validation-observer>
-      </template>
-      <template v-slot:primary-action-button>
-        <base-button @click="onClickGo">
-          Go
-        </base-button>
-      </template>
-    </base-modal>
+    <template v-if="tutorial">
+      <base-modal
+        :active="shouldShowUrlPathForm"
+        :can-cancel="false"
+        @click:cancel="onUrlPathFormCancel"
+      >
+        <template v-slot:content>
+          <validation-observer key="pathForm" ref="pathForm">
+            <url-path-form
+              :url-path.sync="urlPath"
+              :path-operator="tutorial.pathOperator"
+              :path-value="tutorial.pathValue"
+            />
+          </validation-observer>
+        </template>
+        <template v-slot:primary-action-button>
+          <go-button @click="onClickGo" />
+        </template>
+      </base-modal>
+    </template>
   </div>
 </template>
 
 <script>
-import { ValidationObserver, Validator } from 'vee-validate'
+import { ValidationObserver } from 'vee-validate'
 import TutorialTable from '../../organisms/TutorialTable'
 import IndexPageLayout from '../../molecules/layouts/IndexPageLayout'
 import SearchField from '../../molecules/fields/SearchField'
@@ -93,26 +89,16 @@ import BaseModal from '../../molecules/BaseModal'
 import TutorialForm from '../../organisms/forms/TutorialForm'
 import BaseFadeTransitionGroup from '../../atoms/transitions/BaseFadeTransitionGroup'
 import TutorialEntity from '../../atoms/Entities/TutorialEntity'
-import ValidatableTextField from '../../molecules/fields/ValidatableTextField'
 import BaseButton from '../../atoms/BaseButton'
-import { validateTutorialPath } from '../../atoms/Entities/PathOperators'
-
-const paramNames = ['pathOperator', 'pathValue']
-Validator.extend(
-  'tutorial-path',
-  (value, { pathOperator, pathValue }) =>
-    value.startsWith('/') &&
-    validateTutorialPath(pathOperator, pathValue, value),
-  {
-    paramNames,
-  }
-)
+import UrlPathForm from '../../organisms/forms/UrlPathForm'
+import GoButton from '../../atoms/buttons/GoButton/GoButton'
 
 export default {
   name: 'TutorialsTemplate',
   components: {
+    GoButton,
+    UrlPathForm,
     BaseButton,
-    ValidatableTextField,
     ValidationObserver,
     BaseFadeTransitionGroup,
     TutorialForm,
@@ -125,6 +111,10 @@ export default {
   props: {
     query: {
       type: String,
+      default: null,
+    },
+    tutorial: {
+      type: Object,
       default: null,
     },
     tutorials: {
@@ -161,7 +151,7 @@ export default {
       shouldShowTutorialForm: false,
       shouldShowUrlPathForm: false,
       innerTutorial: new TutorialEntity(),
-      path: null,
+      urlPath: null,
     }
   },
   computed: {
@@ -191,8 +181,13 @@ export default {
     async onClickGo() {
       const valid = await this.$refs.pathForm.validate()
       if (valid) {
-        window.parent.location.href = window.parent.location.origin + this.path
+        window.parent.location.href =
+          window.parent.location.origin + this.urlPath
       }
+    },
+    onUrlPathFormCancel() {
+      this.shouldShowUrlPathForm = false
+      this.$emit('select', { id: null })
     },
   },
 }

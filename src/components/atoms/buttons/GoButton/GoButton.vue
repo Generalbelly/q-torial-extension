@@ -2,11 +2,9 @@
   <base-button
     type="is-primary"
     @click="$emit('click', $event)"
-    icon-left="plus"
-    icon-pack="fa"
     v-bind="$attrs"
   >
-    <slot>Add</slot>
+    <slot>Go</slot>
   </base-button>
 </template>
 
@@ -14,7 +12,7 @@
 import BaseButton from '../../BaseButton'
 
 export default {
-  name: 'AddButton',
+  name: 'GoButton',
   components: {
     BaseButton,
   },

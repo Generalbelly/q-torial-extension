@@ -5,15 +5,12 @@
       :class="
         shouldShowSideNavRight ? 'is-fixed-top-right' : 'is-fixed-top-left'
       "
+      style="overflow-y: auto;"
       :is-on-right="shouldShowSideNavRight"
       @click:close="$emit('click:close')"
       @click:switch="shouldShowSideNavRight = !shouldShowSideNavRight"
     >
-      <div
-        v-if="innerTutorial.id"
-        @click="shouldShowTutorialForm = true"
-        class="has-margin-bottom-5"
-      >
+      <div v-if="innerTutorial.id" @click="shouldShowTutorialForm = true">
         <base-tooltip
           label="Click to edit tutorial settings"
           type="is-neutral-050"
@@ -23,68 +20,86 @@
           </base-heading>
         </base-tooltip>
       </div>
-      <div>
-        <p v-if="innerTutorial.steps.length === 0">
+      <div class="step-definition has-margin-top-5">
+        <p v-if="innerTutorial.steps.length === 0" class="has-text-centered">
           You haven't added any steps yet.
-        </p>
-        <div v-else class="step-definition">
-          <template v-for="(step, stepIndex) in innerTutorial.steps">
-            <span
-              class="step-definition__step has-background-grey has-cursor-pointer"
-              @click="onStepClick(step)"
-              @mouseenter="hoveredStepIndex = stepIndex"
-              @mouseleave="hoveredStepIndex = null"
-            >
-              <modal-icon v-if="step.type === 'modal'" />
-              <tooltip-icon v-else-if="step.type === 'tooltip'" />
-              <base-fade-transition>
-                <trash-button
-                  key="trash"
-                  v-show="hoveredStepIndex === stepIndex"
-                  class="step-definition__delete"
-                  type="is-neutral"
-                  @click.stop="onStepDeleteClick(step)"
-                />
-                <!--                <pen-button-->
-                <!--                  key="pen"-->
-                <!--                  v-show="hoveredStepIndex === stepIndex"-->
-                <!--                  class="step-definition__edit"-->
-                <!--                  type="is-neutral"-->
-                <!--                  @click.stop="onStepEditClick(step)"-->
-                <!--                />-->
-              </base-fade-transition>
-            </span>
-            <span class="step-definition">
-              <base-icon
-                v-if="stepIndex < innerTutorial.steps.length - 1"
-                icon="arrow-down"
-              />
-            </span>
-          </template>
-        </div>
-        <div class="has-margin-top-5">
           <add-step-button
-            class="is-fullwidth has-margin-bottom-3"
+            class="has-margin-5"
             @click:step-type="onClickStepType"
           />
+        </p>
+        <template v-for="(step, stepIndex) in innerTutorial.steps">
+          <span
+            :key="`step-${stepIndex}`"
+            class="step-definition__step has-background-grey has-cursor-pointer"
+            @click="onStepClick(step)"
+            @mouseenter="activeStepIndex = stepIndex"
+          >
+            <modal-icon v-if="step.type === 'modal'" />
+            <tooltip-icon v-else-if="step.type === 'tooltip'" />
+            <base-fade-transition-group>
+              <add-step-button
+                key="prepend"
+                v-if="activeStepIndex === stepIndex"
+                class="step-definition__prepend"
+                @click.native.stop="newStepIndex = stepIndex"
+                @click:step-type="onClickStepType"
+              />
+              <trash-button
+                key="trash"
+                v-show="activeStepIndex === stepIndex"
+                class="step-definition__delete is-neutral-100"
+                @click.stop="onStepDeleteClick(step)"
+              />
+              <pen-button
+                key="pen"
+                v-show="activeStepIndex === stepIndex"
+                class="step-definition__edit is-neutral-100"
+                @click.stop="onStepEditClick(step)"
+              />
+              <arrow-icon
+                key="arrow"
+                v-if="stepIndex < innerTutorial.steps.length - 1"
+                class="step-definition__arrow"
+              />
+              <add-step-button
+                key="append"
+                v-if="
+                  stepIndex === innerTutorial.steps.length - 1 ||
+                    activeStepIndex === stepIndex
+                "
+                class="step-definition__add"
+                @click.native.stop="newStepIndex = stepIndex + 1"
+                @click:step-type="onClickStepType"
+              />
+            </base-fade-transition-group>
+          </span>
+        </template>
+        <div class="step-definition__step step-definition__actions buttons">
           <preview-button
             v-if="innerTutorial.steps.length > 0"
-            class="is-fullwidth"
+            class="is-fullwidth is-accent-300"
             @click="onPreviewClick"
+            outlined
+          />
+          <navigate-button
+            class="is-fullwidth is-text"
+            @click="onNavigateClick"
           />
         </div>
       </div>
     </the-sidebar>
-    <validation-observer ref="tutorialObserver">
-      <base-modal
-        :active="shouldShowTutorialForm"
-        :can-cancel="false"
-        @click:close="shouldShowTutorialForm = false"
-        @click:confirm="onClickTutorialConfirm"
-        @click:cancel="shouldShowTutorialForm = false"
-      >
-        <template v-slot:content>
+    <base-modal
+      :active="shouldShowTutorialForm"
+      :can-cancel="false"
+      @click:close="shouldShowTutorialForm = false"
+      @click:confirm="onClickTutorialConfirm"
+      @click:cancel="shouldShowTutorialForm = false"
+    >
+      <template v-slot:content>
+        <validation-observer ref="tutorialForm">
           <tutorial-form
+            :id="innerTutorial.id"
             :name.sync="innerTutorial.name"
             :description.sync="innerTutorial.description"
             :path-value.sync="innerTutorial.pathValue"
@@ -92,27 +107,45 @@
             :parameters.sync="innerTutorial.parameters"
             :domain.sync="innerTutorial.domain"
           />
-        </template>
-      </base-modal>
-    </validation-observer>
-    <!--    <validation-observer ref="stepObserver">-->
-    <!--      <base-modal-->
-    <!--        :active="shouldShowStepForm"-->
-    <!--        :can-cancel="false"-->
-    <!--        @click:close="shouldShowStepForm = false"-->
-    <!--        @click:confirm="onClickStepConfirm"-->
-    <!--        @click:cancel="shouldShowStepForm = false"-->
-    <!--      >-->
-    <!--        <template v-slot:content>-->
-    <!--          <step-form-->
-    <!--            :path-value.sync="innerStep.pathValue"-->
-    <!--            :path-operator.sync="innerStep.pathOperator"-->
-    <!--            :parameters.sync="innerStep.parameters"-->
-    <!--            :domain.sync="innerStep.domain"-->
-    <!--          />-->
-    <!--        </template>-->
-    <!--      </base-modal>-->
-    <!--    </validation-observer>-->
+        </validation-observer>
+      </template>
+    </base-modal>
+    <base-modal
+      :active="shouldShowUrlPathForm"
+      :can-cancel="false"
+      @click:cancel="onUrlPathFormCancel"
+    >
+      <template v-slot:content>
+        <validation-observer key="urlPathForm" ref="urlPathForm">
+          <url-path-form
+            type="step"
+            :url-path.sync="urlPath"
+            :path-operator="innerStep.pathOperator"
+            :path-value="innerStep.pathValue"
+          />
+        </validation-observer>
+      </template>
+      <template v-slot:primary-action-button>
+        <go-button @click="onClickGo" />
+      </template>
+    </base-modal>
+    <base-modal
+      :active="shouldShowStepForm"
+      :can-cancel="false"
+      @click:close="shouldShowStepForm = false"
+      @click:confirm="onClickStepConfirm"
+      @click:cancel="shouldShowStepForm = false"
+    >
+      <template v-slot:content>
+        <validation-observer ref="stepForm">
+          <step-form
+            :path-value.sync="innerStep.pathValue"
+            :path-operator.sync="innerStep.pathOperator"
+            :parameters.sync="innerStep.parameters"
+          />
+        </validation-observer>
+      </template>
+    </base-modal>
     <screen-overlay-layout
       v-if="showClickToAddStepMessage"
       @click="onCloseClickToAddStepMessage"
@@ -168,30 +201,35 @@ import TheSidebar from '../../organisms/TheSidebar/TheSidebar'
 import BaseLoading from '../../atoms/BaseLoading/BaseLoading'
 import ModalIcon from '../../atoms/icons/ModalIcon/ModalIcon'
 import TooltipIcon from '../../atoms/icons/TooltipIcon/TooltipIcon'
-import BaseIcon from '../../atoms/icons/BaseIcon/BaseIcon'
 import StepEntity from '../../atoms/Entities/StepEntity'
-import PreviewButton from '../../atoms/buttons/PreviewButton/PreviewButton'
-import TrashButton from '../../atoms/buttons/TrashButton/TrashButton'
-import TutorialForm from '../../organisms/forms/TutorialForm/TutorialForm'
-import BaseTooltip from '../../atoms/BaseTooltip/BaseTooltip'
-import PenButton from '../../atoms/buttons/PenButton/PenButton'
-import BaseFadeTransitionGroup from '../../atoms/transitions/BaseFadeTransitionGroup/BaseFadeTransitionGroup'
-import StepForm from '../../organisms/forms/StepForm/StepForm'
-import BaseFadeTransition from '../../atoms/transitions/BaseFadeTransition/BaseFadeTransition'
+import PreviewButton from '../../atoms/buttons/PreviewButton'
+import TrashButton from '../../atoms/buttons/TrashButton'
+import TutorialForm from '../../organisms/forms/TutorialForm'
+import BaseTooltip from '../../atoms/BaseTooltip'
+import NavigateButton from '../../atoms/buttons/NavigateButton'
+import ArrowIcon from '../../atoms/icons/ArrowIcon'
+import BaseFadeTransitionGroup from '../../atoms/transitions/BaseFadeTransitionGroup'
+import UrlPathForm from '../../organisms/forms/UrlPathForm'
+import GoButton from '../../atoms/buttons/GoButton'
+import { PATH_EQUALS } from '../../atoms/Entities/PathOperators'
+import StepForm from '../../organisms/forms/StepForm'
+import PenButton from '../../atoms/buttons/PenButton'
 
 export default {
   name: 'TutorialTemplate',
   mixins: [iframeStyler],
   components: {
-    BaseFadeTransition,
-    StepForm,
-    BaseFadeTransitionGroup,
     PenButton,
+    StepForm,
+    GoButton,
+    UrlPathForm,
+    BaseFadeTransitionGroup,
+    ArrowIcon,
+    NavigateButton,
     BaseTooltip,
     TutorialForm,
     TrashButton,
     PreviewButton,
-    BaseIcon,
     TooltipIcon,
     ModalIcon,
     BaseLoading,
@@ -220,12 +258,15 @@ export default {
       shouldShowSideNavRight: true,
       shouldShowTutorialForm: false,
       shouldShowStepForm: false,
+      shouldShowUrlPathForm: false,
       showClickToAddStepMessage: false,
       showNoStepAddedYetMessage: false,
       innerTutorial: new TutorialEntity(),
       innerStep: new StepEntity(),
       driverEditorID: `${process.env.VUE_APP_NAME}-editor`,
-      hoveredStepIndex: null,
+      activeStepIndex: null,
+      newStepIndex: null,
+      urlPath: null,
     }
   },
   watch: {
@@ -239,11 +280,12 @@ export default {
         }
       },
     },
-    hoveredStepIndex: {
+    activeStepIndex: {
       handler(value) {
+        console.log(value)
         if (value !== null && value > -1) {
           this.innerStep = this.innerTutorial.steps.find(
-            (_, index) => index === this.hoveredStepIndex
+            (_, index) => index === this.activeStepIndex
           )
         } else {
           this.innerStep = new StepEntity()
@@ -279,18 +321,26 @@ export default {
     },
     handleCommand(command, data) {
       if (command === SAVE) {
+        const step = new StepEntity({
+          ...data,
+          pathValue: data.pathValue || window.parent.location.pathname,
+          pathOperator: data.pathOperator || PATH_EQUALS,
+        })
         if (!this.innerTutorial.id) {
-          this.innerTutorial.steps = [new StepEntity(data)]
+          this.innerTutorial.steps = [step]
           this.innerTutorial.pathValue = window.parent.location.pathname
           this.shouldShowTutorialForm = true
         } else {
-          this.$emit(
-            'upsert:step',
-            new StepEntity({
-              pathValue: window.parent.location.pathname,
-              ...data,
-            })
-          )
+          if (step.id) {
+            this.$emit('update:step', step)
+          } else {
+            this.innerTutorial.steps = [
+              ...this.innerTutorial.steps.slice(0, this.newStepIndex),
+              step,
+              ...this.innerTutorial.steps.slice(this.newStepIndex),
+            ]
+            this.$emit('add:step', this.innerTutorial)
+          }
           this.shouldShowSideNav = true
         }
         this.showIframe()
@@ -325,27 +375,35 @@ export default {
       this.hideIframe()
     },
     async onClickTutorialConfirm() {
-      const valid = await this.$refs.tutorialObserver.validate()
+      const valid = await this.$refs.tutorialForm.validate()
       if (valid) {
-        this.$emit('add:tutorial', this.innerTutorial)
+        this.$emit('upsert:tutorial', this.innerTutorial)
         this.shouldShowTutorialForm = false
         this.shouldShowSideNav = true
       }
     },
-    // async onClickStepConfirm() {
-    //   const valid = await this.$refs.stepObserver.validate()
-    //   if (valid) {
-    //     this.$emit('upsert:step', this.innerStep)
-    //     this.shouldShowStepForm = false
-    //     this.shouldShowSideNav = true
-    //   }
-    // },
     onStepClick(step) {
-      this.hideIframe()
-      this.shouldShowSideNav = false
-      this.sendCommand(EDIT, {
-        step,
-      })
+      if (step.couldBeShownOn(window.parent.location.pathname)) {
+        this.hideIframe()
+        this.shouldShowSideNav = false
+        this.sendCommand(EDIT, {
+          step,
+        })
+      } else if (step.pathOperator === PATH_EQUALS) {
+        // TODO 遷移しますよっていうmodal出す
+        window.parent.location.href =
+          window.parent.location.origin + step.pathValue
+      } else {
+        this.shouldShowUrlPathForm = true
+      }
+    },
+    async onClickStepConfirm() {
+      const valid = await this.$refs.stepForm.validate()
+      if (valid) {
+        this.$emit('upsert:step', this.innerStep)
+        this.shouldShowStepForm = false
+        this.shouldShowSideNav = true
+      }
     },
     onPreviewClick() {
       this.sendCommand(PREVIEW, {
@@ -353,11 +411,24 @@ export default {
       })
       this.hideIframe()
     },
-    onStepEditClick(step) {
-      this.shouldShowStepForm = true
-    },
     onStepDeleteClick(step) {
       this.$emit('delete:step', step)
+    },
+    onStepEditClick() {
+      this.shouldShowStepForm = true
+    },
+    onNavigateClick() {
+      this.$emit('click:navigate')
+    },
+    async onClickGo() {
+      const valid = await this.$refs.urlPathForm.validate()
+      if (valid) {
+        window.parent.location.href =
+          window.parent.location.origin + this.urlPath
+      }
+    },
+    onUrlPathFormCancel() {
+      this.shouldShowUrlPathForm = false
     },
   },
 }
@@ -382,10 +453,14 @@ export default {
   right: unset;
   left: 0;
 }
-.step-definition {
+.step-definition,
+.step-definition__arrow {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.step-definition__arrow {
+  position: relative;
 }
 .step-definition__step {
   position: relative;
@@ -394,31 +469,18 @@ export default {
   border-radius: 50%;
   width: 75px;
   height: 75px;
-  margin: 20px 0;
+}
+.step-definition__step + .step-definition__step {
+  margin-top: 70px;
 }
 
 .step-definition__step > svg {
   width: 45px;
 }
-/*.step-definition__delete,*/
-/*.step-definition__edit {*/
-/*  position: absolute;*/
-/*  border-radius: 50%;*/
-/*  display: inline-flex;*/
-/*  justify-content: center;*/
-/*  align-items: center;*/
-/*  width: 40px;*/
-/*  height: 40px;*/
-/*  font-size: 8px;*/
-/*}*/
-/*.step-definition__edit {*/
-/*  top: -30px;*/
-/*  right: -30px;*/
-/*}*/
-/*.step-definition__delete {*/
-/*  right: -50px;*/
-/*  top: 15px;*/
-/*}*/
+.step-definition__prepend,
+.step-definition__arrow,
+.step-definition__add,
+.step-definition__edit,
 .step-definition__delete {
   position: absolute;
   border-radius: 50%;
@@ -428,7 +490,33 @@ export default {
   width: 40px;
   height: 40px;
   font-size: 8px;
+}
+
+.step-definition__edit {
   top: -30px;
   right: -30px;
+}
+
+.step-definition__delete {
+  top: 20px;
+  right: -50px;
+}
+
+.step-definition__prepend {
+  top: -55px;
+  left: 20px;
+}
+.step-definition__arrow,
+.step-definition__add {
+  bottom: -55px;
+  left: 20px;
+}
+.step-definition__add {
+  z-index: 2;
+}
+.step-definition__actions {
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
 }
 </style>

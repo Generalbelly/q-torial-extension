@@ -47,19 +47,23 @@ const mutations = {
     console.log(SYNC_DATA, state)
   },
   [UPDATE_TUTORIAL](state, payload) {
-    const { id = null, ...data } = payload
-    const index = state.tutorials.findIndex(tutorial => tutorial.id === id)
-    if (index === -1) return
-    const tutorial = new TutorialEntity({
-      ...state.tutorials[index],
-      ...data,
-    })
-    state.tutorials = [
-      ...state.tutorials.slice(0, index),
-      tutorial,
-      ...state.tutorials.slice(index + 1),
-    ]
-    state.tutorial = tutorial
+    if (payload) {
+      const { id = null, ...data } = payload
+      const index = state.tutorials.findIndex(tutorial => tutorial.id === id)
+      if (index === -1) return
+      const tutorial = new TutorialEntity({
+        ...state.tutorials[index],
+        ...data,
+      })
+      state.tutorials = [
+        ...state.tutorials.slice(0, index),
+        tutorial,
+        ...state.tutorials.slice(index + 1),
+      ]
+      state.tutorial = tutorial
+    } else {
+      state.tutorial = null
+    }
   },
   [SORT_TUTORIALS](state, payload) {
     const [field, direction] = payload
@@ -133,18 +137,22 @@ const actions = {
         action: `addTutorial`,
         payload: {
           data: payload,
+          saveTutorial: true,
           saveSteps: true,
         },
       })
+      const oldTutorialIDs = state.tutorials.map(tutorial => tutorial.id)
       const { tutorials } = data
-      const addedTutorial = tutorials
-        .map(tutorial => tutorial)
-        .sort((a, b) => (a.createdAt.seconds < b.createdAt.seconds ? 1 : -1))[0]
+      const newTutorialIDs = tutorials.map(tutorial => tutorial.id)
+      const tutorialID = newTutorialIDs.find(id => !oldTutorialIDs.includes(id))
+      // const tutorial = tutorials.find(tutorial => tutorial.id === id)
       commit(SYNC_DATA, {
         tutorials,
       })
       commit(SET_REQUESTING, false)
-      await dispatch('selectTutorial', addedTutorial)
+      await dispatch('selectTutorial', {
+        id: tutorialID,
+      })
     }
   },
   updateTutorial: async ({ commit, state }, payload) => {
@@ -186,6 +194,36 @@ const actions = {
       commit(SET_REQUESTING, true)
       const data = await sendCommand(PASS_DATA_TO_BACKGROUND, {
         action: `${payload.id ? 'update' : 'add'}Step`,
+        payload: {
+          data: payload,
+        },
+      })
+      const { tutorial } = data
+      commit(UPDATE_TUTORIAL, tutorial)
+      commit(SET_REQUESTING, false)
+    }
+  },
+  addStep: async ({ commit, state }, payload) => {
+    if (state.user) {
+      commit(SET_REQUESTING, true)
+      const data = await sendCommand(PASS_DATA_TO_BACKGROUND, {
+        action: 'updateTutorial',
+        payload: {
+          data: payload,
+          saveTutorial: false,
+          saveSteps: true,
+        },
+      })
+      const { tutorial } = data
+      commit(UPDATE_TUTORIAL, tutorial)
+      commit(SET_REQUESTING, false)
+    }
+  },
+  updateStep: async ({ commit, state }, payload) => {
+    if (state.user) {
+      commit(SET_REQUESTING, true)
+      const data = await sendCommand(PASS_DATA_TO_BACKGROUND, {
+        action: 'updateStep',
         payload: {
           data: payload,
         },

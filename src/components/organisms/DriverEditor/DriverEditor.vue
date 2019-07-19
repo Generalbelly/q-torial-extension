@@ -24,8 +24,6 @@ export default {
       selectorChoices: [],
       selectorChoiceIndex: 0,
       step: new StepEntity(),
-      // iframeEl: null,
-      // shouldHideIframe: false,
       source: null,
       isEditing: false,
     }
@@ -42,13 +40,6 @@ export default {
         this.$emit('editDone')
       }
     },
-    // shouldHideIframe(value) {
-    //   if (value) {
-    //     this.iframeEl.style.display = 'none';
-    //   } else {
-    //     this.iframeEl.style.display = 'unset';
-    //   }
-    // },
   },
   created() {
     window.addEventListener('message', this.onReceiveMessage)
@@ -94,7 +85,7 @@ export default {
       } else if (command === EDIT) {
         const { step } = data
         this.isEditing = true
-        this.step = step
+        this.step = new StepEntity(step)
         this.highlight(step.highlightTarget, step.config)
       } else if (command === PREVIEW) {
         const { steps } = data
@@ -107,7 +98,7 @@ export default {
           el.style.pointerEvents = 'none'
           el.style.cursor = 'default'
         }
-        el.addEventListener('click', this.userScreenClickHandler)
+        el.addEventListener('click', this.userScreenClickHandler, true)
       })
     },
     removeUserScreenClickHandler() {
@@ -116,7 +107,7 @@ export default {
           el.style.pointerEvents = null
           el.style.cursor = null
         }
-        el.removeEventListener('click', this.userScreenClickHandler)
+        el.removeEventListener('click', this.userScreenClickHandler, true)
       })
     },
     getSelector(node) {

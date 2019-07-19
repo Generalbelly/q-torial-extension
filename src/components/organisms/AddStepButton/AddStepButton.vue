@@ -3,7 +3,9 @@
     :items="stepTypes"
     @click:item="$emit('click:step-type', $event)"
   >
-    <add-button />
+    <div class="plus-icon-container has-background-primary-100">
+      <plus-icon />
+    </div>
     <template v-slot:tooltip>
       <span>
         <tooltip-icon class="icon has-margin-right-3" />
@@ -23,6 +25,7 @@ import BaseDropdown from '../../molecules/BaseDropdown'
 import AddButton from '../../atoms/buttons/AddButton'
 import TooltipIcon from '../../atoms/icons/TooltipIcon'
 import ModalIcon from '../../atoms/icons/ModalIcon'
+import PlusIcon from '../../atoms/icons/PlusIcon/PlusIcon'
 
 const stepTypes = [
   {
@@ -38,6 +41,7 @@ const stepTypes = [
 export default {
   name: 'AddStepButton',
   components: {
+    PlusIcon,
     ModalIcon,
     TooltipIcon,
     AddButton,
@@ -58,5 +62,14 @@ export default {
 }
 .icon {
   max-width: 32px;
+}
+.plus-icon-container {
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  font-size: 8px;
 }
 </style>

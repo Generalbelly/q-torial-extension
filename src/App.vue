@@ -14,6 +14,7 @@
     <tutorial-page
       v-show="shouldShowTutorialPage"
       @click:close="onTutorialClickClose"
+      @click:navigate="onClickNavigate"
     ></tutorial-page>
   </div>
 </template>
@@ -37,6 +38,7 @@ export default {
       shouldShowNav: true,
       shouldShowTutorialsPage: false,
       shouldShowTutorialPage: false,
+      navigating: false,
     }
   },
   computed: {
@@ -59,30 +61,26 @@ export default {
         })
       }
     },
-    // tutorial(newValue, oldValue) {
-    //   if (!oldValue && newValue) {
-    //     if (newValue.couldBeShownOn(window.parent.location.pathname)) {
-    //       this.onSelectTutorial();
-    //     }
-    //   }
-    // },
   },
-  async mounted() {
-    await this.syncData()
-    if (this.tutorial) {
-      if (this.tutorial.couldBeShownOn(window.parent.location.pathname)) {
-        this.onSelectTutorial()
-      }
-    }
+  mounted() {
+    this.startWatchingUrlForSPA()
+    this.recoverState()
   },
   methods: {
     ...mapActions(['listTutorials', 'syncData']),
+    async recoverState() {
+      await this.syncData()
+      if (this.tutorial) {
+        this.onSelectTutorial()
+      }
+      if (this.navigating) {
+        this.showIframe()
+        this.navigating = false
+      }
+    },
     onSelectTutorial() {
       this.shouldShowNav = false
       this.shouldShowTutorialsPage = false
-      // this.changeIframeStyle({
-      //   height: '100%',
-      // })
       this.shouldShowTutorialPage = true
     },
     onClickLogo() {
@@ -91,9 +89,6 @@ export default {
     onClickTutorials() {
       this.shouldShowNav = false
       this.shouldShowTutorialPage = false
-      // this.changeIframeStyle({
-      //   height: '100%',
-      // })
       this.shouldShowTutorialsPage = true
     },
     onTutorialsClickClose() {
@@ -110,6 +105,15 @@ export default {
       this.shouldShowTutorialPage = false
       this.shouldShowTutorialsPage = true
       this.shouldShowNav = false
+    },
+    onClickNavigate() {
+      this.navigating = true
+      this.hideIframe()
+    },
+    startWatchingUrlForSPA() {
+      window.parent.addEventListener('locationchange', async () => {
+        this.recoverState()
+      })
     },
   },
 }

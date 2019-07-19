@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Buefy from 'buefy'
 import VeeValidate from 'vee-validate'
+import './vee-validate'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import '../sass/main.scss'
 import './fontawesome'
@@ -54,6 +55,14 @@ class ExtApp {
 
   appId = 'app'
 
+  injectScript(file, node) {
+    var th = document.getElementsByTagName(node)[0]
+    const script = document.createElement('script')
+    script.setAttribute('type', 'text/javascript')
+    script.setAttribute('src', file)
+    th.appendChild(script)
+  }
+
   init() {
     const iframeElement = document.querySelector(`iframe#${this.iframeId}`)
     if (iframeElement) return
@@ -86,6 +95,8 @@ class ExtApp {
       app.$mount(divElement)
     }
     document.body.appendChild(iframe)
+
+    this.injectScript(chrome.runtime.getURL('spaUrlWatcher.js'), 'body')
   }
 
   start() {
@@ -118,23 +129,27 @@ port.onMessage.addListener(async request => {
     { status = null, message = null, data = null, command = null },
     to = 'background'
   ) => {
-    if (to === 'background') {
-      if (!connected) return
-      port.postMessage({
-        status,
-        message,
-        command,
-        data,
-      })
-    } else if (to === 'web') {
-      window.postMessage(
-        {
-          app: process.env.VUE_APP_NAME,
-          command: UPDATE_STATE,
+    try {
+      if (to === 'background') {
+        if (!connected) return
+        port.postMessage({
+          status,
+          message,
+          command,
           data,
-        },
-        window.location.origin
-      )
+        })
+      } else if (to === 'web') {
+        window.postMessage(
+          {
+            app: process.env.VUE_APP_NAME,
+            command: UPDATE_STATE,
+            data,
+          },
+          window.location.origin
+        )
+      }
+    } catch (e) {
+      console.error(e)
     }
   }
 

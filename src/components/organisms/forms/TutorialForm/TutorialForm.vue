@@ -23,8 +23,8 @@
       <base-column>
         <validatable-text-field
           v-model="innerPathValue"
-          name="path value"
-          rules="required"
+          name="url path"
+          :rules="innerPathOperator === 'ALL' ? '' : 'required'"
         />
       </base-column>
     </base-columns>
@@ -70,6 +70,10 @@ export default {
     ValidatableTextField,
   },
   props: {
+    id: {
+      type: String,
+      default: null,
+    },
     name: {
       type: String,
       default: null,

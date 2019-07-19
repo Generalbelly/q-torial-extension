@@ -144,6 +144,8 @@ const actions = {
       commit(SET_REQUESTING, true)
       unbindFirestoreRef('steps')
 
+      const batch = firebase.getDB().batch()
+
       const { saveSteps = false, data } = payload
       const { id, steps, ...fields } = data
       const tutorialRef = await firebase
@@ -151,58 +153,72 @@ const actions = {
         .collection('users')
         .doc(state.user.uid)
         .collection('tutorials')
-        .add({
-          ...fields,
-          createdAt: FieldValue.serverTimestamp(),
-          updatedAt: FieldValue.serverTimestamp(),
-        })
+        .doc()
+
+      batch.set(tutorialRef, {
+        ...fields,
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      })
       if (saveSteps) {
-        const stepsRef = tutorialRef.collection('steps')
-        await Promise.all(
-          steps.map(({ id = null, ...stepFields }) =>
-            stepsRef.add({
-              ...stepFields,
-              createdAt: FieldValue.serverTimestamp(),
-              updatedAt: FieldValue.serverTimestamp(),
-            })
-          )
-        )
+        steps.forEach(({ id = null, ...stepFields }, index) => {
+          const stepRef = tutorialRef.collection('steps').doc()
+          batch.set(stepRef, {
+            ...stepFields,
+            order: index,
+            createdAt: FieldValue.serverTimestamp(),
+            updatedAt: FieldValue.serverTimestamp(),
+          })
+        })
       }
+      await batch.commit()
       commit(SET_REQUESTING, false)
     }
   ),
   updateTutorial: async ({ commit, state }, payload) => {
     commit(SET_REQUESTING, true)
-    const { saveSteps = false, data } = payload
+    const { saveSteps = false, saveTutorial = true, data } = payload
     const { id, steps, ...fields } = data
+
+    const batch = firebase.getDB().batch()
+
     const tutorialRef = await firebase
       .getDB()
       .collection('users')
       .doc(state.user.uid)
       .collection('tutorials')
       .doc(id)
-      .update({
+
+    if (saveTutorial) {
+      batch.update(tutorialRef, {
         ...fields,
         updatedAt: FieldValue.serverTimestamp(),
       })
+    }
+
     if (saveSteps) {
-      const stepsRef = tutorialRef.collection('steps')
-      await Promise.all(
-        steps.map(({ id = null, ...stepFields }) => {
-          if (id) {
-            return stepsRef.doc(id).update({
-              ...stepFields,
-              updatedAt: FieldValue.serverTimestamp(),
-            })
-          }
-          return stepsRef.add({
+      steps.forEach(({ id = null, ...stepFields }, index) => {
+        if (id) {
+          const step = {
             ...stepFields,
+            order: index,
+            updatedAt: FieldValue.serverTimestamp(),
+          }
+          const stepRef = tutorialRef.collection('steps').doc(id)
+          batch.update(stepRef, step)
+        } else {
+          const stepRef = tutorialRef.collection('steps').doc()
+          const step = {
+            ...stepFields,
+            order: index,
             createdAt: FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp(),
-          })
-        })
-      )
+          }
+          batch.set(stepRef, step)
+        }
+      })
     }
+    await batch.commit()
     commit(SET_REQUESTING, false)
   },
   deleteTutorial: firestoreAction(
@@ -231,9 +247,12 @@ const actions = {
         .collection('tutorials')
         .doc(state.selectedTutorialID)
         .collection('steps')
-        .orderBy('order')
+        .orderBy('order', 'asc')
 
-      await bindFirestoreRef('steps', snapshot)
+      await bindFirestoreRef('steps', snapshot, {
+        maxRefDepth: 1,
+        reset: true,
+      })
       commit(SET_REQUESTING, false)
     }
   ),
@@ -311,6 +330,7 @@ const getters = {
       const tutorial = state.tutorials.find(
         t => t.id === state.selectedTutorialID
       )
+      if (!tutorial) return null
       return {
         ...tutorial,
         id: tutorial.id,

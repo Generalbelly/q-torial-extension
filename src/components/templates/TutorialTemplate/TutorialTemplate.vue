@@ -174,6 +174,25 @@
         You haven't added any steps yet.
       </warning-message>
     </screen-overlay-layout>
+    <base-modal
+      :active="shouldShowElementToHighlightNotFoundModal"
+      @click:close="shouldShowElementToHighlightNotFoundModal = false"
+    >
+      <template v-slot:content>
+        We couldn't find an element to highlight for the tooltip. Do you want to
+        re-select an element?
+      </template>
+      <template v-slot:secondary-action-button>
+        <base-button @click="shouldShowElementToHighlightNotFoundModal = false">
+          No
+        </base-button>
+      </template>
+      <template v-slot:primary-action-button>
+        <base-button type="is-primary" @click="onClickReselectElementConfirm">
+          Yes
+        </base-button>
+      </template>
+    </base-modal>
     <base-loading is-full-page :active="loading" />
   </div>
 </template>
@@ -189,6 +208,7 @@ import {
   EDIT,
   PREVIEW,
   PREVIEW_DONE,
+  STEP_NOT_FOUND,
   SAVE,
 } from '../../../constants/drvier-editor-command-types'
 import AddStepButton from '../../organisms/AddStepButton/AddStepButton'
@@ -197,10 +217,10 @@ import iframeStyler from '../../mixins/iframeStyler'
 import ScreenOverlayLayout from '../../molecules/layouts/ScreenOverlayLayout'
 import TipsMessage from '../../organisms/messages/TipsMessage'
 import WarningMessage from '../../organisms/messages/WarningMessage'
-import TheSidebar from '../../organisms/TheSidebar/TheSidebar'
-import BaseLoading from '../../atoms/BaseLoading/BaseLoading'
-import ModalIcon from '../../atoms/icons/ModalIcon/ModalIcon'
-import TooltipIcon from '../../atoms/icons/TooltipIcon/TooltipIcon'
+import TheSidebar from '../../organisms/TheSidebar'
+import BaseLoading from '../../atoms/BaseLoading'
+import ModalIcon from '../../atoms/icons/ModalIcon'
+import TooltipIcon from '../../atoms/icons/TooltipIcon'
 import StepEntity from '../../atoms/Entities/StepEntity'
 import PreviewButton from '../../atoms/buttons/PreviewButton'
 import TrashButton from '../../atoms/buttons/TrashButton'
@@ -214,11 +234,13 @@ import GoButton from '../../atoms/buttons/GoButton'
 import { PATH_EQUALS } from '../../atoms/Entities/PathOperators'
 import StepForm from '../../organisms/forms/StepForm'
 import PenButton from '../../atoms/buttons/PenButton'
+import BaseButton from '../../atoms/BaseButton'
 
 export default {
   name: 'TutorialTemplate',
   mixins: [iframeStyler],
   components: {
+    BaseButton,
     PenButton,
     StepForm,
     GoButton,
@@ -259,6 +281,7 @@ export default {
       shouldShowTutorialForm: false,
       shouldShowStepForm: false,
       shouldShowUrlPathForm: false,
+      shouldShowElementToHighlightNotFoundModal: false,
       showClickToAddStepMessage: false,
       showNoStepAddedYetMessage: false,
       innerTutorial: new TutorialEntity(),
@@ -282,7 +305,6 @@ export default {
     },
     activeStepIndex: {
       handler(value) {
-        console.log(value)
         if (value !== null && value > -1) {
           this.innerStep = this.innerTutorial.steps.find(
             (_, index) => index === this.activeStepIndex
@@ -320,7 +342,11 @@ export default {
       }
     },
     handleCommand(command, data) {
-      if (command === SAVE) {
+      if (command === STEP_NOT_FOUND) {
+        this.shouldShowSideNav = true
+        this.showIframe()
+        this.shouldShowElementToHighlightNotFoundModal = true
+      } else if (command === SAVE) {
         const step = new StepEntity({
           ...data,
           pathValue: data.pathValue || window.parent.location.pathname,
@@ -429,6 +455,15 @@ export default {
     },
     onUrlPathFormCancel() {
       this.shouldShowUrlPathForm = false
+    },
+    onClickReselectElementConfirm() {
+      this.shouldShowElementToHighlightNotFoundModal = false
+      this.shouldShowSideNav = false
+      this.hideIframe()
+      this.sendCommand(EDIT, {
+        step: this.innerStep,
+        type: 'tooltip',
+      })
     },
   },
 }

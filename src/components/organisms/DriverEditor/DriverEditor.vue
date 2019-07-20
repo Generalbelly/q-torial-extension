@@ -12,8 +12,10 @@ import {
   PREVIEW_DONE,
   SAVE,
   CANCEL,
+  STEP_NOT_FOUND,
 } from '../../../constants/drvier-editor-command-types'
 import StepEntity from '../../atoms/Entities/StepEntity'
+import { sendCommand } from '../../../api'
 
 const MAX_RETRIES = 5
 export default {
@@ -76,20 +78,29 @@ export default {
     },
     handleCommand(command, data) {
       if (command === ADD) {
-        this.isEditing = true
         const { type } = data
-        this.addUserScreenClickHandler()
-        if (type === 'modal') {
-          this.highlight()
-        }
+        this.selectElementToHighlight(type)
       } else if (command === EDIT) {
-        const { step } = data
+        const { step, type = null } = data
         this.isEditing = true
         this.step = new StepEntity(step)
-        this.highlight(step.highlightTarget, step.config)
+        if (document.querySelector(step.highlightTarget)) {
+          this.highlight(step.highlightTarget, step.config)
+        } else if (type) {
+          this.selectElementToHighlight(type)
+        } else {
+          sendCommand(STEP_NOT_FOUND)
+        }
       } else if (command === PREVIEW) {
         const { steps } = data
         this.preview(steps)
+      }
+    },
+    selectElementToHighlight(type) {
+      this.isEditing = true
+      this.addUserScreenClickHandler()
+      if (type === 'modal') {
+        this.highlight()
       }
     },
     addUserScreenClickHandler() {
@@ -202,8 +213,6 @@ export default {
       element = 'modal',
       popover = { content: '<div><h1>Title</h1><div>Description</div></div>' }
     ) {
-      console.log(element)
-      console.log(popover)
       return new Promise(resolve => {
         // watchでセットすると遅いのでここでやってる
         this.driver.options.allowClose = false

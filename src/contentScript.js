@@ -1,5 +1,5 @@
-// Fontawesome
 import Vue from 'vue'
+// import VueI18n from 'vue-i18n'
 import Buefy from 'buefy'
 import VeeValidate from 'vee-validate'
 import './vee-validate'
@@ -18,6 +18,8 @@ import {
 } from './constants/command-types'
 import { ERROR, OK } from './constants/status-types'
 import { SYNC_DATA } from './store/mutation-types'
+
+// Vue.use(VueI18n)
 
 // Buefy
 Vue.use(Buefy, {

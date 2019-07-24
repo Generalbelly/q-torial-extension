@@ -18,6 +18,8 @@ export default class TutorialEntity extends Entity {
 
   settings = {}
 
+  buildUrl = null
+
   isActive = false
 
   steps = []

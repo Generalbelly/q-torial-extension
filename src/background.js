@@ -48,20 +48,20 @@ chrome.runtime.onConnect.addListener(async port => {
         ...tutorial,
         id: tutorial.id,
         createdAtAsDateString: tutorial.createdAt
-          ? tutorial.createdAt.toDate().toLocaleDateString()
+          ? tutorial.createdAt.toDate().toLocaleString()
           : null,
         updatedAtAsDateString: tutorial.updatedAt
-          ? tutorial.updatedAt.toDate().toLocaleDateString()
+          ? tutorial.updatedAt.toDate().toLocaleString()
           : null,
       })),
       steps: steps.map(step => ({
         ...step,
         id: step.id,
         createdAtAsDateString: step.createdAt
-          ? step.createdAt.toDate().toLocaleDateString()
+          ? step.createdAt.toDate().toLocaleString()
           : null,
         updatedAtAsDateString: step.updatedAt
-          ? step.updatedAt.toDate().toLocaleDateString()
+          ? step.updatedAt.toDate().toLocaleString()
           : null,
       })),
     }

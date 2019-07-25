@@ -4,8 +4,7 @@
       <option>https://</option>
       <option>http://</option>
     </base-select>
-    <base-input v-model="domain" placeholder="docker.omotenashi.today" expanded>
-    </base-input>
+    <base-input v-model="domain" placeholder="example.com" expanded />
   </base-field>
 </template>
 
@@ -13,6 +12,7 @@
 import BaseSelect from '../../../atoms/BaseSelect'
 import BaseInput from '../../../atoms/BaseInput'
 import BaseField from '../../../atoms/BaseField'
+
 export default {
   name: 'DomainField',
   components: {

@@ -15,7 +15,11 @@
           label="Click to edit tutorial settings"
           type="is-neutral-050"
         >
-          <base-heading>
+          <base-heading
+            :style="{
+              visibility: activeStepIndex !== 0 ? 'visible' : 'hidden',
+            }"
+          >
             {{ innerTutorial.name }}
           </base-heading>
         </base-tooltip>
@@ -34,6 +38,7 @@
             class="step-definition__step has-background-grey has-cursor-pointer"
             @click="onStepClick(step)"
             @mouseenter="activeStepIndex = stepIndex"
+            @mouseleave="activeStepIndex = null"
           >
             <modal-icon v-if="step.type === 'modal'" />
             <tooltip-icon v-else-if="step.type === 'tooltip'" />
@@ -235,11 +240,13 @@ import { PATH_EQUALS } from '../../atoms/Entities/PathOperators'
 import StepForm from '../../organisms/forms/StepForm'
 import PenButton from '../../atoms/buttons/PenButton'
 import BaseButton from '../../atoms/BaseButton'
+import BaseFadeTransition from '../../atoms/transitions/BaseFadeTransition/BaseFadeTransition'
 
 export default {
   name: 'TutorialTemplate',
   mixins: [iframeStyler],
   components: {
+    BaseFadeTransition,
     BaseButton,
     PenButton,
     StepForm,
@@ -413,6 +420,7 @@ export default {
         this.hideIframe()
         this.shouldShowSideNav = false
         this.sendCommand(EDIT, {
+          type: step.type,
           step,
         })
       } else if (step.pathOperator === PATH_EQUALS) {
@@ -504,6 +512,7 @@ export default {
   border-radius: 50%;
   width: 75px;
   height: 75px;
+  margin: auto 15px;
 }
 .step-definition__step + .step-definition__step {
   margin-top: 70px;

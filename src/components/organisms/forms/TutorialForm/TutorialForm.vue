@@ -1,35 +1,39 @@
 <template>
-  <div>
-    <validatable-text-field
-      label="Tutorial Name"
-      v-model="innerName"
-      placeholder="First timers"
-      name="tutorial name"
-      rules="required"
-    />
-    <textarea-field
-      label="Tutorial Description"
-      v-model="innerDescription"
-      placeholder="Tutorial for first time customers."
-      name="tutorial description"
-    />
-    <div class="label">
-      Start this tutorial for a user visiting the following conditions.
+  <div class="form">
+    <div>
+      <validatable-text-field
+        label="Tutorial Name"
+        v-model="innerName"
+        placeholder="First timers"
+        name="tutorial name"
+        rules="required"
+      />
     </div>
-    <base-columns>
-      <base-column>
-        <select-field :items="pathOperators" v-model="innerPathOperator" />
-      </base-column>
-      <base-column>
-        <validatable-text-field
-          v-model="innerPathValue"
-          name="url path"
-          :rules="innerPathOperator === 'ALL' ? '' : 'required'"
-        />
-      </base-column>
-    </base-columns>
-    <base-columns>
-      <base-column>
+    <div>
+      <textarea-field
+        label="Tutorial Description"
+        v-model="innerDescription"
+        placeholder="Tutorial for first time customers."
+        name="tutorial description"
+      />
+    </div>
+    <div class="form__condition-field">
+      <span class="label">
+        Start this tutorial for a user visiting the following conditions.
+      </span>
+      <div class="url-path">
+        <div class="url-path__operator">
+          <select-field :items="pathOperators" v-model="innerPathOperator" />
+        </div>
+        <div class="url-path__value">
+          <validatable-text-field
+            v-model="innerPathValue"
+            name="url path"
+            :rules="innerPathOperator === 'ALL' ? '' : 'required'"
+          />
+        </div>
+      </div>
+      <div>
         <checkbox-field v-model="parametersRequired">
           with parameters
         </checkbox-field>
@@ -37,15 +41,19 @@
           v-show="parametersRequired"
           v-model="innerParameters"
         />
-      </base-column>
-    </base-columns>
-    <base-columns>
-      <base-column>
+      </div>
+      <div>
         <checkbox-field v-model="domainRequired">
-          Only apply for this domain ({{ hostname }})
+          Only apply for the following domain
         </checkbox-field>
-      </base-column>
-    </base-columns>
+        <base-fade-transition>
+          <div v-show="domainRequired">
+            <base-label>Domain</base-label>
+            <validatable-domain-field name="domain" v-model="innerDomain" />
+          </div>
+        </base-fade-transition>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -53,18 +61,20 @@ import CheckboxField from '../../../molecules/fields/CheckboxField'
 import TextareaField from '../../../molecules/fields/TextareaField'
 import ValidatableTextField from '../../../molecules/fields/ValidatableTextField'
 import PathOperators from '../../../atoms/Entities/PathOperators'
-import BaseColumns from '../../../atoms/BaseColumns'
-import BaseColumn from '../../../atoms/BaseColumn'
 import SelectField from '../../../molecules/fields/SelectField'
 import ParameterFields from '../../../molecules/fields/ParameterFields'
+import ValidatableDomainField from '../../../molecules/fields/ValidatableDomainField'
+import BaseLabel from '../../../atoms/BaseLabel/BaseLabel'
+import BaseFadeTransition from '../../../atoms/transitions/BaseFadeTransition'
 
 export default {
   name: 'TutorialForm',
   components: {
+    BaseFadeTransition,
+    BaseLabel,
+    ValidatableDomainField,
     ParameterFields,
     SelectField,
-    BaseColumn,
-    BaseColumns,
     CheckboxField,
     TextareaField,
     ValidatableTextField,
@@ -164,7 +174,15 @@ export default {
   watch: {
     domainRequired: {
       handler(value) {
-        this.innerDomain = value ? this.hostname : null
+        if (
+          value &&
+          !this.innerDomain &&
+          this.hostname !== process.env.VUE_APP_URL
+        ) {
+          this.innerDomain = this.hostname
+        } else if (!value) {
+          this.innerDomain = null
+        }
       },
     },
     parametersRequired: {
@@ -194,4 +212,36 @@ export default {
   },
 }
 </script>
-<style scoped></style>
+<style scoped>
+.form > div + div {
+  margin-top: 40px;
+}
+.form__condition-field > div + div {
+  margin-top: 15px;
+}
+.url-path {
+  display: grid;
+  grid-template-areas:
+    'operator value'
+    'help help';
+  grid-template-columns: auto 1fr;
+}
+.url-path__value {
+  grid-area: value;
+}
+.url-path__operator {
+  grid-area: operator;
+}
+.url-path__value >>> p.help {
+  grid-area: help;
+}
+@media screen and (max-width: 768px) {
+  .url-path {
+    grid-template-areas:
+      'operator'
+      'value'
+      'help';
+    grid-template-columns: 100%;
+  }
+}
+</style>

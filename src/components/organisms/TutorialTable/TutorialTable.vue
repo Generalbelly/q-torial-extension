@@ -17,9 +17,9 @@
       <b-table-column field="isActive" label="Active">
         {{ props.row.isActive ? 'YES' : 'NO' }}
       </b-table-column>
-      <b-table-column field="createdAtAsDateString" label="Created At">
-        {{ props.row.createdAtAsDateString }}
-      </b-table-column>
+      <!--      <b-table-column field="createdAtAsDateString" label="Created At">-->
+      <!--        {{ props.row.createdAtAsDateString }}-->
+      <!--      </b-table-column>-->
       <b-table-column label="Actions">
         <pen-icon
           size="is-small"

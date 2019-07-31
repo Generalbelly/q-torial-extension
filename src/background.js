@@ -39,33 +39,33 @@ chrome.runtime.onConnect.addListener(async port => {
       data,
     })
   }
-
-  const refineData = data => {
-    const { requesting, tutorials = [], steps = [], ...meta } = data
-    return {
-      ...meta,
-      tutorials: tutorials.map(tutorial => ({
-        ...tutorial,
-        id: tutorial.id,
-        createdAtAsDateString: tutorial.createdAt
-          ? tutorial.createdAt.toDate().toLocaleString()
-          : null,
-        updatedAtAsDateString: tutorial.updatedAt
-          ? tutorial.updatedAt.toDate().toLocaleString()
-          : null,
-      })),
-      steps: steps.map(step => ({
-        ...step,
-        id: step.id,
-        createdAtAsDateString: step.createdAt
-          ? step.createdAt.toDate().toLocaleString()
-          : null,
-        updatedAtAsDateString: step.updatedAt
-          ? step.updatedAt.toDate().toLocaleString()
-          : null,
-      })),
-    }
-  }
+  //
+  // const refineData = data => {
+  //   const { requesting, tutorials = [], steps = [], ...meta } = data
+  //   return {
+  //     ...meta,
+  //     tutorials: tutorials.map(tutorial => ({
+  //       ...tutorial,
+  //       id: tutorial.id,
+  //       createdAtAsDateString: tutorial.createdAt
+  //         ? tutorial.createdAt.toDate().toLocaleString()
+  //         : null,
+  //       updatedAtAsDateString: tutorial.updatedAt
+  //         ? tutorial.updatedAt.toDate().toLocaleString()
+  //         : null,
+  //     })),
+  //     steps: steps.map(step => ({
+  //       ...step,
+  //       id: step.id,
+  //       createdAtAsDateString: step.createdAt
+  //         ? step.createdAt.toDate().toLocaleString()
+  //         : null,
+  //       updatedAtAsDateString: step.updatedAt
+  //         ? step.updatedAt.toDate().toLocaleString()
+  //         : null,
+  //     })),
+  //   }
+  // }
 
   const startApp = async (resetState = false) => {
     if (resetState) {
@@ -99,15 +99,15 @@ chrome.runtime.onConnect.addListener(async port => {
       ...getters,
     }),
     value => {
+      console.log(value)
       if (!value.requesting) {
-        sendCommand(UPDATE_STATE, refineData(value))
+        sendCommand(UPDATE_STATE, value)
       }
     },
     { deep: true }
   )
 
   const user = await firebase.checkAuth()
-  console.log(store.state)
   if (user && store.state.active) {
     await startApp()
   }
@@ -120,10 +120,7 @@ chrome.runtime.onConnect.addListener(async port => {
     if (command === PASS_DATA_TO_BACKGROUND) {
       await store.dispatch(data.action, data.payload)
     } else if (command === SYNC_DATA) {
-      sendCommand(
-        UPDATE_STATE,
-        refineData({ ...store.state, ...store.getters })
-      )
+      sendCommand(UPDATE_STATE, { ...store.state, ...store.getters })
     }
   })
 })

@@ -47,10 +47,11 @@ export default {
     })
   },
   watchAuth(cb) {
-    firebase.auth().onAuthStateChanged(async user => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(async user => {
       await store.dispatch('setUser', user)
       cb(user)
     })
+    return unsubscribe
   },
   getDB() {
     return db

@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill'
 import {
   START_EXT,
+  END_EXT,
   SIGN_IN,
   SIGN_OUT,
   VERSION,
@@ -25,49 +26,21 @@ firebase.init({
   messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID,
 })
 
-chrome.runtime.onConnect.addListener(async port => {
+const connectHandler = async port => {
   if (port.name !== process.env.VUE_APP_NAME) return
-  let connected = true
-  port.onDisconnect.addListener(() => {
-    connected = false
-  })
 
-  const sendCommand = (command, data) => {
+  let connected = true
+
+  function sendCommand(command, data) {
     if (!connected) return
     port.postMessage({
       command,
       data,
     })
   }
-  //
-  // const refineData = data => {
-  //   const { requesting, tutorials = [], steps = [], ...meta } = data
-  //   return {
-  //     ...meta,
-  //     tutorials: tutorials.map(tutorial => ({
-  //       ...tutorial,
-  //       id: tutorial.id,
-  //       createdAtAsDateString: tutorial.createdAt
-  //         ? tutorial.createdAt.toDate().toLocaleString()
-  //         : null,
-  //       updatedAtAsDateString: tutorial.updatedAt
-  //         ? tutorial.updatedAt.toDate().toLocaleString()
-  //         : null,
-  //     })),
-  //     steps: steps.map(step => ({
-  //       ...step,
-  //       id: step.id,
-  //       createdAtAsDateString: step.createdAt
-  //         ? step.createdAt.toDate().toLocaleString()
-  //         : null,
-  //       updatedAtAsDateString: step.updatedAt
-  //         ? step.updatedAt.toDate().toLocaleString()
-  //         : null,
-  //     })),
-  //   }
-  // }
 
-  const startApp = async (resetState = false) => {
+  async function startApp(resetState = false) {
+    console.log('startApp', resetState)
     if (resetState) {
       await store.dispatch(`resetState`)
     }
@@ -79,21 +52,15 @@ chrome.runtime.onConnect.addListener(async port => {
     }
   }
 
-  firebase.watchAuth(async user => {
-    sendCommand(UPDATE_AUTH_STATE, user)
-  })
+  async function endApp(resetState = false) {
+    console.log('endApp', resetState)
+    if (resetState) {
+      await store.dispatch(`resetState`)
+    }
+    sendCommand(END_EXT)
+  }
 
-  chrome.browserAction.onClicked.addListener(async () => {
-    // TODO activeとそうじゃないときにアイコンの色を変更する
-    await store.dispatch('setActive', !store.state.active)
-    await startApp(true)
-  })
-
-  // chrome.webNavigation.onHistoryStateUpdated.addListener(data => {
-  //   console.log(data)
-  // })
-
-  store.watch(
+  const unwatch = store.watch(
     (state, getters) => ({
       ...state,
       ...getters,
@@ -107,12 +74,24 @@ chrome.runtime.onConnect.addListener(async port => {
     { deep: true }
   )
 
-  const user = await firebase.checkAuth()
-  if (user && store.state.active) {
-    await startApp()
+  const unsubscribe = firebase.watchAuth(async user => {
+    sendCommand(UPDATE_AUTH_STATE, user)
+  })
+
+  const browserActionHandler = async () => {
+    // TODO activeとそうじゃないときにアイコンの色を変更する
+    console.log('active', store.state.active)
+    await store.dispatch('setActive', !store.state.active)
+    if (store.state.active) {
+      await startApp(true)
+    } else {
+      await endApp()
+    }
   }
 
-  port.onMessage.addListener(async request => {
+  chrome.browserAction.onClicked.addListener(browserActionHandler)
+
+  const onMessageHandler = async request => {
     const { status, command = '', data = null } = request
     if (status === ERROR) {
       console.log(request)
@@ -122,8 +101,26 @@ chrome.runtime.onConnect.addListener(async port => {
     } else if (command === SYNC_DATA) {
       sendCommand(UPDATE_STATE, { ...store.state, ...store.getters })
     }
+  }
+
+  port.onMessage.addListener(onMessageHandler)
+
+  port.onDisconnect.addListener(() => {
+    connected = false
+    unwatch()
+    unsubscribe()
+    chrome.browserAction.onClicked.removeListener(browserActionHandler)
+    port.onMessage.removeListener(onMessageHandler)
+    port.disconnect()
   })
-})
+
+  const user = await firebase.checkAuth()
+  if (user && store.state.active) {
+    await startApp()
+  }
+}
+
+chrome.runtime.onConnect.addListener(connectHandler)
 
 chrome.runtime.onMessageExternal.addListener(
   async (request = {}, sender, sendResponse) => {

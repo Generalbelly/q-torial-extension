@@ -105,7 +105,6 @@ const actions = {
         action: `addTutorial`,
         payload: {
           data: payload,
-          saveTutorial: true,
           saveSteps: true,
         },
       })
@@ -193,7 +192,7 @@ const actions = {
       commit(SET_REQUESTING, false)
     }
   },
-  syncData({ commit, state }, payload) {
+  syncData({ commit, state }, payload = {}) {
     return new Promise(async (resolve, reject) => {
       try {
         let data = {}

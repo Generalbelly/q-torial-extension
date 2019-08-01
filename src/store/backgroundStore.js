@@ -178,7 +178,7 @@ const actions = {
 
     const batch = firebase.getDB().batch()
 
-    const { saveSteps = false, data } = payload
+    const { data } = payload
     const { id, steps, ...fields } = data
     const tutorialRef = await firebase
       .getDB()
@@ -193,24 +193,22 @@ const actions = {
       updatedAt: FieldValue.serverTimestamp(),
     })
     const savedSteps = []
-    if (saveSteps) {
-      steps.forEach(({ id = null, ...stepFields }, index) => {
-        const orderAttachedStep = {
-          ...stepFields,
-          order: index,
-        }
-        const stepRef = tutorialRef.collection('steps').doc()
-        batch.set(stepRef, {
-          ...orderAttachedStep,
-          createdAt: FieldValue.serverTimestamp(),
-          updatedAt: FieldValue.serverTimestamp(),
-        })
-        savedSteps.push({
-          ...orderAttachedStep,
-          id: stepRef.id,
-        })
+    steps.forEach(({ id = null, ...stepFields }, index) => {
+      const orderAttachedStep = {
+        ...stepFields,
+        order: index,
+      }
+      const stepRef = tutorialRef.collection('steps').doc()
+      batch.set(stepRef, {
+        ...orderAttachedStep,
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       })
-    }
+      savedSteps.push({
+        ...orderAttachedStep,
+        id: stepRef.id,
+      })
+    })
     await batch.commit()
     commit(ADD_TUTORIAL, {
       ...fields,

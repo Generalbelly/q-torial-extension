@@ -10,6 +10,7 @@ import store from './store/store'
 import App from './App'
 import {
   START_EXT,
+  END_EXT,
   ROUTE,
   REDIRECT_TO_APP,
   UPDATE_AUTH_STATE,
@@ -65,8 +66,12 @@ class ExtApp {
     th.appendChild(script)
   }
 
-  init() {
-    const iframeElement = document.querySelector(`iframe#${this.iframeId}`)
+  getIframeElement() {
+    return document.querySelector(`iframe#${this.iframeId}`)
+  }
+
+  start() {
+    const iframeElement = this.getIframeElement()
     if (iframeElement) return
     const iframe = document.createElement('iframe')
     iframe.allow = 'fullscreen'
@@ -101,8 +106,9 @@ class ExtApp {
     this.injectScript(chrome.runtime.getURL('spaUrlWatcher.js'), 'body')
   }
 
-  start() {
-    console.log('starting')
+  end() {
+    const iframeElement = this.getIframeElement()
+    iframeElement.parentNode.removeChild(iframeElement)
   }
 }
 
@@ -111,9 +117,13 @@ let extApp = null
 async function startApp() {
   if (!extApp) {
     extApp = new ExtApp()
-    extApp.init()
   }
   extApp.start()
+}
+
+async function endApp() {
+  if (!extApp) return
+  extApp.end()
 }
 
 const port = chrome.runtime.connect({
@@ -161,6 +171,21 @@ port.onMessage.addListener(async request => {
         try {
           if (window.location.origin !== process.env.VUE_APP_URL) {
             await startApp()
+            sendCommand({
+              status: OK,
+            })
+          }
+        } catch (e) {
+          sendCommand({
+            status: ERROR,
+            message: e.message,
+          })
+        }
+        break
+      case END_EXT:
+        try {
+          if (window.location.origin !== process.env.VUE_APP_URL) {
+            await endApp()
             sendCommand({
               status: OK,
             })

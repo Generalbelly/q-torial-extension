@@ -12,8 +12,8 @@
     "build": "cross-env NODE_ENV=production webpack --hide-modules",
     "build:dev": "cross-env NODE_ENV=development webpack --hide-modules",
     "build-zip": "node scripts/build-zip.js",
-    "watch": "yarn build -- --watch",
-    "watch:dev": "cross-env HMR=true yarn build:dev -- --watch"
+    "watch": "yarn build --watch",
+    "watch:dev": "cross-env HMR=true yarn build:dev --watch"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.17",
@@ -25,7 +25,7 @@
     "buefy": "^0.7.5",
     "debounce": "^1.2.0",
     "dompurify": "^1.0.10",
-    "firebase": "^5.11.1",
+    "firebase": "^6.3.1",
     "pell": "^1.0.6",
     "uuid": "^3.3.2",
     "vee-validate": "^2.2.5",
@@ -63,7 +63,7 @@
     "husky": "^2.4.1",
     "j": "^13.0.0",
     "mini-css-extract-plugin": "^0.4.4",
-    "node-sass": "^4.9.3",
+    "node-sass": "^4.12.0",
     "prettier": "1.18.2",
     "pretty-quick": "^1.11.0",
     "sass-loader": "^7.1.0",

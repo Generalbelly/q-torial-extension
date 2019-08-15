@@ -29,6 +29,7 @@ export default {
     firebase.initializeApp(config)
     firebase.auth().useDeviceLanguage()
     db = firebase.firestore()
+    db.enablePersistence({ synchronizeTabs: true })
   },
   async signIn(email, password) {
     const { user } = await firebase

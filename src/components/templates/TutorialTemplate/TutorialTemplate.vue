@@ -362,6 +362,7 @@ export default {
         if (!this.innerTutorial.id) {
           this.innerTutorial.steps = [step]
           this.innerTutorial.pathValue = window.parent.location.pathname
+          this.innerTutorial.buildUrl = window.parent.location.href
           this.shouldShowTutorialForm = true
         } else {
           if (step.id) {

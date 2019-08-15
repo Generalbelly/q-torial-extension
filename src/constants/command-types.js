@@ -3,6 +3,8 @@ export const END_EXT = 'END_EXT'
 export const SIGN_IN = 'SIGN_IN'
 export const SIGN_OUT = 'SIGN_OUT'
 export const VERSION = 'VERSION'
+export const SELECT_TUTORIAL = 'SELECT_TUTORIAL'
+
 export const ROUTE = 'ROUTE'
 export const REDIRECT_TO_APP = 'REDIRECT_TO_APP'
 export const UPDATE_AUTH_STATE = 'UPDATE_AUTH_STATE'

@@ -8,6 +8,7 @@ import {
   REDIRECT_TO_APP,
   UPDATE_AUTH_STATE,
   PASS_DATA_TO_BACKGROUND,
+  SELECT_TUTORIAL,
   UPDATE_STATE,
 } from './constants/command-types'
 import { ERROR, OK } from './constants/status-types'
@@ -40,7 +41,6 @@ const connectHandler = async port => {
   }
 
   async function startApp(resetState = false) {
-    console.log('startApp', resetState)
     if (resetState) {
       await store.dispatch(`resetState`)
     }
@@ -53,7 +53,6 @@ const connectHandler = async port => {
   }
 
   async function endApp(resetState = false) {
-    console.log('endApp', resetState)
     if (resetState) {
       await store.dispatch(`resetState`)
     }
@@ -66,7 +65,6 @@ const connectHandler = async port => {
       ...getters,
     }),
     value => {
-      console.log(value)
       if (!value.requesting) {
         sendCommand(UPDATE_STATE, value)
       }
@@ -80,7 +78,6 @@ const connectHandler = async port => {
 
   const browserActionHandler = async () => {
     // TODO activeとそうじゃないときにアイコンの色を変更する
-    console.log('active', store.state.active)
     await store.dispatch('setActive', !store.state.active)
     if (store.state.active) {
       await startApp(true)
@@ -146,6 +143,15 @@ chrome.runtime.onMessageExternal.addListener(
         sendResponse({
           status: OK,
           message: chrome.runtime.getManifest().version,
+        })
+        break
+      case SELECT_TUTORIAL:
+        console.log(SELECT_TUTORIAL)
+        await store.dispatch('selectTutorial', data)
+        await store.dispatch('setActive', !store.state.active)
+        sendResponse({
+          status: OK,
+          message: 'Tutorial is just selected.',
         })
         break
       default:

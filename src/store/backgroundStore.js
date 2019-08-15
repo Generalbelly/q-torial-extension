@@ -103,7 +103,11 @@ const actions = {
     commit(RESET_STATE)
   },
   listTutorials: async ({ state, commit }, payload = {}) => {
-    const { searchQuery = null, orderBy = ['createdAt', 'desc'] } = payload
+    const {
+      searchQuery = null,
+      orderBy = ['createdAt', 'desc'],
+      useCache = true,
+    } = payload
     commit(SET_REQUESTING, true)
 
     if (searchQuery !== state.searchQuery) {
@@ -143,9 +147,14 @@ const actions = {
     }
 
     query = query.limit(QUERY_LIMIT)
-    let snapshot = await query.get({ source: 'cache' })
-    if (snapshot.empty) {
-      snapshot = await query.get({ source: 'server' })
+    let snapshot
+    if (useCache) {
+      snapshot = await query.get({ source: 'cache' })
+      if (snapshot.empty) {
+        snapshot = await query.get({ source: 'server' })
+      }
+    } else {
+      snapshot = await query.get()
     }
     snapshot.docs.forEach(doc => {
       commit(ADD_TUTORIAL, convertDocToObject(doc))
@@ -162,7 +171,7 @@ const actions = {
     if (state.selectedTutorialID) {
       if (!getters.tutorial) {
         // TODO tutorialが20以上ある場合は見つからないこともあるので、ループかなにかで対応する
-        await dispatch('listTutorials')
+        await dispatch('listTutorials', { useCache: false })
       }
       const snapshot = await firebase
         .getDB()

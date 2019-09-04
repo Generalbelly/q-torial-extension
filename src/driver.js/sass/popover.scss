@@ -1,101 +1,9 @@
-.driver-popover-content * {
-  text-align: left;
-}
-
-.driver-popover-content pre {
-  display: block;
-  font-family: monospace;
-  white-space: pre;
-  margin: 1em 0;
-}
-
-.driver-popover-content a:link {
-  text-decoration: underline;
-  cursor: auto;
-}
-
-.driver-popover-content a:visited {
-  text-decoration: underline;
-  cursor: auto;
-}
-
-.driver-popover-content b {
-  font-weight: bold;
-}
-
-.driver-popover-content h1 {
-  font: 19px / normal sans-serif;
-  margin: 0 0 5px;
-  font-weight: bold;
-  display: block;
-  position: relative;
-  line-height: 1.5;
-  zoom: 1;
-}
-
-.driver-popover-content h2 {
-  font: 17px / normal sans-serif;
-  margin: 0 0 5px;
-  font-weight: bold;
-  display: block;
-  position: relative;
-  line-height: 1.5;
-  zoom: 1;
-}
-
-.driver-popover-content div {
-  display: block;
-  font: 14px / normal sans-serif;
-  line-height: 1.5;
-  color: $text-color;
-  font-weight: normal;
-  zoom: 1;
-}
-
-.driver-popover-content div:last-child {
-  margin-bottom: 0;
-}
-
-.driver-popover-content blockquote {
-  position: relative;
-  padding: 10px 15px 10px 35px;
-  margin: 7px auto;
-  box-sizing: border-box;
-  font-style: italic;
-  background: #efefef;
-  color: #555;
-}
-
-.driver-popover-content blockquote:before {
-  display: inline-block;
-  position: absolute;
-  top: 0px;
-  left: -3px;
-  vertical-align: middle;
-  content: '\201C';
-  font-family: sans-serif;
-  color: #cfcfcf;
-  font-size: 60px;
-  line-height: 1;
-}
-
-.driver-popover-content ol {
-  display: block;
-  list-style-type: decimal;
-  margin: 1em 0 1em 0;
-  padding-left: 40px;
-}
-
-.driver-popover-content ul {
-  display: block;
-  list-style-type: disc;
-  margin: 1em 0 1em 0;
-  padding-left: 40px;
-}
-
 // DriverEditor
+div#driver-popover-item .driver-popover-footer .driver-close-btn,
 div#driver-popover-item .driver-popover-footer .driver-save-btn,
-div#driver-popover-item .driver-popover-footer .driver-cancel-btn {
+div#driver-popover-item .driver-popover-footer .driver-cancel-btn,
+div#driver-popover-item .driver-popover-footer .driver-next-btn,
+div#driver-popover-item .driver-popover-footer .driver-prev-btn {
   border-color: transparent;
   font-family: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -126,17 +34,22 @@ div#driver-popover-item .driver-popover-footer .driver-cancel-btn {
   text-indent: 0px;
   text-shadow: none;
 
-  width: 80px;
-  height: 36px;
-  font-size: 16px;
+  height: 30px;
+  font-size: 12px;
   padding: 5px 12px;
 }
 
-.driver-popover-footer .driver-save-btn {
+.driver-popover-footer .driver-save-btn,
+.driver-popover-footer .driver-next-btn {
   background-color: $primary !important;
   color: $primary-invert !important;
 }
-.driver-popover-footer .driver-cancel-btn {
+.driver-popover-footer .driver-cancel-btn,
+.driver-popover-footer .driver-prev-btn {
+  background-color: $neutral-100 !important;
+  color: $neutral-100-invert !important;
+}
+.driver-popover-footer .driver-close-btn {
   background-color: $neutral-050 !important;
   color: $neutral-050-invert !important;
 }

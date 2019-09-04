@@ -146,7 +146,6 @@ chrome.runtime.onMessageExternal.addListener(
         })
         break
       case SELECT_TUTORIAL:
-        console.log(SELECT_TUTORIAL)
         await store.dispatch('selectTutorial', data)
         await store.dispatch('setActive', !store.state.active)
         sendResponse({

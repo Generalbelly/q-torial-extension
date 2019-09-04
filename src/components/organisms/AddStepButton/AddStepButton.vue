@@ -44,7 +44,6 @@ export default {
     PlusIcon,
     ModalIcon,
     TooltipIcon,
-    AddButton,
     BaseDropdown,
   },
   data() {

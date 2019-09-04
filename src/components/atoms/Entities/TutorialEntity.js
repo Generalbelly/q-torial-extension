@@ -4,6 +4,8 @@ import { validateUrlPath } from './PathOperators'
 import { has } from '../../../utils'
 
 export default class TutorialEntity extends Entity {
+  id = null
+
   name = null
 
   description = null
@@ -16,11 +18,15 @@ export default class TutorialEntity extends Entity {
 
   parameters = []
 
-  settings = {}
+  settings = {
+    once: true,
+  }
 
   buildUrl = null
 
   isActive = false
+
+  gaId = null
 
   steps = []
 

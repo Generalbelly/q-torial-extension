@@ -77,7 +77,6 @@ export default {
     },
     innerPathValue: {
       get() {
-        console.log(this.pathValue)
         return this.pathValue
       },
       set(newValue) {

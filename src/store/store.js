@@ -4,7 +4,6 @@ import {
   SET_USER,
   SET_SERVER_SIDE_ERRORS,
   SYNC_DATA,
-  UPDATE_TUTORIAL,
   SORT_TUTORIALS,
   SET_REQUESTING,
 } from './mutation-types'
@@ -44,7 +43,6 @@ const mutations = {
         }
       }
     })
-    console.log(SYNC_DATA, state)
   },
   [SORT_TUTORIALS](state, payload) {
     const [field, direction] = payload

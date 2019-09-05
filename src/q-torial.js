@@ -1,7 +1,8 @@
 import axios from 'axios'
 import uuidv4 from 'uuid'
-import './driver.js'
+import './driver.js/driver.min'
 import './spaUrlWatcher'
+import './driver.js/sass/main.scss'
 
 window.Qtorial =
   window.Qtorial ||

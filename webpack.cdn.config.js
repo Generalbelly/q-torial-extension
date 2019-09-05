@@ -23,15 +23,15 @@ const config = {
       },
       {
         test: /\.css$/,
-        use: ['css-loader'],
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.scss$/,
-        use: ['css-loader', 'sass-loader'],
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
         test: /\.sass$/,
-        use: ['css-loader', 'sass-loader?indentedSyntax'],
+        use: ['style-loader', 'css-loader', 'sass-loader?indentedSyntax'],
       },
       {
         test: /\.(png|jpg|gif|svg|ico)$/,

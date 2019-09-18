@@ -23,7 +23,7 @@ export default {
   mixins: [validatable],
   props: {
     value: {
-      type: String,
+      type: [String, Object],
       default: null,
     },
   },
@@ -42,6 +42,9 @@ export default {
       handler(value) {
         this.fakeValue = value
       },
+    },
+    fakeValue(value) {
+      console.log(value)
     },
   },
 }

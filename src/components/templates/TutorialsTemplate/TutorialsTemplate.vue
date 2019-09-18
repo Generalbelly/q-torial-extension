@@ -51,6 +51,7 @@
               :path-operator.sync="innerTutorial.pathOperator"
               :parameters.sync="innerTutorial.parameters"
               :domain.sync="innerTutorial.domain"
+              :settings.sync="innerTutorial.settings"
             />
           </validation-observer>
         </base-fade-transition-group>

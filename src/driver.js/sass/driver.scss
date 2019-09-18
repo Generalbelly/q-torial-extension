@@ -107,7 +107,7 @@ div#driver-popover-item {
 
   .driver-popover-footer {
     display: block;
-    margin-top: 10px;
+    margin-top: 15px;
 
     button {
       display: inline-block;
@@ -116,7 +116,7 @@ div#driver-popover-item {
       text-decoration: none;
       text-shadow: 1px 1px 0 #fff;
       color: $text-color;
-      font: 11px/normal sans-serif;
+      font: 11px / normal sans-serif;
       cursor: pointer;
       outline: 0;
       background-color: $button-bg;
@@ -145,7 +145,7 @@ div#driver-popover-item {
   }
 
   .driver-popover-title {
-    font: 19px/normal sans-serif;
+    font: 19px / normal sans-serif;
     margin: 0 0 5px;
     font-weight: bold;
     display: block;
@@ -156,7 +156,7 @@ div#driver-popover-item {
 
   .driver-popover-description {
     margin-bottom: 0;
-    font: 14px/normal sans-serif;
+    font: 14px / normal sans-serif;
     line-height: 1.5;
     color: $text-color;
     font-weight: normal;
@@ -165,13 +165,13 @@ div#driver-popover-item {
 }
 
 .driver-clearfix:before {
-  content: "";
+  content: '';
   display: table;
 }
 
 .driver-clearfix:after {
   clear: both;
-  content: "";
+  content: '';
   display: table;
 }
 
@@ -236,7 +236,7 @@ div#driver-highlighted-element-stage {
 
 .driver-fix-stacking {
   z-index: auto !important;
-  opacity: 1.0 !important;
+  opacity: 1 !important;
   -webkit-transform: none !important;
   -moz-transform: none !important;
   -ms-transform: none !important;

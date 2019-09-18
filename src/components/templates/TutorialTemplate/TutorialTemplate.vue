@@ -10,20 +10,15 @@
       @click:close="$emit('click:close')"
       @click:switch="shouldShowSideNavRight = !shouldShowSideNavRight"
     >
-      <div v-if="innerTutorial.id" @click="shouldShowTutorialForm = true">
-        <base-tooltip
-          label="Click to edit tutorial settings"
-          type="is-neutral-050"
-        >
-          <base-heading
-            :style="{
-              visibility: activeStepIndex !== 0 ? 'visible' : 'hidden',
-            }"
-          >
-            {{ innerTutorial.name }}
-          </base-heading>
-        </base-tooltip>
-      </div>
+      <base-heading
+        v-if="innerTutorial.id"
+        :style="{
+          visibility: activeStepIndex !== 0 ? 'visible' : 'hidden',
+        }"
+        class="has-text-centered"
+      >
+        {{ innerTutorial.name }}
+      </base-heading>
       <div class="step-definition has-margin-top-5">
         <p v-if="innerTutorial.steps.length === 0" class="has-text-centered">
           You haven't added any steps yet.
@@ -111,6 +106,7 @@
             :path-operator.sync="innerTutorial.pathOperator"
             :parameters.sync="innerTutorial.parameters"
             :domain.sync="innerTutorial.domain"
+            :settings.sync="innerTutorial.settings"
           />
         </validation-observer>
       </template>
@@ -144,9 +140,11 @@
       <template v-slot:content>
         <validation-observer ref="stepForm">
           <step-form
+            :first-step="innerStep.order === 0"
             :path-value.sync="innerStep.pathValue"
             :path-operator.sync="innerStep.pathOperator"
             :parameters.sync="innerStep.parameters"
+            :trigger.sync="innerStep.trigger"
           />
         </validation-observer>
       </template>
@@ -213,8 +211,9 @@ import {
   EDIT,
   PREVIEW,
   PREVIEW_DONE,
-  STEP_NOT_FOUND,
+  ELEMENT_NOT_FOUND,
   SAVE,
+  RESELECT_ELEMENT,
 } from '../../../constants/drvier-editor-command-types'
 import AddStepButton from '../../organisms/AddStepButton/AddStepButton'
 import BaseModal from '../../molecules/BaseModal/BaseModal'
@@ -349,7 +348,7 @@ export default {
       }
     },
     handleCommand(command, data) {
-      if (command === STEP_NOT_FOUND) {
+      if (command === ELEMENT_NOT_FOUND) {
         this.shouldShowSideNav = true
         this.showIframe()
         this.shouldShowElementToHighlightNotFoundModal = true
@@ -469,7 +468,7 @@ export default {
       this.shouldShowElementToHighlightNotFoundModal = false
       this.shouldShowSideNav = false
       this.hideIframe()
-      this.sendCommand(EDIT, {
+      this.sendCommand(RESELECT_ELEMENT, {
         step: this.innerStep,
         type: 'tooltip',
       })

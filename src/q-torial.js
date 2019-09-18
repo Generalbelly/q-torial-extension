@@ -1,8 +1,8 @@
 import axios from 'axios'
 import uuidv4 from 'uuid'
-import './driver.js/driver.min'
 import './spaUrlWatcher'
-import './driver.js/sass/main.scss'
+import './driver.js/driver.min'
+import './driver.js/sass/cdn.scss'
 
 window.Qtorial =
   window.Qtorial ||
@@ -35,7 +35,7 @@ window.Qtorial =
     const activateDriver = (tutorial, propertyId = null) => {
       let { once = [] } = log
 
-      const { name, steps } = tutorial
+      const { name, settings, steps } = tutorial
 
       let step = 0
 
@@ -55,7 +55,7 @@ window.Qtorial =
           step -= 1
         },
         onReset() {
-          if (tutorial.settings.once) {
+          if (settings.once) {
             if (!once.includes(tutorial.id)) {
               once = [...once, tutorial.id]
             }
@@ -81,12 +81,25 @@ window.Qtorial =
           }
         },
       })
-      const definedSteps = steps.map(step => ({
-        element: step.highlightTarget,
-        popover: step.config,
+      const definedSteps = steps.map(s => ({
+        element: s.highlightTarget,
+        popover: s.config,
       }))
       driver.defineSteps(definedSteps)
-      driver.start()
+
+      const firstStep = steps[0]
+      const { trigger } = firstStep
+      const { target, event, waitingTime } = trigger
+      const handler = () => {
+        window.setTimeout(() => {
+          driver.start()
+        }, waitingTime)
+      }
+      if (target === 'window') {
+        handler()
+      } else {
+        document.querySelector(target).addEventListener(event, handler)
+      }
     }
 
     const fetchTutorial = async (url, key) => {
@@ -99,16 +112,13 @@ window.Qtorial =
 
         const { once = [] } = log
 
-        const { steps = [] } = tutorial
+        const { steps = [], settings = {} } = tutorial
 
         if (
           steps.length > 0 &&
-          (!tutorial.settings.once ||
-            (tutorial.settings.once && !once.includes(key)))
+          (!settings.once || (settings.once && !once.includes(key)))
         ) {
-          window.setTimeout(() => {
-            activateDriver(tutorial, ga ? ga.propertyId : null)
-          }, 1000)
+          activateDriver(tutorial, ga ? ga.propertyId : null)
         }
       } catch (e) {
         console.log(e)

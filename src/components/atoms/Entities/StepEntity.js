@@ -4,13 +4,13 @@ import { validateUrlPath } from './PathOperators'
 export default class StepEntity extends Entity {
   type = 'tooltip' // tooltip, modal
 
-  triggerTarget = null // window #id, .class
-
-  triggerEvent = null // load, click, focus, error, null
+  trigger = {
+    target: 'window', // window #id, .class
+    event: 'load', // load, click, focus, error, null
+    waitingTime: 0,
+  }
 
   highlightTarget = null // #id, .class, modal
-
-  waitingTime = 0
 
   config = {}
 

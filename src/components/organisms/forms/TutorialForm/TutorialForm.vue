@@ -19,7 +19,7 @@
     </div>
     <div class="form__condition-field">
       <span class="label">
-        Start this tutorial for a user visiting the following conditions.
+        Start this tutorial for a user when the following conditions are met.
       </span>
       <div class="url-path">
         <div class="url-path__operator">
@@ -52,6 +52,11 @@
             <validatable-domain-field name="domain" v-model="innerDomain" />
           </div>
         </base-fade-transition>
+      </div>
+      <div>
+        <checkbox-field v-model="settingsOnce">
+          When the user has never seen this tutorial
+        </checkbox-field>
       </div>
     </div>
   </div>
@@ -110,6 +115,14 @@ export default {
       type: String,
       default: null,
     },
+    settings: {
+      type: Object,
+      default() {
+        return {
+          once: true,
+        }
+      },
+    },
   },
   data() {
     return {
@@ -119,8 +132,8 @@ export default {
     }
   },
   computed: {
-    hostname() {
-      return window.parent.location.hostname
+    origin() {
+      return window.parent.location.origin
     },
     innerName: {
       get() {
@@ -170,6 +183,17 @@ export default {
         this.$emit('update:domain', newValue)
       },
     },
+    settingsOnce: {
+      get() {
+        return this.settings.once
+      },
+      set(newValue) {
+        this.$emit('update:settings', {
+          ...this.settings,
+          once: newValue,
+        })
+      },
+    },
   },
   watch: {
     domainRequired: {
@@ -177,9 +201,9 @@ export default {
         if (
           value &&
           !this.innerDomain &&
-          this.hostname !== process.env.VUE_APP_URL
+          this.origin !== process.env.VUE_APP_URL
         ) {
-          this.innerDomain = this.hostname
+          this.innerDomain = this.origin
         } else if (!value) {
           this.innerDomain = null
         }

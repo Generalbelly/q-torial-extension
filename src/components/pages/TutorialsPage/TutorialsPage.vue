@@ -15,6 +15,7 @@
     @sort="onSort"
     @click:close="$emit('click:close')"
     @click:delete="onClickDelete"
+    @update:tutorial="onUpdateTutorial"
   />
 </template>
 <script>
@@ -54,6 +55,7 @@ export default {
       'deleteTutorial',
       'selectTutorial',
       'sortTutorials',
+      'updateTutorial',
     ]),
     async onClickAdd() {
       this.selectTutorial({ id: null })
@@ -91,6 +93,10 @@ export default {
         searchQuery: query,
       })
     }, 500),
+    onUpdateTutorial(tutorial) {
+      const data = tutorial.toPlainObject()
+      this.updateTutorial(data)
+    },
   },
 }
 </script>

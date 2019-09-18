@@ -12,7 +12,8 @@ import {
   PREVIEW_DONE,
   SAVE,
   CANCEL,
-  STEP_NOT_FOUND,
+  ELEMENT_NOT_FOUND,
+  RESELECT_ELEMENT,
 } from '../../../constants/drvier-editor-command-types'
 import StepEntity from '../../atoms/Entities/StepEntity'
 import { sendCommand } from '../../../api'
@@ -77,26 +78,25 @@ export default {
       )
     },
     handleCommand(command, data) {
+      const { step = {}, steps = [], type = null } = data
       if (command === ADD) {
-        const { type } = data
         this.selectElementToHighlight(type)
       } else if (command === EDIT) {
-        const { step, type = null } = data
         this.isEditing = true
         this.step = new StepEntity(step)
-        if (document.querySelector(step.highlightTarget)) {
+        const elementFound = document.querySelector(step.highlightTarget)
+        if (elementFound) {
           this.highlight(step.highlightTarget, step.config)
-        } else if (type) {
-          this.selectElementToHighlight(type)
         } else {
-          sendCommand(STEP_NOT_FOUND)
+          sendCommand(ELEMENT_NOT_FOUND)
         }
+      } else if (command === RESELECT_ELEMENT) {
+        this.selectElementToHighlight('tooltip')
       } else if (command === PREVIEW) {
-        const { steps } = data
         this.preview(steps)
       }
     },
-    selectElementToHighlight(type) {
+    selectElementToHighlight(type = 'modal') {
       this.isEditing = true
       this.addUserScreenClickHandler()
       if (type === 'modal') {

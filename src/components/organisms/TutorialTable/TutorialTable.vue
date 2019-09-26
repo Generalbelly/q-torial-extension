@@ -12,7 +12,7 @@
         {{ props.row.name }}
       </b-table-column>
       <b-table-column field="domain" label="Domain">
-        {{ props.row.domain }}
+        {{ props.row.domain || '-' }}
       </b-table-column>
       <b-table-column field="isActive" label="Active">
         {{ props.row.isActive ? 'YES' : 'NO' }}

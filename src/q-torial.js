@@ -32,12 +32,18 @@ window.Qtorial =
       }
     }
 
+    const storePerfomance = async (data = {}) => {
+      const URL = `https://us-central1-${process.env.VUE_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/storePerformance`
+      return axios.post(URL, data)
+    }
+
     const activateDriver = (tutorial, propertyId = null) => {
-      let { once = [] } = log
+      let { once = [], EU_ID } = log
 
       const { name, settings, steps } = tutorial
 
       let step = 0
+      let startTime = 0
 
       const EVENT_LABEL = name
       const GA_TRACKING_ID = propertyId
@@ -54,7 +60,7 @@ window.Qtorial =
         onPrevious() {
           step -= 1
         },
-        onReset() {
+        async onReset() {
           if (settings.once) {
             if (!once.includes(tutorial.id)) {
               once = [...once, tutorial.id]
@@ -63,6 +69,15 @@ window.Qtorial =
               once,
             })
           }
+
+          await storePerfomance({
+            tutorialId: tutorial.id,
+            completeSteps: step,
+            allSteps: steps.length,
+            complete: step === steps.length,
+            elapsedTime: new Date().getTime() - startTime,
+            euId: EU_ID,
+          })
 
           if (!gtag || !GA_TRACKING_ID) return
 
@@ -93,6 +108,7 @@ window.Qtorial =
       const handler = () => {
         window.setTimeout(() => {
           driver.start()
+          startTime = new Date().getTime()
         }, waitingTime)
       }
       if (target === 'window') {

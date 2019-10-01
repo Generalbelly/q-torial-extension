@@ -9,6 +9,7 @@ window.Qtorial =
   (() => {
     const LOG_KEY = process.env.VUE_APP_NAME
     let log = {}
+    let _key = null
 
     const retrieveLog = () => {
       try {
@@ -71,6 +72,7 @@ window.Qtorial =
           }
 
           await storePerfomance({
+            key: _key,
             tutorialId: tutorial.id,
             completeSteps: step,
             allSteps: steps.length,
@@ -143,6 +145,7 @@ window.Qtorial =
 
     return {
       init(key) {
+        _key = key
         fetchTutorial(window.location.href, key)
 
         log = retrieveLog()

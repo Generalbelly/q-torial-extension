@@ -43,9 +43,6 @@ export default {
         this.fakeValue = value
       },
     },
-    fakeValue(value) {
-      console.log(value)
-    },
   },
 }
 </script>

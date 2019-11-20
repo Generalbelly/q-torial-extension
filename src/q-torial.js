@@ -34,7 +34,7 @@ window.Qtorial =
     }
 
     const storePerfomance = async (data = {}) => {
-      const URL = `https://us-central1-${process.env.VUE_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/storePerformance`
+      const URL = `${process.env.VUE_APP_CLOUD_FUNCTION_ENDPOINT}/storePerformance`
       return axios.post(URL, data)
     }
 
@@ -122,13 +122,17 @@ window.Qtorial =
 
     const fetchTutorial = async (url, key) => {
       try {
-        const URL = `https://us-central1-${process.env.VUE_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/getTutorial?key=${key}&url=${url}`
-        const response = await axios.get(URL)
+        const { once = [] } = log
+
+        const URL = `${process.env.VUE_APP_CLOUD_FUNCTION_ENDPOINT}/getTutorial`
+        const response = await axios.post(URL, {
+          url,
+          key,
+          once,
+        })
         const { tutorial = null, ga = null } = response.data
 
         if (!tutorial) return
-
-        const { once = [] } = log
 
         const { steps = [], settings = {} } = tutorial
 
@@ -139,16 +143,15 @@ window.Qtorial =
           activateDriver(tutorial, ga ? ga.propertyId : null)
         }
       } catch (e) {
-        console.log(e)
+        console.error(e)
       }
     }
 
     return {
       init(key) {
         _key = key
-        fetchTutorial(window.location.href, key)
-
         log = retrieveLog()
+        fetchTutorial(window.location.href, _key)
 
         if (!log.EU_ID) {
           const identifier = uuidv4()

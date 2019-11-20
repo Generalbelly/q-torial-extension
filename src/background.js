@@ -77,7 +77,6 @@ const connectHandler = async port => {
   })
 
   const browserActionHandler = async () => {
-    // TODO activeとそうじゃないときにアイコンの色を変更する
     await store.dispatch('setActive', !store.state.active)
     if (store.state.active) {
       await startApp(true)
@@ -91,7 +90,7 @@ const connectHandler = async port => {
   const onMessageHandler = async request => {
     const { status, command = '', data = null } = request
     if (status === ERROR) {
-      console.log(request)
+      console.error(request)
     }
     if (command === PASS_DATA_TO_BACKGROUND) {
       await store.dispatch(data.action, data.payload)
@@ -102,7 +101,7 @@ const connectHandler = async port => {
 
   port.onMessage.addListener(onMessageHandler)
 
-  port.onDisconnect.addListener(() => {
+  port.onDisconnect.addListener(async () => {
     connected = false
     unwatch()
     unsubscribe()
@@ -159,7 +158,3 @@ chrome.runtime.onMessageExternal.addListener(
     return true
   }
 )
-
-window.onload = async () => {
-  await store.dispatch('setActive', false)
-}

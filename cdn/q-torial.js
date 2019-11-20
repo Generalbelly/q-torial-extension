@@ -2643,9 +2643,9 @@
                 case 0:
                   return (
                     (e = r.length > 0 && void 0 !== r[0] ? r[0] : {}),
-                    (n = 'https://us-central1-'.concat(
-                      'still-protocol-228301',
-                      '.cloudfunctions.net/storePerformance'
+                    (n = ''.concat(
+                      'https://us-central1-still-protocol-228301.cloudfunctions.net',
+                      '/storePerformance'
                     )),
                     t.abrupt('return', p.a.post(n, e))
                   )
@@ -2761,40 +2761,37 @@
                   case 0:
                     return (
                       (t.prev = 0),
-                      (r = 'https://us-central1-'
-                        .concat(
-                          'still-protocol-228301',
-                          '.cloudfunctions.net/getTutorial?key='
-                        )
-                        .concat(n, '&url=')
-                        .concat(e)),
-                      (t.next = 4),
-                      p.a.get(r)
+                      (r = i.once),
+                      (o = void 0 === r ? [] : r),
+                      (s = ''.concat(
+                        'https://us-central1-still-protocol-228301.cloudfunctions.net',
+                        '/getTutorial'
+                      )),
+                      (t.next = 5),
+                      p.a.post(s, { url: e, key: n, once: o })
                     )
-                  case 4:
+                  case 5:
                     if (
-                      ((o = t.sent),
-                      (s = o.data),
-                      (a = s.tutorial),
-                      (c = void 0 === a ? null : a),
-                      (f = s.ga),
+                      ((a = t.sent),
+                      (c = a.data),
+                      (f = c.tutorial),
                       (l = void 0 === f ? null : f),
-                      c)
+                      (h = c.ga),
+                      (d = void 0 === h ? null : h),
+                      l)
                     ) {
-                      t.next = 8
+                      t.next = 9
                       break
                     }
                     return t.abrupt('return')
-                  case 8:
-                    ;(h = i.once),
-                      (d = void 0 === h ? [] : h),
-                      (v = c.steps),
+                  case 9:
+                    ;(v = l.steps),
                       (y = void 0 === v ? [] : v),
-                      (g = c.settings),
+                      (g = l.settings),
                       (m = void 0 === g ? {} : g),
                       y.length > 0 &&
-                        (!m.once || (m.once && !d.includes(n))) &&
-                        u(c, l ? l.propertyId : null),
+                        (!m.once || (m.once && !o.includes(n))) &&
+                        u(l, d ? d.propertyId : null),
                       (t.next = 16)
                     break
                   case 13:
@@ -2817,14 +2814,15 @@
         init: function(t) {
           if (
             ((s = t),
-            f(window.location.href, t),
-            !(i = (function() {
+            (i = (function() {
               try {
                 return JSON.parse(localStorage.getItem('q-torial')) || {}
               } catch (t) {
                 return !1
               }
-            })()).EU_ID)
+            })()),
+            f(window.location.href, s),
+            !i.EU_ID)
           ) {
             var e = d()()
             i = a({ EU_ID: e })

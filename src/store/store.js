@@ -66,7 +66,7 @@ const actions = {
   sortTutorials({ commit }, payload) {
     commit(SORT_TUTORIALS, payload)
   },
-  selectTutorial({ commit, dispatch, state }, payload) {
+  selectTutorial({ commit }, payload) {
     return new Promise(async (resolve, reject) => {
       try {
         const data = await sendCommand(PASS_DATA_TO_BACKGROUND, {
@@ -76,7 +76,6 @@ const actions = {
         commit(SYNC_DATA, data)
         resolve()
       } catch (e) {
-        console.error(e)
         reject(e)
       }
     })

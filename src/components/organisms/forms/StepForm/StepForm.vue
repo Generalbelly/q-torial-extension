@@ -139,12 +139,9 @@ export default {
     },
     innerTrigger: {
       get() {
-        console.log(this.trigger)
-        console.log(JSON.stringify(this.trigger))
         return JSON.stringify(this.trigger)
       },
       set(newValue) {
-        console.log(newValue)
         this.$emit('update:trigger', JSON.parse(newValue))
       },
     },

@@ -169,8 +169,9 @@ export default {
   },
   methods: {
     onClickEdit(tutorial) {
-      this.innerTutorial = tutorial
-      this.shouldShowTutorialForm = true
+      this.$emit('select', tutorial)
+      // this.innerTutorial = tutorial
+      // this.shouldShowTutorialForm = true
     },
     async onClickConfirm() {
       const valid = await this.$refs.tutorialForm.validate()

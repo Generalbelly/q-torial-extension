@@ -1,19 +1,21 @@
 {
-  "name": "q-torial-extension",
-  "description": "q-torial makes it easy and fun to build and maintain tutorials for user onboarding by enabling you to create code-free",
-  "version": null,
+  "name": "Qtorial",
+  "description": "Qtorial makes it easy and fun to build and maintain tutorials for user onboarding by enabling you to create code-free",
+  "version": "0.0.1",
   "manifest_version": 2,
   "icons": {
-    "48": "icons/icon_48.png",
-    "128": "icons/icon_128.png"
+    "16": "icons/icon-16x16.png",
+    "32": "icons/icon-32x32.png",
+    "48": "icons/icon-48x48.png",
+    "128": "icons/icon-128x128.png"
   },
   "browser_action": {
-    "default_title": "q-torial-extension"
+    "default_title": "Qtorial"
   },
   "background": {
     "scripts": ["background.js"]
   },
-  "permissions": ["*://*/*", "tabs", "background"],
+  "permissions": ["tabs", "background", "activeTab"],
   "content_scripts": [
     {
       "matches": ["*://*/*"],
@@ -22,7 +24,11 @@
     }
   ],
   "externally_connectable": {
-    "matches": ["https://local.q-torial.com:8080", "https://q-torial.com"]
+    "matches": [
+      "https://local.q-torial.com:8080/*",
+      "https://q-torial.firebaseapp.com/*",
+      "https://still-protocol-228301.firebaseapp.com/*"
+    ]
   },
   "web_accessible_resources": ["contentScript.css", "spaUrlWatcher.js"],
   "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"

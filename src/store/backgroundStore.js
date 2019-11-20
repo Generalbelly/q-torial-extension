@@ -106,7 +106,7 @@ const actions = {
     const {
       searchQuery = null,
       orderBy = ['createdAt', 'desc'],
-      useCache = true,
+      useCache = false,
     } = payload
     commit(SET_REQUESTING, true)
 
@@ -226,11 +226,13 @@ const actions = {
       })
     })
     await batch.commit()
-    commit(ADD_TUTORIAL, {
+    const tutorial = {
       ...fields,
       id: tutorialRef.id,
       steps: savedSteps,
-    })
+    }
+    commit(ADD_TUTORIAL, tutorial)
+    commit(SELECT_TUTORIAL, tutorial)
     commit(SET_REQUESTING, false)
   },
   updateTutorial: async ({ commit, state }, payload) => {
@@ -306,7 +308,6 @@ const actions = {
   addStep: async ({ commit, state, getters }, payload) => {
     commit(SET_REQUESTING, true)
     const { data } = payload
-    console.log(data)
     const { id, ...fields } = data
 
     const stepRef = await firebase

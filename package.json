@@ -1,6 +1,6 @@
 {
   "name": "q-torial-extension",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "q-torial-extension",
   "author": "Nobuyoshi Shimmen <nobuyoshi.shimmen@gmail.com>",
   "private": true,
@@ -12,12 +12,10 @@
     "build": "cross-env NODE_ENV=production webpack --hide-modules",
     "build:dev": "cross-env NODE_ENV=development webpack --hide-modules",
     "build-zip": "node scripts/build-zip.js",
-    "watch": "yarn build --watch",
-    "watch:dev": "cross-env HMR=true yarn build:dev --watch",
-    "build-cdn": "cross-env NODE_ENV=production webpack --hide-modules --config ./webpack.cdn.config.js",
-    "build-cdn:dev": "cross-env NODE_ENV=development webpack --hide-modules --config ./webpack.cdn.config.js",
-    "watch-cdn": "cross-env HMR=true yarn build-cdn --watch",
-    "watch-cdn:dev": "cross-env HMR=true yarn build-cdn:dev --watch"
+    "watch": "cross-env  NODE_ENV=production yarn build --watch",
+    "watch:dev": "cross-env NODE_ENV=development HMR=true yarn build:dev --watch",
+    "cdn": "cross-env NODE_ENV=production webpack --hide-modules --config ./webpack.cdn.config.js",
+    "cdn:dev": "cross-env NODE_ENV=development webpack --hide-modules --config ./webpack.cdn.config.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.17",

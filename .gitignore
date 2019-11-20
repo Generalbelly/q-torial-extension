@@ -9,7 +9,7 @@ node_modules
 
 # env files
 .env
-.env.prod
+.env.production
 
 # Editor directories and files
 .idea

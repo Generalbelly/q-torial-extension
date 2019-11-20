@@ -85,7 +85,8 @@ const config = {
       },
     ]),
     new Dotenv({
-      path: process.env.NODE_ENV === 'production' ? './.env.prod' : './.env', // load this now instead of the ones in '.env'
+      path:
+        process.env.NODE_ENV === 'production' ? './.env.production' : './.env', // load this now instead of the ones in '.env'
     }),
   ],
 }

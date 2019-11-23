@@ -989,8 +989,8 @@
       H = r.JSON,
       D = H && H.stringify,
       z = d('toPrimitive'),
-      U = T.f,
-      q = l('symbol-registry'),
+      q = T.f,
+      U = l('symbol-registry'),
       V = l('symbols'),
       G = l('op-symbols'),
       W = l('wks'),
@@ -1055,7 +1055,7 @@
         return t
       },
       nt = function(t) {
-        var e = U.call(this, (t = S(t, !0)))
+        var e = q.call(this, (t = S(t, !0)))
         return (
           !(this === J && o(V, t) && !o(G, t)) &&
           (!(e || !o(this, t) || !o(V, t) || (o(this, C) && this[C][t])) || e)
@@ -1123,11 +1123,11 @@
       { target: 'Symbol', stat: !0, forced: !K },
       {
         for: function(t) {
-          return o(q, (t += '')) ? q[t] : (q[t] = F(t))
+          return o(U, (t += '')) ? U[t] : (U[t] = F(t))
         },
         keyFor: function(t) {
           if (!Z(t)) throw TypeError(t + ' is not a symbol')
-          for (var e in q) if (q[e] === t) return e
+          for (var e in U) if (U[e] === t) return e
         },
         useSetter: function() {
           Y = !0
@@ -2625,7 +2625,7 @@
               }
               return t
             })({}, i, t)),
-            localStorage.setItem('q-torial', JSON.stringify(i)),
+            localStorage.setItem('q-torial-staging', JSON.stringify(i)),
             i
           )
         } catch (t) {
@@ -2644,7 +2644,7 @@
                   return (
                     (e = r.length > 0 && void 0 !== r[0] ? r[0] : {}),
                     (n = ''.concat(
-                      'https://us-central1-still-protocol-228301.cloudfunctions.net',
+                      'https://q-torial-api-rj4oc6eena-uc.a.run.app',
                       '/storePerformance'
                     )),
                     t.abrupt('return', p.a.post(n, e))
@@ -2764,7 +2764,7 @@
                       (r = i.once),
                       (o = void 0 === r ? [] : r),
                       (s = ''.concat(
-                        'https://us-central1-still-protocol-228301.cloudfunctions.net',
+                        'https://q-torial-api-rj4oc6eena-uc.a.run.app',
                         '/getTutorial'
                       )),
                       (t.next = 5),
@@ -2795,7 +2795,7 @@
                       (t.next = 16)
                     break
                   case 13:
-                    ;(t.prev = 13), (t.t0 = t.catch(0)), console.log(t.t0)
+                    ;(t.prev = 13), (t.t0 = t.catch(0)), console.error(t.t0)
                   case 16:
                   case 'end':
                     return t.stop()
@@ -2816,7 +2816,9 @@
             ((s = t),
             (i = (function() {
               try {
-                return JSON.parse(localStorage.getItem('q-torial')) || {}
+                return (
+                  JSON.parse(localStorage.getItem('q-torial-staging')) || {}
+                )
               } catch (t) {
                 return !1
               }
@@ -2988,12 +2990,12 @@
           -1 === O.indexOf('Chrome/66')
         )
       }),
-      U =
+      q =
         z ||
         !v(function(t) {
           N.all(t).catch(function() {})
         }),
-      q = function(t) {
+      U = function(t) {
         var e
         return !(!f(t) || 'function' != typeof (e = t.then)) && e
       },
@@ -3024,7 +3026,7 @@
                             l && (l.exit(), (a = !0))),
                         r === n.promise
                           ? f(C('Promise-chain cycle'))
-                          : (s = q(r))
+                          : (s = U(r))
                           ? s.call(r, u, f)
                           : u(r))
                       : f(o)
@@ -3095,7 +3097,7 @@
           ;(e.done = !0), r && (e = r)
           try {
             if (t === n) throw C("Promise can't be resolved itself")
-            var o = q(n)
+            var o = U(n)
             o
               ? m(function() {
                   var r = { done: !1 }
@@ -3192,7 +3194,7 @@
         }
       ),
       u(
-        { target: s, stat: !0, forced: U },
+        { target: s, stat: !0, forced: q },
         {
           all: function(t) {
             var e = this,
@@ -4801,8 +4803,8 @@
                 H = {}.propertyIsEnumerable,
                 D = l('symbol-registry'),
                 z = l('symbols'),
-                U = l('op-symbols'),
-                q = Object.prototype,
+                q = l('op-symbols'),
+                U = Object.prototype,
                 V = 'function' == typeof R && !!T.f,
                 G = r.QObject,
                 W = !G || !G.prototype || !G.prototype.findChild,
@@ -4821,8 +4823,8 @@
                     )
                   })
                     ? function(t, e, n) {
-                        var r = C(q, e)
-                        r && delete q[e], A(t, e, n), r && t !== q && A(q, e, r)
+                        var r = C(U, e)
+                        r && delete U[e], A(t, e, n), r && t !== U && A(U, e, r)
                       }
                     : A,
                 $ = function(t) {
@@ -4839,7 +4841,7 @@
                       },
                 Y = function t(e, n, r) {
                   return (
-                    e === q && t(U, n, r),
+                    e === U && t(q, n, r),
                     b(e),
                     (n = O(n, !0)),
                     b(r),
@@ -4861,7 +4863,7 @@
                 Q = function(t) {
                   var e = H.call(this, (t = O(t, !0)))
                   return (
-                    !(this === q && i(z, t) && !i(U, t)) &&
+                    !(this === U && i(z, t) && !i(q, t)) &&
                     (!(
                       e ||
                       !i(this, t) ||
@@ -4873,7 +4875,7 @@
                 },
                 Z = function(t, e) {
                   if (
-                    ((t = S(t)), (e = O(e, !0)), t !== q || !i(z, e) || i(U, e))
+                    ((t = S(t)), (e = O(e, !0)), t !== U || !i(z, e) || i(q, e))
                   ) {
                     var n = C(t, e)
                     return (
@@ -4892,11 +4894,11 @@
                 },
                 et = function(t) {
                   for (
-                    var e, n = t === q, r = _(n ? U : S(t)), o = [], s = 0;
+                    var e, n = t === U, r = _(n ? q : S(t)), o = [], s = 0;
                     r.length > s;
 
                   )
-                    !i(z, (e = r[s++])) || (n && !i(q, e)) || o.push(z[e])
+                    !i(z, (e = r[s++])) || (n && !i(U, e)) || o.push(z[e])
                   return o
                 }
               V ||
@@ -4908,10 +4910,10 @@
                     return (
                       s &&
                         W &&
-                        J(q, t, {
+                        J(U, t, {
                           configurable: !0,
                           set: function e(n) {
-                            this === q && e.call(U, n),
+                            this === U && e.call(q, n),
                               i(this, B) && i(this[B], t) && (this[B][t] = !1),
                               J(this, t, k(1, n))
                           },
@@ -4929,7 +4931,7 @@
                 (n(30).f = j.f = tt),
                 (n(33).f = Q),
                 (T.f = et),
-                s && !n(20) && c(q, 'propertyIsEnumerable', Q, !0),
+                s && !n(20) && c(U, 'propertyIsEnumerable', Q, !0),
                 (v.f = function(t) {
                   return $(d(t))
                 })),
@@ -7760,7 +7762,7 @@
                   t
                 )
               }
-              function U(t, e) {
+              function q(t, e) {
                 for (var n = 0; n < e.length; n++) {
                   var r = e[n]
                   ;(r.enumerable = r.enumerable || !1),
@@ -7770,9 +7772,9 @@
                 }
               }
               n.d(e, 'default', function() {
-                return q
+                return U
               })
-              var q = (function() {
+              var U = (function() {
                 function t() {
                   var e =
                     arguments.length > 0 && void 0 !== arguments[0]
@@ -8109,7 +8111,7 @@
                         e && this.overlay.highlight(e)
                       },
                     },
-                  ]) && U(e.prototype, n),
+                  ]) && q(e.prototype, n),
                   t
                 )
               })()

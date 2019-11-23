@@ -14,8 +14,9 @@
     "build-zip": "node scripts/build-zip.js",
     "watch": "cross-env  NODE_ENV=production yarn build --watch",
     "watch:dev": "cross-env NODE_ENV=development HMR=true yarn build:dev --watch",
-    "cdn": "cross-env NODE_ENV=production webpack --hide-modules --config ./webpack.cdn.config.js",
-    "cdn:dev": "cross-env NODE_ENV=development webpack --hide-modules --config ./webpack.cdn.config.js"
+    "cdn": "cross-env NODE_ENV=production webpack --hide-modules --config ./webpack.cdn.config.js && yarn copy-file",
+    "cdn:dev": "cross-env NODE_ENV=development webpack --hide-modules --config ./webpack.cdn.config.js && yarn copy-file",
+    "copy-file": "cp cdn/q-torial.js \"/Users/nobuyoshishimmen/dev/q-torial/public/js/\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.17",

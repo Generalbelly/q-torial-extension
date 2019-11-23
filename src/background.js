@@ -41,11 +41,12 @@ const connectHandler = async port => {
   }
 
   async function startApp(resetState = false) {
-    if (resetState) {
-      await store.dispatch(`resetState`)
-    }
     const user = await firebase.checkAuth()
     if (user) {
+      if (resetState) {
+        await store.dispatch(`resetState`)
+      }
+      await store.dispatch('setActive', true)
       sendCommand(START_EXT)
     } else {
       sendCommand(REDIRECT_TO_APP)
@@ -77,25 +78,47 @@ const connectHandler = async port => {
   })
 
   const browserActionHandler = async () => {
-    await store.dispatch('setActive', !store.state.active)
-    if (store.state.active) {
+    if (!store.state.active) {
       await startApp(true)
     } else {
       await endApp()
+      await store.dispatch('setActive', false)
     }
   }
 
   chrome.browserAction.onClicked.addListener(browserActionHandler)
 
   const onMessageHandler = async request => {
-    const { status, command = '', data = null } = request
-    if (status === ERROR) {
-      console.error(request)
-    }
-    if (command === PASS_DATA_TO_BACKGROUND) {
-      await store.dispatch(data.action, data.payload)
-    } else if (command === SYNC_DATA) {
-      sendCommand(UPDATE_STATE, { ...store.state, ...store.getters })
+    const { status, command = '', data = {} } = request
+    console.log(command)
+    console.log(data)
+    switch (command) {
+      case ERROR:
+        console.error(request)
+        break
+      case PASS_DATA_TO_BACKGROUND:
+        await store.dispatch(data.action, data.payload)
+        break
+      case SYNC_DATA:
+        sendCommand(UPDATE_STATE, { ...store.state, ...store.getters })
+        break
+      case SIGN_IN:
+        try {
+          await firebase.signIn(data.email, data.password)
+        } catch (e) {
+          console.error(e)
+        }
+        break
+      case SELECT_TUTORIAL:
+        await store.dispatch('selectTutorial', data)
+        await store.dispatch('setActive', true)
+        sendResponse({
+          status: OK,
+          message: 'Tutorial is just selected.',
+        })
+        break
+      default:
+        break
     }
   }
 
@@ -146,7 +169,7 @@ chrome.runtime.onMessageExternal.addListener(
         break
       case SELECT_TUTORIAL:
         await store.dispatch('selectTutorial', data)
-        await store.dispatch('setActive', !store.state.active)
+        await store.dispatch('setActive', true)
         sendResponse({
           status: OK,
           message: 'Tutorial is just selected.',

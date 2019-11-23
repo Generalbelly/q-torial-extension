@@ -7,7 +7,9 @@ export default {
     }
   },
   mounted() {
-    this.iframeElement = window.parent.document.querySelector('iframe#q-torial')
+    this.iframeElement = window.parent.document.querySelector(
+      `iframe#${process.env.VUE_APP_NAME}`
+    )
   },
   methods: {
     changeIframeStyle(styles) {

@@ -136,6 +136,7 @@ port.onDisconnect.addListener(() => {
 })
 
 let isWebListenerAttached = false
+let openedWindow = null
 port.onMessage.addListener(async request => {
   const sendCommand = (
     { status = null, message = null, data = null, command = null },
@@ -199,7 +200,15 @@ port.onMessage.addListener(async request => {
         break
       case REDIRECT_TO_APP:
         if (window.location.origin !== process.env.VUE_APP_URL) {
-          window.location.href = `${process.env.VUE_APP_URL}?source=extension&redirect=${window.location.href}`
+          const w = 520
+          const h = 570
+          const left = window.screen.width / 2 - w / 2
+          const top = window.screen.height / 2 - h / 2
+          openedWindow = window.open(
+            `${process.env.VUE_APP_URL}?source=extension&redirect=${window.location.href}`,
+            '_blank',
+            `location=yes,height=${h},width=${w},top=${top},left=${left},scrollbars=yes,status=yes`
+          )
         }
         break
       case ROUTE:
@@ -208,6 +217,10 @@ port.onMessage.addListener(async request => {
       case UPDATE_AUTH_STATE:
         try {
           await store.dispatch('setUser', data)
+          if (store.state.user && openedWindow) {
+            openedWindow.close()
+            await startApp()
+          }
           sendCommand({
             status: OK,
           })

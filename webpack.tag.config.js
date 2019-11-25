@@ -8,7 +8,7 @@ const config = {
     'q-torial': './q-torial.js',
   },
   output: {
-    path: __dirname + '/cdn',
+    path: __dirname + '/tag',
     filename: '[name].js',
   },
   resolve: {

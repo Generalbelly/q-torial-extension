@@ -2644,7 +2644,7 @@
                   return (
                     (e = r.length > 0 && void 0 !== r[0] ? r[0] : {}),
                     (n = ''.concat(
-                      'https://q-torial-api-rj4oc6eena-uc.a.run.app',
+                      'https://storage.googleapis.com/still-protocol-228301-public/js/q-torial.js',
                       '/storePerformance'
                     )),
                     t.abrupt('return', p.a.post(n, e))
@@ -2764,7 +2764,7 @@
                       (r = i.once),
                       (o = void 0 === r ? [] : r),
                       (s = ''.concat(
-                        'https://q-torial-api-rj4oc6eena-uc.a.run.app',
+                        'https://storage.googleapis.com/still-protocol-228301-public/js/q-torial.js',
                         '/getTutorial'
                       )),
                       (t.next = 5),

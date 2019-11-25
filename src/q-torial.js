@@ -123,7 +123,6 @@ window.Qtorial =
     const fetchTutorial = async (url, key) => {
       try {
         const { once = [] } = log
-
         const URL = `${process.env.VUE_APP_CLOUD_FUNCTION_ENDPOINT}/getTutorial`
         const response = await axios.post(URL, {
           url,

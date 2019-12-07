@@ -989,8 +989,8 @@
       H = r.JSON,
       D = H && H.stringify,
       z = d('toPrimitive'),
-      q = T.f,
-      U = l('symbol-registry'),
+      U = T.f,
+      q = l('symbol-registry'),
       V = l('symbols'),
       G = l('op-symbols'),
       W = l('wks'),
@@ -1055,7 +1055,7 @@
         return t
       },
       nt = function(t) {
-        var e = q.call(this, (t = S(t, !0)))
+        var e = U.call(this, (t = S(t, !0)))
         return (
           !(this === J && o(V, t) && !o(G, t)) &&
           (!(e || !o(this, t) || !o(V, t) || (o(this, C) && this[C][t])) || e)
@@ -1123,11 +1123,11 @@
       { target: 'Symbol', stat: !0, forced: !K },
       {
         for: function(t) {
-          return o(U, (t += '')) ? U[t] : (U[t] = F(t))
+          return o(q, (t += '')) ? q[t] : (q[t] = F(t))
         },
         keyFor: function(t) {
           if (!Z(t)) throw TypeError(t + ' is not a symbol')
-          for (var e in U) if (U[e] === t) return e
+          for (var e in q) if (q[e] === t) return e
         },
         useSetter: function() {
           Y = !0
@@ -2644,7 +2644,7 @@
                   return (
                     (e = r.length > 0 && void 0 !== r[0] ? r[0] : {}),
                     (n = ''.concat(
-                      'https://storage.googleapis.com/still-protocol-228301-public/js/q-torial.js',
+                      'https://us-central1-still-protocol-228301.cloudfunctions.net',
                       '/storePerformance'
                     )),
                     t.abrupt('return', p.a.post(n, e))
@@ -2764,7 +2764,7 @@
                       (r = i.once),
                       (o = void 0 === r ? [] : r),
                       (s = ''.concat(
-                        'https://storage.googleapis.com/still-protocol-228301-public/js/q-torial.js',
+                        'https://us-central1-still-protocol-228301.cloudfunctions.net',
                         '/getTutorial'
                       )),
                       (t.next = 5),
@@ -2990,12 +2990,12 @@
           -1 === O.indexOf('Chrome/66')
         )
       }),
-      q =
+      U =
         z ||
         !v(function(t) {
           N.all(t).catch(function() {})
         }),
-      U = function(t) {
+      q = function(t) {
         var e
         return !(!f(t) || 'function' != typeof (e = t.then)) && e
       },
@@ -3026,7 +3026,7 @@
                             l && (l.exit(), (a = !0))),
                         r === n.promise
                           ? f(C('Promise-chain cycle'))
-                          : (s = U(r))
+                          : (s = q(r))
                           ? s.call(r, u, f)
                           : u(r))
                       : f(o)
@@ -3097,7 +3097,7 @@
           ;(e.done = !0), r && (e = r)
           try {
             if (t === n) throw C("Promise can't be resolved itself")
-            var o = U(n)
+            var o = q(n)
             o
               ? m(function() {
                   var r = { done: !1 }
@@ -3194,7 +3194,7 @@
         }
       ),
       u(
-        { target: s, stat: !0, forced: q },
+        { target: s, stat: !0, forced: U },
         {
           all: function(t) {
             var e = this,
@@ -4803,8 +4803,8 @@
                 H = {}.propertyIsEnumerable,
                 D = l('symbol-registry'),
                 z = l('symbols'),
-                q = l('op-symbols'),
-                U = Object.prototype,
+                U = l('op-symbols'),
+                q = Object.prototype,
                 V = 'function' == typeof R && !!T.f,
                 G = r.QObject,
                 W = !G || !G.prototype || !G.prototype.findChild,
@@ -4823,8 +4823,8 @@
                     )
                   })
                     ? function(t, e, n) {
-                        var r = C(U, e)
-                        r && delete U[e], A(t, e, n), r && t !== U && A(U, e, r)
+                        var r = C(q, e)
+                        r && delete q[e], A(t, e, n), r && t !== q && A(q, e, r)
                       }
                     : A,
                 $ = function(t) {
@@ -4841,7 +4841,7 @@
                       },
                 Y = function t(e, n, r) {
                   return (
-                    e === U && t(q, n, r),
+                    e === q && t(U, n, r),
                     b(e),
                     (n = O(n, !0)),
                     b(r),
@@ -4863,7 +4863,7 @@
                 Q = function(t) {
                   var e = H.call(this, (t = O(t, !0)))
                   return (
-                    !(this === U && i(z, t) && !i(q, t)) &&
+                    !(this === q && i(z, t) && !i(U, t)) &&
                     (!(
                       e ||
                       !i(this, t) ||
@@ -4875,7 +4875,7 @@
                 },
                 Z = function(t, e) {
                   if (
-                    ((t = S(t)), (e = O(e, !0)), t !== U || !i(z, e) || i(q, e))
+                    ((t = S(t)), (e = O(e, !0)), t !== q || !i(z, e) || i(U, e))
                   ) {
                     var n = C(t, e)
                     return (
@@ -4894,11 +4894,11 @@
                 },
                 et = function(t) {
                   for (
-                    var e, n = t === U, r = _(n ? q : S(t)), o = [], s = 0;
+                    var e, n = t === q, r = _(n ? U : S(t)), o = [], s = 0;
                     r.length > s;
 
                   )
-                    !i(z, (e = r[s++])) || (n && !i(U, e)) || o.push(z[e])
+                    !i(z, (e = r[s++])) || (n && !i(q, e)) || o.push(z[e])
                   return o
                 }
               V ||
@@ -4910,10 +4910,10 @@
                     return (
                       s &&
                         W &&
-                        J(U, t, {
+                        J(q, t, {
                           configurable: !0,
                           set: function e(n) {
-                            this === U && e.call(q, n),
+                            this === q && e.call(U, n),
                               i(this, B) && i(this[B], t) && (this[B][t] = !1),
                               J(this, t, k(1, n))
                           },
@@ -4931,7 +4931,7 @@
                 (n(30).f = j.f = tt),
                 (n(33).f = Q),
                 (T.f = et),
-                s && !n(20) && c(U, 'propertyIsEnumerable', Q, !0),
+                s && !n(20) && c(q, 'propertyIsEnumerable', Q, !0),
                 (v.f = function(t) {
                   return $(d(t))
                 })),
@@ -7762,7 +7762,7 @@
                   t
                 )
               }
-              function q(t, e) {
+              function U(t, e) {
                 for (var n = 0; n < e.length; n++) {
                   var r = e[n]
                   ;(r.enumerable = r.enumerable || !1),
@@ -7772,9 +7772,9 @@
                 }
               }
               n.d(e, 'default', function() {
-                return U
+                return q
               })
-              var U = (function() {
+              var q = (function() {
                 function t() {
                   var e =
                     arguments.length > 0 && void 0 !== arguments[0]
@@ -8111,7 +8111,7 @@
                         e && this.overlay.highlight(e)
                       },
                     },
-                  ]) && q(e.prototype, n),
+                  ]) && U(e.prototype, n),
                   t
                 )
               })()

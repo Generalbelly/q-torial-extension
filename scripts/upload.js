@@ -15,9 +15,7 @@ const keyFilename = path.join(
   }`
 )
 const bucketName =
-  process.env.NODE_ENV === 'production'
-    ? 'q-torial-public'
-    : 'still-protocol-228301-public'
+  process.env.NODE_ENV === 'production' ? 'q-torial' : 'still-protocol-228301'
 const storage = new Storage({
   projectId,
   keyFilename,

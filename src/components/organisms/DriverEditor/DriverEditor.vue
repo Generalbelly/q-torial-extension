@@ -14,9 +14,13 @@ import {
   CANCEL,
   ELEMENT_NOT_FOUND,
   RESELECT_ELEMENT,
+  RESET_PREVIEW,
 } from '../../../constants/drvier-editor-command-types'
 import StepEntity from '../../atoms/Entities/StepEntity'
 import { sendCommand } from '../../../api'
+import createStore from '../../../local-storage'
+import createController from '../../../tutorial-controller'
+import TutorialEntity from '../../atoms/Entities/TutorialEntity'
 
 const MAX_RETRIES = 5
 export default {
@@ -29,6 +33,8 @@ export default {
       step: new StepEntity(),
       source: null,
       isEditing: false,
+      previewController: null,
+      localStorage: null,
     }
   },
   watch: {
@@ -49,6 +55,8 @@ export default {
     this.driver = new Driver({
       animate: false,
     })
+    this.localStorage = createStore(process.env.VUE_APP_NAME + '-extension')
+    this.previewController = createController(this.localStorage)
   },
   beforeDestroy() {
     window.removeEventListener('message', this.onReceiveMessage)
@@ -81,19 +89,50 @@ export default {
       const { step = {}, steps = [], type = null } = data
       if (command === ADD) {
         this.selectElementToHighlight(type)
-      } else if (command === EDIT) {
+        return
+      }
+
+      if (command === EDIT) {
         this.isEditing = true
         this.step = new StepEntity(step)
         const elementFound = document.querySelector(step.highlightTarget)
         if (elementFound) {
           this.highlight(step.highlightTarget, step.config)
         } else {
-          sendCommand(ELEMENT_NOT_FOUND)
+          const targetNode = document.body
+          const config = { childList: true, subtree: true }
+          let done = false
+          const mutationObserver = new MutationObserver(
+            (mutationsList, observer) => {
+              if (document.querySelector(step.highlightTarget)) {
+                this.highlight(step.highlightTarget, step.config)
+                done = true
+              }
+            }
+          )
+          mutationObserver.observe(targetNode, config)
+          window.setTimeout(() => {
+            if (!done) {
+              sendCommand(ELEMENT_NOT_FOUND)
+            }
+            mutationObserver.disconnect()
+          }, 3000)
         }
-      } else if (command === RESELECT_ELEMENT) {
+        return
+      }
+
+      if (command === RESELECT_ELEMENT) {
         this.selectElementToHighlight('tooltip')
-      } else if (command === PREVIEW) {
+        return
+      }
+
+      if (command === PREVIEW) {
         this.preview(steps)
+        return
+      }
+
+      if (command === RESET_PREVIEW) {
+        this.resetPreview()
       }
     },
     selectElementToHighlight(type = 'modal') {
@@ -235,19 +274,34 @@ export default {
         resolve(this.driver.hasHighlightedElement())
       })
     },
+    resetPreview() {
+      this.previewController.reset()
+    },
     preview(steps = []) {
       this.addUserScreenClickHandler()
-      this.driver.options.allowClose = true
-      this.driver.options.onReset = () => {
-        this.sendCommand(PREVIEW_DONE)
-        this.removeUserScreenClickHandler()
-      }
-      const definedSteps = steps.map(step => ({
-        element: step.highlightTarget,
-        popover: step.config,
-      }))
-      this.driver.defineSteps(definedSteps)
-      this.driver.start()
+      // this.driver.options.allowClose = true
+      // this.driver.options.onReset = () => {
+      //   this.sendCommand(PREVIEW_DONE)
+      //   this.removeUserScreenClickHandler()
+      // }
+      // const definedSteps = steps.map(step => ({
+      //   element: step.highlightTarget,
+      //   popover: step.config,
+      // }))
+      // this.driver.defineSteps(definedSteps)
+      // this.driver.start()
+      this.previewController.prepare(
+        new TutorialEntity({
+          steps,
+        }),
+        {
+          allowClose: true,
+          onReset: () => {
+            this.sendCommand(PREVIEW_DONE)
+            this.removeUserScreenClickHandler()
+          },
+        }
+      )
     },
     async showDriverChoice() {
       if (this.selectorChoices.length === 0) return

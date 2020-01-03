@@ -44,7 +44,7 @@ const connectHandler = async port => {
     const user = await firebase.checkAuth()
     if (user) {
       if (resetState) {
-        await store.dispatch(`resetState`)
+        await store.dispatch('resetState')
       }
       await store.dispatch('setActive', true)
       sendCommand(START_EXT)
@@ -55,7 +55,7 @@ const connectHandler = async port => {
 
   async function endApp(resetState = false) {
     if (resetState) {
-      await store.dispatch(`resetState`)
+      await store.dispatch('resetState')
     }
     sendCommand(END_EXT)
   }
@@ -67,6 +67,7 @@ const connectHandler = async port => {
     }),
     value => {
       if (!value.requesting) {
+        console.log(value)
         sendCommand(UPDATE_STATE, value)
       }
     },
@@ -89,13 +90,8 @@ const connectHandler = async port => {
   chrome.browserAction.onClicked.addListener(browserActionHandler)
 
   const onMessageHandler = async request => {
-    const { status, command = '', data = {} } = request
-    console.log(command)
-    console.log(data)
+    const { command = '', data = {} } = request
     switch (command) {
-      case ERROR:
-        console.error(request)
-        break
       case PASS_DATA_TO_BACKGROUND:
         await store.dispatch(data.action, data.payload)
         break
@@ -144,6 +140,7 @@ chrome.runtime.onConnect.addListener(connectHandler)
 chrome.runtime.onMessageExternal.addListener(
   async (request = {}, sender, sendResponse) => {
     const { command = null, data = {} } = request
+    console.log(command)
     switch (command) {
       case SIGN_IN:
         try {

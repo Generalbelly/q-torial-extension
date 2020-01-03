@@ -2,13 +2,18 @@
   <tutorial-template
     :tutorial="tutorial"
     :loading="requesting"
+    :previewing="previewing"
+    :navigating="navigating"
+    :pending-step-index="pendingStepIndex"
     @click:add="$emit('click:add')"
     @upsert:tutorial="onUpsertTutorial"
     @add:step="onAddStep"
     @update:step="onUpdateStep"
     @delete:step="onDeleteStep"
-    @click:navigate="$emit('click:navigate')"
+    @click:navigate="onClickNavigate"
+    @update:previewing="onUpdatePreviewing"
     @click:close="$emit('click:close')"
+    @update:pending-step="onUpdatePendingStep"
   />
 </template>
 <script>
@@ -21,7 +26,14 @@ export default {
     TutorialTemplate,
   },
   computed: {
-    ...mapState(['requesting', 'user', 'tutorial']),
+    ...mapState([
+      'requesting',
+      'user',
+      'tutorial',
+      'navigating',
+      'previewing',
+      'pendingStepIndex',
+    ]),
   },
   methods: {
     ...mapActions([
@@ -31,6 +43,9 @@ export default {
       'updateStep',
       'upsertStep',
       'deleteStep',
+      'setPendingStepIndex',
+      'setPreviewing',
+      'setNavigating',
     ]),
     onAddStep(step) {
       const data = step.toPlainObject()
@@ -51,6 +66,16 @@ export default {
       } else {
         this.addTutorial(data)
       }
+    },
+    onUpdatePendingStep(value) {
+      this.setPendingStepIndex(value)
+    },
+    onUpdatePreviewing(value) {
+      console.log(value)
+      this.setPreviewing(value)
+    },
+    onClickNavigate() {
+      this.setNavigating(true)
     },
   },
 }

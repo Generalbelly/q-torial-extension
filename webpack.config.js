@@ -69,7 +69,12 @@ const config = {
     new CopyWebpackPlugin([
       { from: 'icons', to: 'icons', ignore: ['icon.xcf'] },
       {
-        from: 'manifest.json',
+        from:
+          process.env.NODE_ENV === 'production'
+            ? 'manifest.production.json'
+            : process.env.NODE_ENV === 'development'
+            ? 'manifest.staging.json'
+            : 'manifest.json',
         to: 'manifest.json',
         transform: content => {
           const jsonContent = JSON.parse(content)
@@ -90,6 +95,7 @@ const config = {
   ],
 }
 
+console.log(process.env.NODE_ENV)
 if (config.mode === 'production') {
   config.plugins = (config.plugins || []).concat([
     new webpack.DefinePlugin({

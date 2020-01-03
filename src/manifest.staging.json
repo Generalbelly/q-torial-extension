@@ -24,7 +24,10 @@
     }
   ],
   "externally_connectable": {
-    "matches": ["http://localhost:8080/*"]
+    "matches": [
+      "https://still-protocol-228301.firebaseapp.com/*",
+      "https://staging.q-torial.app/*"
+    ]
   },
   "web_accessible_resources": ["contentScript.css", "spaUrlWatcher.js"],
   "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"

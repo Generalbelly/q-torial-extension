@@ -19,6 +19,9 @@ import {
   ADD_TUTORIAL,
   UPDATE_TUTORIAL,
   DELETE_TUTORIAL,
+  SET_PREVIEWING,
+  SET_NAVIGATING,
+  SET_PENDING_STEP_INDEX,
 } from './mutation-types'
 
 Vue.use(Vuex)
@@ -64,18 +67,32 @@ const mutations = {
   },
   [RESET_STATE](state, payload) {
     state.tutorials = []
-    state.tutorial = []
     state.steps = []
     state.allFetched = false
     state.requesting = false
     state.searchQuery = ''
     state.orderBy = ['createdAt', 'desc']
+    state.selectedTutorialID = null
+    state.serverSideErrors = {}
+    state.active = false
+    state.navigating = false
+    state.previewing = false
+    state.pendingStepIndex = -1
   },
   [SET_ALL_FETCHED](state, payload) {
     state.allFetched = payload
   },
   [SET_REQUESTING](state, payload) {
     state.requesting = payload
+  },
+  [SET_PREVIEWING](state, payload) {
+    state.previewing = payload
+  },
+  [SET_NAVIGATING](state, payload) {
+    state.navigating = payload
+  },
+  [SET_PENDING_STEP_INDEX](state, payload) {
+    state.pendingStepIndex = payload
   },
   [UPDATE_SEARCH_QUERY](state, payload) {
     state.searchQuery = payload
@@ -98,9 +115,6 @@ const actions = {
   },
   setActive({ commit }, payload) {
     commit(SET_ACTIVE, payload)
-  },
-  resetState({ commit }, payload) {
-    commit(RESET_STATE)
   },
   listTutorials: async ({ state, commit }, payload = {}) => {
     const {
@@ -390,6 +404,18 @@ const actions = {
 
     commit(SET_REQUESTING, false)
   },
+  setNavigating({ commit }, value) {
+    commit(SET_NAVIGATING, value)
+  },
+  setPreviewing({ commit }, value) {
+    commit(SET_PREVIEWING, value)
+  },
+  setPendingStepIndex({ commit }, value) {
+    commit(SET_PENDING_STEP_INDEX, value)
+  },
+  resetState({ commit }, value) {
+    commit(RESET_STATE, value)
+  },
 }
 
 const state = {
@@ -402,6 +428,9 @@ const state = {
   tutorials: [],
   selectedTutorialID: null,
   serverSideErrors: {},
+  navigating: false,
+  previewing: false,
+  pendingStepIndex: -1,
 }
 
 const getters = {

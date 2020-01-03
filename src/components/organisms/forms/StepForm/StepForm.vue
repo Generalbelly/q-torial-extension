@@ -52,14 +52,31 @@ import PathOperators from '../../../atoms/Entities/PathOperators'
 import Validatable from '../../../mixins/validatable'
 import ValidatableSelectField from '../../../molecules/fields/ValidatableSelectField/ValidatableSelectField'
 
+const TRIGGER_TYPE_1 = {
+  event: 'load',
+  target: 'window',
+  waitingTime: 0,
+}
+
+const TRIGGER_TYPE_2 = {
+  event: 'click',
+  target: null,
+  waitingTime: 0,
+}
+
+const triggerMap = {
+  triggerType1: TRIGGER_TYPE_1,
+  triggerType2: TRIGGER_TYPE_2,
+}
+
 const triggers = [
   {
     text: 'After a page has been loaded',
-    value: '{"target":"window","event":"load","waitingTime":0}',
+    value: 'triggerType1',
   },
   {
     text: 'After a certain HTML element has been clicked',
-    value: '{"target":null,"event":"click","waitingTime":0}',
+    value: 'triggerType2',
   },
 ]
 
@@ -109,7 +126,6 @@ export default {
       parametersRequired: false,
       pathOperators: PathOperators,
       triggers,
-      selectorForClickTrigger: null,
     }
   },
   computed: {
@@ -139,10 +155,31 @@ export default {
     },
     innerTrigger: {
       get() {
-        return JSON.stringify(this.trigger)
+        if (this.trigger.event === 'load' && this.trigger.target === 'window') {
+          return 'triggerType1'
+        }
+        return 'triggerType2'
       },
       set(newValue) {
-        this.$emit('update:trigger', JSON.parse(newValue))
+        if (triggerMap[newValue]) {
+          this.$emit('update:trigger', triggerMap[newValue])
+        } else {
+          this.$emit('update:trigger', newValue)
+        }
+      },
+    },
+    selectorForClickTrigger: {
+      get() {
+        if (this.trigger.target === 'window') {
+          return null
+        }
+        return this.trigger.target
+      },
+      set(newValue) {
+        this.innerTrigger = {
+          ...this.trigger,
+          target: newValue,
+        }
       },
     },
   },
@@ -158,12 +195,6 @@ export default {
           ]
         }
       },
-    },
-    selectorForClickTrigger(value) {
-      this.innerTrigger = {
-        ...this.trigger,
-        target: value,
-      }
     },
   },
 }

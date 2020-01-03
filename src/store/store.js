@@ -6,6 +6,9 @@ import {
   SYNC_DATA,
   SORT_TUTORIALS,
   SET_REQUESTING,
+  SET_NAVIGATING,
+  SET_PREVIEWING,
+  SET_PENDING_STEP_INDEX,
 } from './mutation-types'
 import UserEntity from '../components/atoms/Entities/UserEntity'
 import { sendCommand } from '../api'
@@ -56,6 +59,15 @@ const mutations = {
   },
   [SET_REQUESTING](state, payload) {
     state.requesting = payload
+  },
+  [SET_PREVIEWING](state, payload) {
+    state.previewing = payload
+  },
+  [SET_NAVIGATING](state, payload) {
+    state.navigating = payload
+  },
+  [SET_PENDING_STEP_INDEX](state, payload) {
+    state.pendingStepIndex = payload
   },
 }
 
@@ -189,6 +201,27 @@ const actions = {
       commit(SET_REQUESTING, false)
     }
   },
+  async setNavigating({ commit }, value) {
+    await sendCommand(PASS_DATA_TO_BACKGROUND, {
+      action: 'setNavigating',
+      payload: value,
+    })
+    commit(SET_NAVIGATING, value)
+  },
+  async setPreviewing({ commit }, value) {
+    await sendCommand(PASS_DATA_TO_BACKGROUND, {
+      action: 'setPreviewing',
+      payload: value,
+    })
+    commit(SET_PREVIEWING, value)
+  },
+  async setPendingStepIndex({ commit }, value) {
+    await sendCommand(PASS_DATA_TO_BACKGROUND, {
+      action: 'setPendingStepIndex',
+      payload: value,
+    })
+    commit(SET_PENDING_STEP_INDEX, value)
+  },
   syncData({ commit, state }, payload = {}) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -221,6 +254,9 @@ const state = {
   tutorials: [],
   tutorial: null,
   serverSideErrors: {},
+  navigating: false,
+  previewing: false,
+  pendingStepIndex: -1,
 }
 
 export default new Vuex.Store({

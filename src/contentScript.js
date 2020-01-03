@@ -170,7 +170,12 @@ port.onMessage.addListener(async request => {
     switch (command) {
       case START_EXT:
         try {
-          if (window.location.origin !== process.env.VUE_APP_URL) {
+          if (
+            ![
+              'https://console.firebase.google.com',
+              process.env.VUE_APP_URL,
+            ].includes(window.location.origin)
+          ) {
             await startApp()
             sendCommand({
               status: OK,
@@ -205,7 +210,7 @@ port.onMessage.addListener(async request => {
           const left = window.screen.width / 2 - w / 2
           const top = window.screen.height / 2 - h / 2
           openedWindow = window.open(
-            `${process.env.VUE_APP_URL}?source=extension&redirect=${window.location.href}`,
+            `${process.env.VUE_APP_URL}/sign-in?source=extension&redirect=${window.location.href}`,
             '_blank',
             `location=yes,height=${h},width=${w},top=${top},left=${left},scrollbars=yes,status=yes`
           )

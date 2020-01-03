@@ -31,7 +31,7 @@
           <span
             :key="`step-${stepIndex}`"
             class="step-definition__step has-background-grey has-cursor-pointer"
-            @click="onStepClick(step)"
+            @click="onClickStep(step, stepIndex)"
             @mouseenter="activeStepIndex = stepIndex"
             @mouseleave="activeStepIndex = null"
           >
@@ -79,7 +79,7 @@
           <preview-button
             v-if="innerTutorial.steps.length > 0"
             class="is-fullwidth is-accent-300"
-            @click="onPreviewClick"
+            @click="onClickPreview"
             outlined
           />
           <navigate-button
@@ -214,6 +214,7 @@ import {
   ELEMENT_NOT_FOUND,
   SAVE,
   RESELECT_ELEMENT,
+  RESET_PREVIEW,
 } from '../../../constants/drvier-editor-command-types'
 import AddStepButton from '../../organisms/AddStepButton/AddStepButton'
 import BaseModal from '../../molecules/BaseModal/BaseModal'
@@ -239,13 +240,11 @@ import { PATH_EQUALS } from '../../atoms/Entities/PathOperators'
 import StepForm from '../../organisms/forms/StepForm'
 import PenButton from '../../atoms/buttons/PenButton'
 import BaseButton from '../../atoms/BaseButton'
-import BaseFadeTransition from '../../atoms/transitions/BaseFadeTransition/BaseFadeTransition'
 
 export default {
   name: 'TutorialTemplate',
   mixins: [iframeStyler],
   components: {
-    BaseFadeTransition,
     BaseButton,
     PenButton,
     StepForm,
@@ -279,6 +278,18 @@ export default {
       type: Boolean,
       default: false,
     },
+    previewing: {
+      type: Boolean,
+      default: false,
+    },
+    navigating: {
+      type: Boolean,
+      default: false,
+    },
+    pendingStepIndex: {
+      type: Number,
+      default: -1,
+    },
   },
   data() {
     return {
@@ -309,14 +320,54 @@ export default {
         }
       },
     },
-    activeStepIndex: {
+    // activeStepIndex: {
+    //   handler(value) {
+    //     if (value !== null && value > -1) {
+    //       this.innerStep = this.innerTutorial.steps.find(
+    //         (_, index) => index === this.activeStepIndex
+    //       )
+    //     } else {
+    //       this.innerStep = new StepEntity()
+    //     }
+    //     console.log(this.innerStep)
+    //   },
+    // },
+    previewing: {
       handler(value) {
-        if (value !== null && value > -1) {
-          this.innerStep = this.innerTutorial.steps.find(
-            (_, index) => index === this.activeStepIndex
-          )
+        if (value) {
+          this.preview(value)
+        }
+      },
+    },
+    navigating: {
+      handler(value) {
+        if (value) {
+          this.hideIframe()
         } else {
-          this.innerStep = new StepEntity()
+          this.showIframe()
+        }
+      },
+    },
+    pendingStepIndex: {
+      handler(value) {
+        if (value > -1) {
+          const step = new StepEntity({ ...this.innerTutorial.steps[value] })
+          if (step.couldBeShownOn(window.parent.location.pathname)) {
+            this.hideIframe()
+            this.shouldShowSideNav = false
+            this.sendCommand(EDIT, {
+              type: step.type,
+              step,
+            })
+            return
+          }
+          if (step.pathOperator === PATH_EQUALS) {
+            window.parent.location.href =
+              window.parent.location.origin + step.pathValue
+            return
+          }
+          this.innerStep = step
+          this.shouldShowUrlPathForm = true
         }
       },
     },
@@ -350,9 +401,19 @@ export default {
     handleCommand(command, data) {
       if (command === ELEMENT_NOT_FOUND) {
         this.shouldShowSideNav = true
-        this.showIframe()
         this.shouldShowElementToHighlightNotFoundModal = true
-      } else if (command === SAVE) {
+        this.showIframe()
+        return
+      }
+
+      if (command === PREVIEW_DONE) {
+        this.$emit('update:previewing', false)
+        this.shouldShowSideNav = true
+        this.showIframe()
+        return
+      }
+      if (command === SAVE) {
+        this.$emit('update:pending-step', -1)
         const step = new StepEntity({
           ...data,
           pathValue: data.pathValue || window.parent.location.pathname,
@@ -377,7 +438,11 @@ export default {
           this.shouldShowSideNav = true
         }
         this.showIframe()
-      } else if (command === CANCEL || command === PREVIEW_DONE) {
+        return
+      }
+
+      if (command === CANCEL) {
+        this.$emit('update:pending-step', -1)
         this.shouldShowSideNav = true
         this.showIframe()
       }
@@ -415,40 +480,32 @@ export default {
         this.shouldShowSideNav = true
       }
     },
-    onStepClick(step) {
-      if (step.couldBeShownOn(window.parent.location.pathname)) {
-        this.hideIframe()
-        this.shouldShowSideNav = false
-        this.sendCommand(EDIT, {
-          type: step.type,
-          step,
-        })
-      } else if (step.pathOperator === PATH_EQUALS) {
-        // TODO 遷移しますよっていうmodal出す
-        window.parent.location.href =
-          window.parent.location.origin + step.pathValue
-      } else {
-        this.shouldShowUrlPathForm = true
-      }
+    onClickStep(step, stepIndex) {
+      this.$emit('update:pending-step', stepIndex)
     },
     async onClickStepConfirm() {
       const valid = await this.$refs.stepForm.validate()
       if (valid) {
-        this.$emit('upsert:step', this.innerStep)
+        this.$emit('update:step', this.innerStep)
         this.shouldShowStepForm = false
         this.shouldShowSideNav = true
       }
     },
-    onPreviewClick() {
+    onClickPreview() {
+      this.sendCommand(RESET_PREVIEW)
+      this.$emit('update:previewing', true)
+    },
+    preview() {
+      this.hideIframe()
       this.sendCommand(PREVIEW, {
         steps: this.innerTutorial.steps,
       })
-      this.hideIframe()
     },
     onStepDeleteClick(step) {
       this.$emit('delete:step', step)
     },
-    onStepEditClick() {
+    onStepEditClick(step) {
+      this.innerStep = new StepEntity({ ...step })
       this.shouldShowStepForm = true
     },
     onNavigateClick() {

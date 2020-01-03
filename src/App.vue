@@ -4,18 +4,17 @@
       v-show="shouldShowNav"
       @click:tutorials="onClickTutorials"
       @click:logo="onClickLogo"
-    ></the-navbar>
+    />
     <tutorials-page
       v-show="shouldShowTutorialsPage"
       @click:close="onTutorialsClickClose"
       @click:add="onClickAdd"
       @select:tutorial="onSelectTutorial"
-    ></tutorials-page>
+    />
     <tutorial-page
       v-show="shouldShowTutorialPage"
       @click:close="onTutorialClickClose"
-      @click:navigate="onClickNavigate"
-    ></tutorial-page>
+    />
   </div>
 </template>
 <script>
@@ -38,11 +37,10 @@ export default {
       shouldShowNav: true,
       shouldShowTutorialsPage: false,
       shouldShowTutorialPage: false,
-      navigating: false,
     }
   },
   computed: {
-    ...mapState(['tutorials', 'tutorial']),
+    ...mapState(['tutorials', 'tutorial', 'navigating', 'previewing']),
   },
   watch: {
     shouldShowTutorialsPage(value) {
@@ -67,15 +65,14 @@ export default {
     this.recoverState()
   },
   methods: {
-    ...mapActions(['listTutorials', 'syncData']),
+    ...mapActions(['listTutorials', 'syncData', 'setNavigating']),
     async recoverState() {
       await this.syncData()
       if (this.tutorial) {
         this.onSelectTutorial()
       }
       if (this.navigating) {
-        this.showIframe()
-        this.navigating = false
+        this.setNavigating(false)
       }
     },
     onSelectTutorial() {
@@ -105,10 +102,6 @@ export default {
       this.shouldShowTutorialPage = false
       this.shouldShowTutorialsPage = true
       this.shouldShowNav = false
-    },
-    onClickNavigate() {
-      this.navigating = true
-      this.hideIframe()
     },
     startWatchingUrlForSPA() {
       window.parent.addEventListener('locationchange', async () => {

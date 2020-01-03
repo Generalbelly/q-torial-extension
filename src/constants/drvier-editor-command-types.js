@@ -1,6 +1,7 @@
 export const ADD = 'ADD'
 export const EDIT = 'EDIT'
 export const PREVIEW = 'PREVIEW'
+export const RESET_PREVIEW = 'RESET_PREVIEW'
 export const PREVIEW_DONE = 'PREVIEW_DONE'
 export const SAVE = 'SAVE'
 export const CANCEL = 'CANCEL'

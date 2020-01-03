@@ -11,13 +11,17 @@
     "prettier:write": "yarn prettier -- --write",
     "build": "cross-env NODE_ENV=production webpack --hide-modules",
     "build:dev": "cross-env NODE_ENV=development webpack --hide-modules",
+    "build:local": "cross-env NODE_ENV=none webpack --hide-modules",
     "build-zip": "node scripts/build-zip.js",
     "watch": "cross-env  NODE_ENV=production yarn build --watch",
     "watch:dev": "cross-env NODE_ENV=development HMR=true yarn build:dev --watch",
+    "watch:local": "cross-env NODE_ENV=none HMR=true yarn build:local --watch",
     "tag": "cross-env NODE_ENV=production webpack --hide-modules --config ./webpack.tag.config.js && yarn upload-file",
     "tag:dev": "cross-env NODE_ENV=development webpack --hide-modules --config ./webpack.tag.config.js && yarn upload-file:dev",
+    "tag:local": "cross-env NODE_ENV=none webpack --hide-modules --config ./webpack.tag.config.js && yarn upload-file:local",
     "upload-file": "NODE_ENV=production node scripts/upload.js",
-    "upload-file:dev": "NODE_ENV=development node scripts/upload.js"
+    "upload-file:dev": "NODE_ENV=development node scripts/upload.js",
+    "upload-file:local": "NODE_ENV=none mkdir -p ../q-torial/public/js && cp tag/q-torial.js ../q-torial/public/js/q-torial.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.17",

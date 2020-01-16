@@ -95,8 +95,10 @@ export default {
       if (command === EDIT) {
         this.isEditing = true
         this.step = new StepEntity(step)
-        const elementFound = document.querySelector(step.highlightTarget)
-        if (elementFound) {
+        if (
+          step.highlightTarget === 'modal' ||
+          document.querySelector(step.highlightTarget)
+        ) {
           this.highlight(step.highlightTarget, step.config)
         } else {
           const targetNode = document.body
@@ -107,6 +109,7 @@ export default {
               if (document.querySelector(step.highlightTarget)) {
                 this.highlight(step.highlightTarget, step.config)
                 done = true
+                observer.disconnect()
               }
             }
           )
@@ -114,8 +117,8 @@ export default {
           window.setTimeout(() => {
             if (!done) {
               sendCommand(ELEMENT_NOT_FOUND)
+              mutationObserver.disconnect()
             }
-            mutationObserver.disconnect()
           }, 3000)
         }
         return
@@ -187,6 +190,11 @@ export default {
       return {
         element: selector,
         popover: {
+          nextBtnText: 'Next',
+          prevBtnText: 'Previous',
+          showButtons: true,
+          doneBtnText: 'Done',
+          closeBtnText: 'Close',
           content,
         },
       }
@@ -275,30 +283,19 @@ export default {
       })
     },
     resetPreview() {
-      this.previewController.reset()
+      this.previewController.reset(true)
     },
     preview(steps = []) {
-      this.addUserScreenClickHandler()
-      // this.driver.options.allowClose = true
-      // this.driver.options.onReset = () => {
-      //   this.sendCommand(PREVIEW_DONE)
-      //   this.removeUserScreenClickHandler()
-      // }
-      // const definedSteps = steps.map(step => ({
-      //   element: step.highlightTarget,
-      //   popover: step.config,
-      // }))
-      // this.driver.defineSteps(definedSteps)
-      // this.driver.start()
       this.previewController.prepare(
         new TutorialEntity({
           steps,
         }),
         {
           allowClose: true,
-          onReset: () => {
-            this.sendCommand(PREVIEW_DONE)
-            this.removeUserScreenClickHandler()
+          onReset: intendedReload => {
+            if (!intendedReload) {
+              this.sendCommand(PREVIEW_DONE)
+            }
           },
         }
       )

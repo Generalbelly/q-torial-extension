@@ -210,10 +210,10 @@
         129
       )
       /* harmony import */ var _driver_js_driver_min__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(
-        157
+        167
       )
       /* harmony import */ var _driver_js_sass_cdn_scss__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(
-        193
+        197
       )
       /* harmony import */ var _driver_js_sass_cdn_scss__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/ __webpack_require__.n(
         _driver_js_sass_cdn_scss__WEBPACK_IMPORTED_MODULE_17__
@@ -317,7 +317,6 @@
                   /*#__PURE__*/
                   regeneratorRuntime.mark(function _callee() {
                     var data,
-                      URL,
                       _args = arguments
                     return regeneratorRuntime.wrap(function _callee$(_context) {
                       while (1) {
@@ -327,21 +326,20 @@
                               _args.length > 0 && _args[0] !== undefined
                                 ? _args[0]
                                 : {}
-                            URL = ''.concat(
-                              'https://us-central1-still-protocol-228301.cloudfunctions.net',
-                              '/storePerformance'
-                            )
                             return _context.abrupt(
                               'return',
                               axios__WEBPACK_IMPORTED_MODULE_11___default.a.post(
-                                URL,
+                                ''.concat(
+                                  'https://us-central1-still-protocol-228301.cloudfunctions.net',
+                                  '/storePerformance'
+                                ),
                                 _objectSpread({}, data, {
                                   key: userKey,
                                 })
                               )
                             )
 
-                          case 3:
+                          case 2:
                           case 'end':
                             return _context.stop()
                         }
@@ -361,45 +359,39 @@
                   /*#__PURE__*/
                   regeneratorRuntime.mark(function _callee2(url, once) {
                     var response
-                    return regeneratorRuntime.wrap(
-                      function _callee2$(_context2) {
-                        while (1) {
-                          switch ((_context2.prev = _context2.next)) {
-                            case 0:
-                              _context2.prev = 0
-                              _context2.next = 3
-                              return axios__WEBPACK_IMPORTED_MODULE_11___default.a.post(
-                                ''.concat(
-                                  'https://us-central1-still-protocol-228301.cloudfunctions.net',
-                                  '/getTutorial'
-                                ), // process.env.VUE_APP_CLOUD_RUN_ENDPOINT,
-                                {
-                                  url: url,
-                                  key: userKey,
-                                  once: once,
-                                }
-                              )
+                    return regeneratorRuntime.wrap(function _callee2$(
+                      _context2
+                    ) {
+                      while (1) {
+                        switch ((_context2.prev = _context2.next)) {
+                          case 0:
+                            _context2.next = 2
+                            return axios__WEBPACK_IMPORTED_MODULE_11___default.a.post(
+                              ''.concat(
+                                'https://us-central1-still-protocol-228301.cloudfunctions.net',
+                                '/getTutorial'
+                              ), // process.env.VUE_APP_CLOUD_RUN_ENDPOINT,
+                              {
+                                url: url,
+                                key: userKey,
+                                once: once,
+                              }
+                            )
 
-                            case 3:
-                              response = _context2.sent
-                              return _context2.abrupt('return', response.data)
+                          case 2:
+                            response = _context2.sent
+                            return _context2.abrupt(
+                              'return',
+                              response.data || {}
+                            )
 
-                            case 7:
-                              _context2.prev = 7
-                              _context2.t0 = _context2['catch'](0)
-                              console.error(_context2.t0)
-                              return _context2.abrupt('return', {})
-
-                            case 11:
-                            case 'end':
-                              return _context2.stop()
-                          }
+                          case 4:
+                          case 'end':
+                            return _context2.stop()
                         }
-                      },
-                      _callee2,
-                      null,
-                      [[0, 7]]
-                    )
+                      }
+                    },
+                    _callee2)
                   })
                 )
 
@@ -408,6 +400,49 @@
                 }
 
                 return getTutorial
+              })(),
+              logError: (function() {
+                var _logError = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee3() {
+                    var data,
+                      _args3 = arguments
+                    return regeneratorRuntime.wrap(function _callee3$(
+                      _context3
+                    ) {
+                      while (1) {
+                        switch ((_context3.prev = _context3.next)) {
+                          case 0:
+                            data =
+                              _args3.length > 0 && _args3[0] !== undefined
+                                ? _args3[0]
+                                : {}
+                            _context3.next = 3
+                            return axios__WEBPACK_IMPORTED_MODULE_11___default.a.post(
+                              ''.concat(
+                                'https://us-central1-still-protocol-228301.cloudfunctions.net',
+                                '/logError'
+                              ),
+                              _objectSpread({}, data, {
+                                key: userKey,
+                              })
+                            )
+
+                          case 3:
+                          case 'end':
+                            return _context3.stop()
+                        }
+                      }
+                    },
+                    _callee3)
+                  })
+                )
+
+                function logError() {
+                  return _logError.apply(this, arguments)
+                }
+
+                return logError
               })(),
             }
           }
@@ -428,15 +463,15 @@
             init: (function() {
               var _init = _asyncToGenerator(
                 /*#__PURE__*/
-                regeneratorRuntime.mark(function _callee4(key) {
+                regeneratorRuntime.mark(function _callee5(key) {
                   var store,
                     apiClient,
                     gaClient,
                     tutorialController,
                     fetchTutorial
-                  return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                  return regeneratorRuntime.wrap(function _callee5$(_context5) {
                     while (1) {
-                      switch ((_context4.prev = _context4.next)) {
+                      switch ((_context5.prev = _context5.next)) {
                         case 0:
                           store = Object(
                             _local_storage__WEBPACK_IMPORTED_MODULE_14__[
@@ -464,7 +499,7 @@
                             (function() {
                               var _ref = _asyncToGenerator(
                                 /*#__PURE__*/
-                                regeneratorRuntime.mark(function _callee3() {
+                                regeneratorRuntime.mark(function _callee4() {
                                   var currentTutorial,
                                     once,
                                     _ref2,
@@ -472,10 +507,10 @@
                                     tutorial
 
                                   return regeneratorRuntime.wrap(
-                                    function _callee3$(_context3) {
+                                    function _callee4$(_context4) {
                                       while (1) {
                                         switch (
-                                          (_context3.prev = _context3.next)
+                                          (_context4.prev = _context4.next)
                                         ) {
                                           case 0:
                                             currentTutorial = store.get(
@@ -484,56 +519,65 @@
                                             )
 
                                             if (!currentTutorial) {
-                                              _context3.next = 4
+                                              _context4.next = 5
                                               break
                                             }
 
-                                            tutorialController.prepare(
+                                            _context4.next = 4
+                                            return tutorialController.prepare(
                                               currentTutorial
                                             )
-                                            return _context3.abrupt('return')
 
                                           case 4:
+                                            return _context4.abrupt('return')
+
+                                          case 5:
                                             if (
                                               !(
-                                                store.get('activeStep', -1) ===
-                                                  -1 &&
+                                                store.get(
+                                                  'activeStepIndex',
+                                                  -1
+                                                ) === -1 &&
                                                 store.get('tutorial', null) ===
                                                   null
                                               )
                                             ) {
-                                              _context3.next = 12
+                                              _context4.next = 15
                                               break
                                             }
 
                                             once = store.get('once', [])
-                                            _context3.next = 8
+                                            _context4.next = 9
                                             return apiClient.getTutorial(
                                               window.location.href,
                                               once
                                             )
 
-                                          case 8:
-                                            _ref2 = _context3.sent
+                                          case 9:
+                                            _ref2 = _context4.sent
                                             _ref2$tutorial = _ref2.tutorial
                                             tutorial =
                                               _ref2$tutorial === void 0
                                                 ? null
                                                 : _ref2$tutorial
 
-                                            if (tutorial) {
-                                              tutorialController.prepare(
-                                                tutorial
-                                              )
+                                            if (!tutorial) {
+                                              _context4.next = 15
+                                              break
                                             }
 
-                                          case 12:
+                                            _context4.next = 15
+                                            return tutorialController.prepare(
+                                              tutorial
+                                            )
+
+                                          case 15:
                                           case 'end':
-                                            return _context3.stop()
+                                            return _context4.stop()
                                         }
                                       }
                                     },
-                                    _callee3
+                                    _callee4
                                   )
                                 })
                               )
@@ -543,7 +587,7 @@
                               }
                             })()
 
-                          _context4.next = 8
+                          _context5.next = 8
                           return fetchTutorial()
 
                         case 8:
@@ -554,10 +598,10 @@
 
                         case 9:
                         case 'end':
-                          return _context4.stop()
+                          return _context5.stop()
                       }
                     }
-                  }, _callee4)
+                  }, _callee5)
                 })
               )
 
@@ -6537,6 +6581,13 @@
     /***/ function(module, __webpack_exports__, __webpack_require__) {
       'use strict'
       __webpack_require__.r(__webpack_exports__)
+      /* harmony export (binding) */ __webpack_require__.d(
+        __webpack_exports__,
+        'StepError',
+        function() {
+          return StepError
+        }
+      )
       /* harmony import */ var core_js_modules_es_symbol__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
         1
       )
@@ -6561,35 +6612,35 @@
       /* harmony import */ var core_js_modules_es_array_concat__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/ __webpack_require__.n(
         core_js_modules_es_array_concat__WEBPACK_IMPORTED_MODULE_3__
       )
-      /* harmony import */ var core_js_modules_es_array_every__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
-        132
-      )
-      /* harmony import */ var core_js_modules_es_array_every__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/ __webpack_require__.n(
-        core_js_modules_es_array_every__WEBPACK_IMPORTED_MODULE_4__
-      )
-      /* harmony import */ var core_js_modules_es_array_filter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
+      /* harmony import */ var core_js_modules_es_array_filter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
         60
       )
-      /* harmony import */ var core_js_modules_es_array_filter__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/ __webpack_require__.n(
-        core_js_modules_es_array_filter__WEBPACK_IMPORTED_MODULE_5__
+      /* harmony import */ var core_js_modules_es_array_filter__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_array_filter__WEBPACK_IMPORTED_MODULE_4__
       )
-      /* harmony import */ var core_js_modules_es_array_for_each__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(
+      /* harmony import */ var core_js_modules_es_array_for_each__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
         64
       )
-      /* harmony import */ var core_js_modules_es_array_for_each__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/ __webpack_require__.n(
-        core_js_modules_es_array_for_each__WEBPACK_IMPORTED_MODULE_6__
+      /* harmony import */ var core_js_modules_es_array_for_each__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_array_for_each__WEBPACK_IMPORTED_MODULE_5__
       )
-      /* harmony import */ var core_js_modules_es_array_from__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(
-        133
+      /* harmony import */ var core_js_modules_es_array_from__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(
+        132
       )
-      /* harmony import */ var core_js_modules_es_array_from__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/ __webpack_require__.n(
-        core_js_modules_es_array_from__WEBPACK_IMPORTED_MODULE_7__
+      /* harmony import */ var core_js_modules_es_array_from__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_array_from__WEBPACK_IMPORTED_MODULE_6__
       )
-      /* harmony import */ var core_js_modules_es_array_includes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(
-        135
+      /* harmony import */ var core_js_modules_es_array_includes__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(
+        134
       )
-      /* harmony import */ var core_js_modules_es_array_includes__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/ __webpack_require__.n(
-        core_js_modules_es_array_includes__WEBPACK_IMPORTED_MODULE_8__
+      /* harmony import */ var core_js_modules_es_array_includes__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_array_includes__WEBPACK_IMPORTED_MODULE_7__
+      )
+      /* harmony import */ var core_js_modules_es_array_index_of__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(
+        136
+      )
+      /* harmony import */ var core_js_modules_es_array_index_of__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_array_index_of__WEBPACK_IMPORTED_MODULE_8__
       )
       /* harmony import */ var core_js_modules_es_array_iterator__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(
         137
@@ -6615,72 +6666,117 @@
       /* harmony import */ var core_js_modules_es_function_name__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/ __webpack_require__.n(
         core_js_modules_es_function_name__WEBPACK_IMPORTED_MODULE_12__
       )
-      /* harmony import */ var core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(
-        67
-      )
-      /* harmony import */ var core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/ __webpack_require__.n(
-        core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_13__
-      )
-      /* harmony import */ var core_js_modules_es_object_get_own_property_descriptor__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(
-        68
-      )
-      /* harmony import */ var core_js_modules_es_object_get_own_property_descriptor__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/ __webpack_require__.n(
-        core_js_modules_es_object_get_own_property_descriptor__WEBPACK_IMPORTED_MODULE_14__
-      )
-      /* harmony import */ var core_js_modules_es_object_keys__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(
-        69
-      )
-      /* harmony import */ var core_js_modules_es_object_keys__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/ __webpack_require__.n(
-        core_js_modules_es_object_keys__WEBPACK_IMPORTED_MODULE_15__
-      )
-      /* harmony import */ var core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(
-        70
-      )
-      /* harmony import */ var core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/ __webpack_require__.n(
-        core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_16__
-      )
-      /* harmony import */ var core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(
-        73
-      )
-      /* harmony import */ var core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/ __webpack_require__.n(
-        core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_17__
-      )
-      /* harmony import */ var core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(
+      /* harmony import */ var core_js_modules_es_map__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(
         148
       )
-      /* harmony import */ var core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/ __webpack_require__.n(
-        core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_18__
+      /* harmony import */ var core_js_modules_es_map__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_map__WEBPACK_IMPORTED_MODULE_13__
       )
-      /* harmony import */ var core_js_modules_es_string_includes__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(
-        150
+      /* harmony import */ var core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(
+        67
       )
-      /* harmony import */ var core_js_modules_es_string_includes__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/ __webpack_require__.n(
-        core_js_modules_es_string_includes__WEBPACK_IMPORTED_MODULE_19__
+      /* harmony import */ var core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_14__
       )
-      /* harmony import */ var core_js_modules_es_string_iterator__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(
+      /* harmony import */ var core_js_modules_es_object_get_own_property_descriptor__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(
+        68
+      )
+      /* harmony import */ var core_js_modules_es_object_get_own_property_descriptor__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_object_get_own_property_descriptor__WEBPACK_IMPORTED_MODULE_15__
+      )
+      /* harmony import */ var core_js_modules_es_object_get_prototype_of__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(
         154
       )
-      /* harmony import */ var core_js_modules_es_string_iterator__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/ __webpack_require__.n(
-        core_js_modules_es_string_iterator__WEBPACK_IMPORTED_MODULE_20__
+      /* harmony import */ var core_js_modules_es_object_get_prototype_of__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_object_get_prototype_of__WEBPACK_IMPORTED_MODULE_16__
       )
-      /* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(
-        92
+      /* harmony import */ var core_js_modules_es_object_keys__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(
+        69
       )
-      /* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/ __webpack_require__.n(
-        core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_21__
+      /* harmony import */ var core_js_modules_es_object_keys__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_object_keys__WEBPACK_IMPORTED_MODULE_17__
       )
-      /* harmony import */ var core_js_modules_web_dom_collections_iterator__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(
+      /* harmony import */ var core_js_modules_es_object_set_prototype_of__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(
+        155
+      )
+      /* harmony import */ var core_js_modules_es_object_set_prototype_of__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_object_set_prototype_of__WEBPACK_IMPORTED_MODULE_18__
+      )
+      /* harmony import */ var core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(
+        70
+      )
+      /* harmony import */ var core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_19__
+      )
+      /* harmony import */ var core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(
+        73
+      )
+      /* harmony import */ var core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_20__
+      )
+      /* harmony import */ var core_js_modules_es_reflect_construct__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(
         156
       )
-      /* harmony import */ var core_js_modules_web_dom_collections_iterator__WEBPACK_IMPORTED_MODULE_22___default = /*#__PURE__*/ __webpack_require__.n(
-        core_js_modules_web_dom_collections_iterator__WEBPACK_IMPORTED_MODULE_22__
+      /* harmony import */ var core_js_modules_es_reflect_construct__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_reflect_construct__WEBPACK_IMPORTED_MODULE_21__
       )
-      /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(
+      /* harmony import */ var core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(
+        158
+      )
+      /* harmony import */ var core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_22___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_22__
+      )
+      /* harmony import */ var core_js_modules_es_string_includes__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(
+        160
+      )
+      /* harmony import */ var core_js_modules_es_string_includes__WEBPACK_IMPORTED_MODULE_23___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_string_includes__WEBPACK_IMPORTED_MODULE_23__
+      )
+      /* harmony import */ var core_js_modules_es_string_iterator__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(
+        164
+      )
+      /* harmony import */ var core_js_modules_es_string_iterator__WEBPACK_IMPORTED_MODULE_24___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_es_string_iterator__WEBPACK_IMPORTED_MODULE_24__
+      )
+      /* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(
+        92
+      )
+      /* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_25___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_25__
+      )
+      /* harmony import */ var core_js_modules_web_dom_collections_iterator__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(
+        166
+      )
+      /* harmony import */ var core_js_modules_web_dom_collections_iterator__WEBPACK_IMPORTED_MODULE_26___default = /*#__PURE__*/ __webpack_require__.n(
+        core_js_modules_web_dom_collections_iterator__WEBPACK_IMPORTED_MODULE_26__
+      )
+      /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(
         94
       )
-      /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_23___default = /*#__PURE__*/ __webpack_require__.n(
-        regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_23__
+      /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_27___default = /*#__PURE__*/ __webpack_require__.n(
+        regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_27__
       )
+
+      function _typeof(obj) {
+        if (
+          typeof Symbol === 'function' &&
+          typeof Symbol.iterator === 'symbol'
+        ) {
+          _typeof = function _typeof(obj) {
+            return typeof obj
+          }
+        } else {
+          _typeof = function _typeof(obj) {
+            return obj &&
+              typeof Symbol === 'function' &&
+              obj.constructor === Symbol &&
+              obj !== Symbol.prototype
+              ? 'symbol'
+              : typeof obj
+          }
+        }
+        return _typeof(obj)
+      }
 
       function _objectSpread(target) {
         for (var i = 1; i < arguments.length; i++) {
@@ -6799,9 +6895,154 @@
         }
       }
 
-      var createController = function createController(store) {
-        var _ref
+      function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+          throw new TypeError('Cannot call a class as a function')
+        }
+      }
 
+      function _possibleConstructorReturn(self, call) {
+        if (
+          call &&
+          (_typeof(call) === 'object' || typeof call === 'function')
+        ) {
+          return call
+        }
+        return _assertThisInitialized(self)
+      }
+
+      function _assertThisInitialized(self) {
+        if (self === void 0) {
+          throw new ReferenceError(
+            "this hasn't been initialised - super() hasn't been called"
+          )
+        }
+        return self
+      }
+
+      function _inherits(subClass, superClass) {
+        if (typeof superClass !== 'function' && superClass !== null) {
+          throw new TypeError(
+            'Super expression must either be null or a function'
+          )
+        }
+        subClass.prototype = Object.create(superClass && superClass.prototype, {
+          constructor: { value: subClass, writable: true, configurable: true },
+        })
+        if (superClass) _setPrototypeOf(subClass, superClass)
+      }
+
+      function _wrapNativeSuper(Class) {
+        var _cache = typeof Map === 'function' ? new Map() : undefined
+        _wrapNativeSuper = function _wrapNativeSuper(Class) {
+          if (Class === null || !_isNativeFunction(Class)) return Class
+          if (typeof Class !== 'function') {
+            throw new TypeError(
+              'Super expression must either be null or a function'
+            )
+          }
+          if (typeof _cache !== 'undefined') {
+            if (_cache.has(Class)) return _cache.get(Class)
+            _cache.set(Class, Wrapper)
+          }
+          function Wrapper() {
+            return _construct(
+              Class,
+              arguments,
+              _getPrototypeOf(this).constructor
+            )
+          }
+          Wrapper.prototype = Object.create(Class.prototype, {
+            constructor: {
+              value: Wrapper,
+              enumerable: false,
+              writable: true,
+              configurable: true,
+            },
+          })
+          return _setPrototypeOf(Wrapper, Class)
+        }
+        return _wrapNativeSuper(Class)
+      }
+
+      function isNativeReflectConstruct() {
+        if (typeof Reflect === 'undefined' || !Reflect.construct) return false
+        if (Reflect.construct.sham) return false
+        if (typeof Proxy === 'function') return true
+        try {
+          Date.prototype.toString.call(
+            Reflect.construct(Date, [], function() {})
+          )
+          return true
+        } catch (e) {
+          return false
+        }
+      }
+
+      function _construct(Parent, args, Class) {
+        if (isNativeReflectConstruct()) {
+          _construct = Reflect.construct
+        } else {
+          _construct = function _construct(Parent, args, Class) {
+            var a = [null]
+            a.push.apply(a, args)
+            var Constructor = Function.bind.apply(Parent, a)
+            var instance = new Constructor()
+            if (Class) _setPrototypeOf(instance, Class.prototype)
+            return instance
+          }
+        }
+        return _construct.apply(null, arguments)
+      }
+
+      function _isNativeFunction(fn) {
+        return Function.toString.call(fn).indexOf('[native code]') !== -1
+      }
+
+      function _setPrototypeOf(o, p) {
+        _setPrototypeOf =
+          Object.setPrototypeOf ||
+          function _setPrototypeOf(o, p) {
+            o.__proto__ = p
+            return o
+          }
+        return _setPrototypeOf(o, p)
+      }
+
+      function _getPrototypeOf(o) {
+        _getPrototypeOf = Object.setPrototypeOf
+          ? Object.getPrototypeOf
+          : function _getPrototypeOf(o) {
+              return o.__proto__ || Object.getPrototypeOf(o)
+            }
+        return _getPrototypeOf(o)
+      }
+
+      var ERROR_TRIGGER_NOT_FOUND = 'trigger element not found'
+      var ERROR_NO_ELEMENTS_FOUND = 'no elements are found'
+      var StepError =
+        /*#__PURE__*/
+        (function(_Error) {
+          _inherits(StepError, _Error)
+
+          function StepError(stepIndex, message) {
+            var _this
+
+            _classCallCheck(this, StepError)
+
+            _this = _possibleConstructorReturn(
+              this,
+              _getPrototypeOf(StepError).call(this, message)
+            )
+            _this.stepIndex = 0
+            _this.stepIndex = stepIndex
+            return _this
+          }
+
+          return StepError
+        })(_wrapNativeSuper(Error))
+
+      var createController = function createController(store) {
         var apiClient =
           arguments.length > 1 && arguments[1] !== undefined
             ? arguments[1]
@@ -6815,311 +7056,814 @@
         var steps = []
         var settings = {}
         var startTime = 0
-        var activeStep = 0
+        var activeStepIndex = 0
         var intendedReload = false
         var once = store.get('once', [])
         var EU_ID = store.get('EU_ID', null)
-        return (
-          (_ref = {
-            resetProgress: function resetProgress() {
-              if (!intendedReload) {
-                store.set('activeStep', -1)
-                store.set('startTime', 0)
-                store.set('tutorial', null)
-              }
-            },
-            saveProgress: function saveProgress() {
-              store.set('activeStep', activeStep)
-              store.set('startTime', startTime)
-              store.set('tutorial', currentTutorial)
-            },
-            hasTheSamePath: function hasTheSamePath(step, step2) {
-              return step.pathValue === step2.pathValue
-            },
-            next: function next() {
-              driver.preventMove()
-              var nextStep = activeStep + 1
+        var driverOptions = {}
+        return {
+          resetProgress: function resetProgress() {
+            store.set('activeStepIndex', -1)
+            store.set('startTime', 0)
+            store.set('tutorial', null)
+          },
+          saveProgress: function saveProgress() {
+            store.set('activeStepIndex', activeStepIndex)
+            store.set('startTime', startTime)
+            store.set('tutorial', currentTutorial)
+          },
+          hasTheSamePath: function hasTheSamePath(step, step2) {
+            return step.pathValue === step2.pathValue
+          },
+          reset: function reset() {
+            var hard =
+              arguments.length > 0 && arguments[0] !== undefined
+                ? arguments[0]
+                : false
 
-              if (nextStep === steps.length) {
-                driver.moveNext()
-                return
-              }
+            if (driver) {
+              driver.reset()
+            }
 
-              var samePath = this.hasTheSamePath(
-                steps[nextStep],
-                steps[activeStep]
-              )
-              activeStep += 1
+            this.resetProgress()
 
-              if (samePath) {
-                driver.moveNext()
-              } else {
-                this.redirect(
-                  window.location.origin + steps[nextStep].pathValue
-                )
-              }
-            },
-            prev: function prev() {
-              driver.preventMove()
-              var prevStep = activeStep - 1
+            if (hard) {
+              store.clear()
+            }
+          },
+          nextHandler: (function() {
+            var _nextHandler = _asyncToGenerator(
+              /*#__PURE__*/
+              regeneratorRuntime.mark(function _callee() {
+                var nextStepIndex,
+                  activeStep,
+                  nextStep,
+                  samePath,
+                  trigger,
+                  target,
+                  event,
+                  waitingTime
+                return regeneratorRuntime.wrap(
+                  function _callee$(_context) {
+                    while (1) {
+                      switch ((_context.prev = _context.next)) {
+                        case 0:
+                          driver.preventMove()
+                          nextStepIndex = activeStepIndex + 1
 
-              if (prevStep === -1) {
-                driver.movePrevious()
-                return
-              }
+                          if (!(nextStepIndex === steps.length)) {
+                            _context.next = 5
+                            break
+                          }
 
-              var samePath = this.hasTheSamePath(
-                steps[prevStep],
-                steps[activeStep]
-              )
-              activeStep -= 1
+                          driver.moveNext()
+                          return _context.abrupt('return')
 
-              if (samePath) {
-                driver.movePrevious()
-              } else {
-                this.redirect(
-                  window.location.origin + steps[prevStep].pathValue
-                )
-              }
-            },
-            reset: (function() {
-              var _reset = _asyncToGenerator(
-                /*#__PURE__*/
-                regeneratorRuntime.mark(function _callee() {
-                  var data
-                  return regeneratorRuntime.wrap(
-                    function _callee$(_context) {
-                      while (1) {
-                        switch ((_context.prev = _context.next)) {
-                          case 0:
-                            if (settings.once) {
-                              if (!once.includes(currentTutorial.id)) {
-                                once = [].concat(_toConsumableArray(once), [
-                                  currentTutorial.id,
-                                ])
-                              }
+                        case 5:
+                          activeStep = steps[activeStepIndex]
+                          nextStep = steps[nextStepIndex]
+                          samePath = this.hasTheSamePath(nextStep, activeStep)
+                          activeStepIndex = nextStepIndex
 
-                              store.set('once', once)
-                            }
+                          if (!samePath) {
+                            _context.next = 23
+                            break
+                          }
 
-                            if (!apiClient) {
-                              _context.next = 4
-                              break
-                            }
+                          trigger = nextStep.trigger
+                          ;(target = trigger.target),
+                            (event = trigger.event),
+                            (waitingTime = trigger.waitingTime)
 
-                            _context.next = 4
-                            return apiClient.storePerformance({
-                              tutorialId: currentTutorial.id,
-                              completeSteps: activeStep,
-                              allSteps: steps.length,
-                              complete: activeStep === steps.length,
-                              elapsedTime: new Date().getTime() - startTime,
-                              euId: EU_ID,
-                            })
+                          if (!(target && event)) {
+                            _context.next = 20
+                            break
+                          }
 
-                          case 4:
-                            if (gaClient) {
-                              if (currentTutorial.gaPropertyId) {
-                                data = {
-                                  send_to: currentTutorial.gaPropertyId,
-                                  event_label: currentTutorial.name,
-                                  event_category: 'Tutorial',
-                                  value: activeStep,
-                                  non_interaction: true,
-                                }
+                          intendedReload = true
+                          driver.reset()
+                          _context.next = 17
+                          return this.prepare(currentTutorial, driverOptions)
 
-                                if (activeStep === steps.length) {
-                                  gaClient.store('complete', data)
-                                } else {
-                                  gaClient.store('incomplete', data)
-                                }
-                              }
-                            }
+                        case 17:
+                          intendedReload = false
+                          _context.next = 21
+                          break
 
-                            window.removeEventListener(
-                              'beforeunload',
-                              this.saveProgress
-                            )
-                            window.removeEventListener(
-                              'locationchange',
-                              this.saveProgress
-                            )
-                            this.resetProgress()
+                        case 20:
+                          window.setTimeout(function() {
+                            driver.moveNext()
+                          }, waitingTime)
 
-                          case 8:
-                          case 'end':
-                            return _context.stop()
-                        }
+                        case 21:
+                          _context.next = 24
+                          break
+
+                        case 23:
+                          this.redirect(
+                            window.location.origin + nextStep.pathValue
+                          )
+
+                        case 24:
+                        case 'end':
+                          return _context.stop()
                       }
-                    },
-                    _callee,
-                    this
-                  )
-                })
-              )
-
-              function reset() {
-                return _reset.apply(this, arguments)
-              }
-
-              return reset
-            })(),
-            redirect: function redirect(url) {
-              intendedReload = true
-              window.location.href = url
-            },
-            setTutorial: function setTutorial(t) {
-              currentTutorial = t
-              settings = _objectSpread({}, t.settings)
-              var stepIndex = 0
-              steps = t.steps.map(function(s) {
-                if (s.pathValue === window.location.pathname) {
-                  var updatedStep = _objectSpread({}, s, {
-                    stepIndex: stepIndex,
-                  })
-
-                  stepIndex += 1
-                  return updatedStep
-                }
-
-                return _objectSpread({}, s, {
-                  stepIndex: -1,
-                })
+                    }
+                  },
+                  _callee,
+                  this
+                )
               })
-            },
-            validate: function validate(tutorial) {
-              if (!apiClient) {
-                return true
-              }
+            )
 
-              if (
-                tutorial.steps.length === 0 ||
-                tutorial.steps.filter(function(s) {
-                  return s.pathValue === window.location.pathname
-                }).length === 0
-              ) {
-                return false
-              }
+            function nextHandler() {
+              return _nextHandler.apply(this, arguments)
+            }
 
-              return !(tutorial.settings.once && once.includes(EU_ID))
-            },
-          }),
-          _defineProperty(_ref, 'reset', function reset() {
-            store.clear()
-          }),
-          _defineProperty(_ref, 'prepare', function prepare(tutorial) {
-            var _this = this
+            return nextHandler
+          })(),
+          previousHandler: function previousHandler() {
+            driver.preventMove()
+            var prevStepIndex = activeStepIndex - 1
 
-            var driverOptions =
-              arguments.length > 1 && arguments[1] !== undefined
-                ? arguments[1]
-                : {}
-
-            if (!this.validate(tutorial)) {
+            if (prevStepIndex === -1) {
+              driver.movePrevious()
               return
             }
 
-            this.setTutorial(tutorial)
-            activeStep = store.get('activeStep', 0)
-            startTime = store.get('startTime', 0)
-            window.addEventListener('beforeunload', this.saveProgress)
-            window.addEventListener('locationchange', this.saveProgress)
-            driver = new Driver(
-              _objectSpread({}, driverOptions, {
-                animate: false,
-                onNext: function onNext() {
-                  return _this.next()
-                },
-                onPrevious: function onPrevious() {
-                  return _this.prev()
-                },
-                onReset: driverOptions.onReset
-                  ? function() {
-                      _this.reset()
+            var samePath = this.hasTheSamePath(
+              steps[prevStepIndex],
+              steps[activeStepIndex]
+            )
+            activeStepIndex = prevStepIndex
 
-                      driverOptions.onReset()
+            if (samePath) {
+              driver.movePrevious()
+            } else {
+              this.redirect(
+                window.location.origin + steps[prevStepIndex].pathValue
+              )
+            }
+          },
+          resetHandler: (function() {
+            var _resetHandler = _asyncToGenerator(
+              /*#__PURE__*/
+              regeneratorRuntime.mark(function _callee2() {
+                var data
+                return regeneratorRuntime.wrap(
+                  function _callee2$(_context2) {
+                    while (1) {
+                      switch ((_context2.prev = _context2.next)) {
+                        case 0:
+                          if (intendedReload) {
+                            _context2.next = 9
+                            break
+                          }
+
+                          if (settings.once) {
+                            if (!once.includes(currentTutorial.id)) {
+                              once = [].concat(_toConsumableArray(once), [
+                                currentTutorial.id,
+                              ])
+                            }
+
+                            store.set('once', once)
+                          }
+
+                          if (!apiClient) {
+                            _context2.next = 5
+                            break
+                          }
+
+                          _context2.next = 5
+                          return apiClient.storePerformance({
+                            tutorialId: currentTutorial.id,
+                            completeSteps: activeStepIndex,
+                            allSteps: steps.length,
+                            complete: activeStepIndex === steps.length,
+                            elapsedTime: new Date().getTime() - startTime,
+                            euId: EU_ID,
+                          })
+
+                        case 5:
+                          if (gaClient) {
+                            if (currentTutorial.gaPropertyId) {
+                              data = {
+                                send_to: currentTutorial.gaPropertyId,
+                                event_label: currentTutorial.name,
+                                event_category: 'Tutorial',
+                                value: activeStepIndex,
+                                non_interaction: true,
+                              }
+
+                              if (activeStepIndex === steps.length) {
+                                gaClient.store('complete', data)
+                              } else {
+                                gaClient.store('incomplete', data)
+                              }
+                            }
+                          }
+
+                          this.resetProgress()
+                          _context2.next = 10
+                          break
+
+                        case 9:
+                          this.saveProgress() //window.removeEventListener('locationchange', this.saveProgress)
+
+                        case 10:
+                        case 'end':
+                          return _context2.stop()
+                      }
                     }
-                  : function() {
-                      return _this.reset()
-                    },
+                  },
+                  _callee2,
+                  this
+                )
               })
             )
-            var firstStep = steps[activeStep]
 
-            if (firstStep.pathValue !== window.location.pathname) {
-              this.redirect(window.location.origin + firstStep.pathValue)
+            function resetHandler() {
+              return _resetHandler.apply(this, arguments)
             }
 
-            var trigger = firstStep.trigger
-            var target = trigger.target,
-              event = trigger.event,
-              waitingTime = trigger.waitingTime
-
-            var handler = function handler(e) {
-              if (e) {
-                e.stopPropagation()
-              }
-
-              window.setTimeout(function() {
-                try {
-                  driver.start(firstStep.stepIndex)
-                  startTime = new Date().getTime()
-                } catch (e) {
-                  console.error(e)
-                }
-              }, waitingTime)
-            }
-
-            var definedSteps = steps.map(function(s) {
-              return {
-                element: s.highlightTarget,
-                popover: s.config,
-              }
-            })
-
-            if (document.querySelector(firstStep.highlightTarget)) {
-              driver.defineSteps(definedSteps)
-
-              if (target === 'window' && event === 'load') {
-                handler()
-              } else {
-                document.querySelector(target).addEventListener(event, handler)
-              }
-            } else {
-              var targetNode = document.body
-              var config = {
-                childList: true,
-                subtree: true,
-              }
-              var mutationObserver = new MutationObserver(function(
-                mutationsList,
-                observer
-              ) {
-                var ready = steps.every(function(s) {
-                  if (s.stepIndex !== -1) {
-                    return !!document.querySelector(s.highlightTarget)
-                  }
-
-                  return true
+            return resetHandler
+          })(),
+          redirect: function redirect(url) {
+            intendedReload = true
+            driver.reset()
+            window.location.href = url
+          },
+          setTutorial: function setTutorial(t) {
+            currentTutorial = t
+            settings = _objectSpread({}, t.settings)
+            var stepIndex = 0
+            steps = t.steps.map(function(s) {
+              if (s.pathValue === window.location.pathname) {
+                var updatedStep = _objectSpread({}, s, {
+                  stepIndex: stepIndex,
                 })
-                if (!ready) return
-                driver.defineSteps(definedSteps)
 
-                if (target === 'window' && event === 'load') {
-                  handler()
-                } else {
-                  document
-                    .querySelector(target)
-                    .addEventListener(event, handler)
-                }
+                stepIndex += 1
+                return updatedStep
+              }
 
-                observer.disconnect()
+              return _objectSpread({}, s, {
+                stepIndex: -1,
               })
-              mutationObserver.observe(targetNode, config)
+            })
+          },
+          validate: function validate(tutorial) {
+            if (!apiClient) {
+              return true
             }
-          }),
-          _ref
-        )
+
+            if (
+              tutorial.steps.length === 0 ||
+              tutorial.steps.filter(function(s) {
+                return s.pathValue === window.location.pathname
+              }).length === 0
+            ) {
+              return false
+            }
+
+            return !(tutorial.settings.once && once.includes(EU_ID))
+          },
+          handleError: (function() {
+            var _handleError = _asyncToGenerator(
+              /*#__PURE__*/
+              regeneratorRuntime.mark(function _callee3(error) {
+                return regeneratorRuntime.wrap(
+                  function _callee3$(_context3) {
+                    while (1) {
+                      switch ((_context3.prev = _context3.next)) {
+                        case 0:
+                          console.error(error)
+
+                          if (!(error instanceof StepError)) {
+                            _context3.next = 5
+                            break
+                          }
+
+                          if (!apiClient) {
+                            _context3.next = 5
+                            break
+                          }
+
+                          _context3.next = 5
+                          return apiClient.logError({
+                            tutorialId: currentTutorial.id,
+                            stepIndex: error.stepIndex,
+                            message: error.message,
+                          })
+
+                        case 5:
+                          this.reset()
+
+                        case 6:
+                        case 'end':
+                          return _context3.stop()
+                      }
+                    }
+                  },
+                  _callee3,
+                  this
+                )
+              })
+            )
+
+            function handleError(_x) {
+              return _handleError.apply(this, arguments)
+            }
+
+            return handleError
+          })(),
+          prepare: (function() {
+            var _prepare = _asyncToGenerator(
+              /*#__PURE__*/
+              regeneratorRuntime.mark(function _callee10(tutorial) {
+                var _this2 = this
+
+                var options,
+                  firstStep,
+                  trigger,
+                  target,
+                  event,
+                  waitingTime,
+                  handler,
+                  definedSteps,
+                  el,
+                  targetNode,
+                  config,
+                  done,
+                  mutationObserver,
+                  _args10 = arguments
+                return regeneratorRuntime.wrap(
+                  function _callee10$(_context10) {
+                    while (1) {
+                      switch ((_context10.prev = _context10.next)) {
+                        case 0:
+                          options =
+                            _args10.length > 1 && _args10[1] !== undefined
+                              ? _args10[1]
+                              : {}
+                          _context10.prev = 1
+
+                          if (this.validate(tutorial)) {
+                            _context10.next = 4
+                            break
+                          }
+
+                          return _context10.abrupt('return')
+
+                        case 4:
+                          this.setTutorial(tutorial)
+                          driverOptions = options
+                          activeStepIndex = store.get('activeStepIndex', 0)
+                          startTime = store.get('startTime', 0) //window.addEventListener('locationchange', this.saveProgress)
+
+                          driver = new Driver(
+                            _objectSpread({}, driverOptions, {
+                              animate: false,
+                              onNext: (function() {
+                                var _onNext = _asyncToGenerator(
+                                  /*#__PURE__*/
+                                  regeneratorRuntime.mark(function _callee4() {
+                                    return regeneratorRuntime.wrap(
+                                      function _callee4$(_context4) {
+                                        while (1) {
+                                          switch (
+                                            (_context4.prev = _context4.next)
+                                          ) {
+                                            case 0:
+                                              _context4.prev = 0
+                                              _context4.next = 3
+                                              return _this2.nextHandler()
+
+                                            case 3:
+                                              _context4.next = 9
+                                              break
+
+                                            case 5:
+                                              _context4.prev = 5
+                                              _context4.t0 = _context4['catch'](
+                                                0
+                                              )
+                                              _context4.next = 9
+                                              return _this2.handleError(
+                                                _context4.t0
+                                              )
+
+                                            case 9:
+                                            case 'end':
+                                              return _context4.stop()
+                                          }
+                                        }
+                                      },
+                                      _callee4,
+                                      null,
+                                      [[0, 5]]
+                                    )
+                                  })
+                                )
+
+                                function onNext() {
+                                  return _onNext.apply(this, arguments)
+                                }
+
+                                return onNext
+                              })(),
+                              onPrevious: (function() {
+                                var _onPrevious = _asyncToGenerator(
+                                  /*#__PURE__*/
+                                  regeneratorRuntime.mark(function _callee5() {
+                                    return regeneratorRuntime.wrap(
+                                      function _callee5$(_context5) {
+                                        while (1) {
+                                          switch (
+                                            (_context5.prev = _context5.next)
+                                          ) {
+                                            case 0:
+                                              _context5.prev = 0
+
+                                              _this2.previousHandler()
+
+                                              _context5.next = 8
+                                              break
+
+                                            case 4:
+                                              _context5.prev = 4
+                                              _context5.t0 = _context5['catch'](
+                                                0
+                                              )
+                                              _context5.next = 8
+                                              return _this2.handleError(
+                                                _context5.t0
+                                              )
+
+                                            case 8:
+                                            case 'end':
+                                              return _context5.stop()
+                                          }
+                                        }
+                                      },
+                                      _callee5,
+                                      null,
+                                      [[0, 4]]
+                                    )
+                                  })
+                                )
+
+                                function onPrevious() {
+                                  return _onPrevious.apply(this, arguments)
+                                }
+
+                                return onPrevious
+                              })(),
+                              onReset: driverOptions.onReset
+                                ? /*#__PURE__*/
+                                  _asyncToGenerator(
+                                    /*#__PURE__*/
+                                    regeneratorRuntime.mark(
+                                      function _callee6() {
+                                        return regeneratorRuntime.wrap(
+                                          function _callee6$(_context6) {
+                                            while (1) {
+                                              switch (
+                                                (_context6.prev =
+                                                  _context6.next)
+                                              ) {
+                                                case 0:
+                                                  _context6.prev = 0
+                                                  _context6.next = 3
+                                                  return _this2.resetHandler()
+
+                                                case 3:
+                                                  driverOptions.onReset(
+                                                    intendedReload
+                                                  )
+                                                  _context6.next = 10
+                                                  break
+
+                                                case 6:
+                                                  _context6.prev = 6
+                                                  _context6.t0 = _context6[
+                                                    'catch'
+                                                  ](0)
+                                                  _context6.next = 10
+                                                  return _this2.handleError(
+                                                    _context6.t0
+                                                  )
+
+                                                case 10:
+                                                case 'end':
+                                                  return _context6.stop()
+                                              }
+                                            }
+                                          },
+                                          _callee6,
+                                          null,
+                                          [[0, 6]]
+                                        )
+                                      }
+                                    )
+                                  )
+                                : /*#__PURE__*/
+                                  _asyncToGenerator(
+                                    /*#__PURE__*/
+                                    regeneratorRuntime.mark(
+                                      function _callee7() {
+                                        return regeneratorRuntime.wrap(
+                                          function _callee7$(_context7) {
+                                            while (1) {
+                                              switch (
+                                                (_context7.prev =
+                                                  _context7.next)
+                                              ) {
+                                                case 0:
+                                                  _context7.prev = 0
+                                                  _context7.next = 3
+                                                  return _this2.resetHandler()
+
+                                                case 3:
+                                                  _context7.next = 9
+                                                  break
+
+                                                case 5:
+                                                  _context7.prev = 5
+                                                  _context7.t0 = _context7[
+                                                    'catch'
+                                                  ](0)
+                                                  _context7.next = 9
+                                                  return _this2.handleError(
+                                                    _context7.t0
+                                                  )
+
+                                                case 9:
+                                                case 'end':
+                                                  return _context7.stop()
+                                              }
+                                            }
+                                          },
+                                          _callee7,
+                                          null,
+                                          [[0, 5]]
+                                        )
+                                      }
+                                    )
+                                  ),
+                            })
+                          )
+                          firstStep = steps[activeStepIndex]
+
+                          if (
+                            firstStep.pathValue !== window.location.pathname
+                          ) {
+                            this.redirect(
+                              window.location.origin + firstStep.pathValue
+                            )
+                          }
+
+                          trigger = firstStep.trigger
+                          ;(target = trigger.target),
+                            (event = trigger.event),
+                            (waitingTime = trigger.waitingTime)
+
+                          handler = function handler() {
+                            window.setTimeout(function() {
+                              driver.start(firstStep.stepIndex)
+                              startTime = new Date().getTime()
+                            }, waitingTime)
+                          }
+
+                          definedSteps = steps.map(function(s) {
+                            return {
+                              element: s.highlightTarget,
+                              popover: s.config,
+                            }
+                          })
+
+                          if (
+                            !(
+                              firstStep.highlightTarget === 'modal' ||
+                              document.querySelector(firstStep.highlightTarget)
+                            )
+                          ) {
+                            _context10.next = 27
+                            break
+                          }
+
+                          driver.defineSteps(definedSteps)
+
+                          if (
+                            !(
+                              (target === 'window' && event === 'load') ||
+                              (target === null && event === null)
+                            )
+                          ) {
+                            _context10.next = 21
+                            break
+                          }
+
+                          handler()
+                          _context10.next = 25
+                          break
+
+                        case 21:
+                          el = document.querySelector(target)
+
+                          if (el) {
+                            _context10.next = 24
+                            break
+                          }
+
+                          throw new StepError(
+                            activeStepIndex,
+                            ERROR_TRIGGER_NOT_FOUND
+                          )
+
+                        case 24:
+                          el.addEventListener(
+                            event,
+                            function(e) {
+                              e.stopPropagation()
+                              handler()
+                            },
+                            {
+                              once: true,
+                            }
+                          )
+
+                        case 25:
+                          _context10.next = 33
+                          break
+
+                        case 27:
+                          targetNode = document.body
+                          config = {
+                            childList: true,
+                            subtree: true,
+                          }
+                          done = false
+                          mutationObserver = new MutationObserver(
+                            /*#__PURE__*/
+                            (function() {
+                              var _ref3 = _asyncToGenerator(
+                                /*#__PURE__*/
+                                regeneratorRuntime.mark(function _callee8(
+                                  mutationsList,
+                                  observer
+                                ) {
+                                  var _el
+
+                                  return regeneratorRuntime.wrap(
+                                    function _callee8$(_context8) {
+                                      while (1) {
+                                        switch (
+                                          (_context8.prev = _context8.next)
+                                        ) {
+                                          case 0:
+                                            if (
+                                              document.querySelector(
+                                                firstStep.highlightTarget
+                                              )
+                                            ) {
+                                              _context8.next = 2
+                                              break
+                                            }
+
+                                            return _context8.abrupt('return')
+
+                                          case 2:
+                                            driver.defineSteps(definedSteps)
+
+                                            if (
+                                              !(
+                                                (target === 'window' &&
+                                                  event === 'load') ||
+                                                (target === null &&
+                                                  event === null)
+                                              )
+                                            ) {
+                                              _context8.next = 7
+                                              break
+                                            }
+
+                                            handler()
+                                            _context8.next = 11
+                                            break
+
+                                          case 7:
+                                            _el = document.querySelector(target)
+
+                                            if (_el) {
+                                              _context8.next = 10
+                                              break
+                                            }
+
+                                            throw new StepError(
+                                              activeStepIndex,
+                                              ERROR_TRIGGER_NOT_FOUND
+                                            )
+
+                                          case 10:
+                                            _el.addEventListener(
+                                              event,
+                                              function(e) {
+                                                e.stopPropagation()
+                                                handler()
+                                              },
+                                              {
+                                                once: true,
+                                              }
+                                            )
+
+                                          case 11:
+                                            done = true
+                                            observer.disconnect()
+
+                                          case 13:
+                                          case 'end':
+                                            return _context8.stop()
+                                        }
+                                      }
+                                    },
+                                    _callee8
+                                  )
+                                })
+                              )
+
+                              return function(_x3, _x4) {
+                                return _ref3.apply(this, arguments)
+                              }
+                            })()
+                          )
+                          mutationObserver.observe(targetNode, config)
+                          window.setTimeout(
+                            /*#__PURE__*/
+                            _asyncToGenerator(
+                              /*#__PURE__*/
+                              regeneratorRuntime.mark(function _callee9() {
+                                return regeneratorRuntime.wrap(
+                                  function _callee9$(_context9) {
+                                    while (1) {
+                                      switch (
+                                        (_context9.prev = _context9.next)
+                                      ) {
+                                        case 0:
+                                          if (done) {
+                                            _context9.next = 3
+                                            break
+                                          }
+
+                                          mutationObserver.disconnect()
+                                          throw new StepError(
+                                            activeStepIndex,
+                                            ERROR_NO_ELEMENTS_FOUND
+                                          )
+
+                                        case 3:
+                                        case 'end':
+                                          return _context9.stop()
+                                      }
+                                    }
+                                  },
+                                  _callee9
+                                )
+                              })
+                            ),
+                            10000
+                          )
+
+                        case 33:
+                          _context10.next = 38
+                          break
+
+                        case 35:
+                          _context10.prev = 35
+                          _context10.t0 = _context10['catch'](1)
+                          this.handleError(_context10.t0)
+
+                        case 38:
+                        case 'end':
+                          return _context10.stop()
+                      }
+                    }
+                  },
+                  _callee10,
+                  this,
+                  [[1, 35]]
+                )
+              })
+            )
+
+            function prepare(_x2) {
+              return _prepare.apply(this, arguments)
+            }
+
+            return prepare
+          })(),
+        }
       }
 
       /* harmony default export */ __webpack_exports__[
@@ -7203,27 +7947,6 @@
     },
     /* 132 */
     /***/ function(module, exports, __webpack_require__) {
-      'use strict'
-
-      var internalEvery = __webpack_require__(61)(4)
-
-      var SLOPPY_METHOD = __webpack_require__(66)('every')
-
-      // `Array.prototype.every` method
-      // https://tc39.github.io/ecma262/#sec-array.prototype.every
-      __webpack_require__(7)(
-        { target: 'Array', proto: true, forced: SLOPPY_METHOD },
-        {
-          every: function every(callbackfn /* , thisArg */) {
-            return internalEvery(this, callbackfn, arguments[1])
-          },
-        }
-      )
-
-      /***/
-    },
-    /* 133 */
-    /***/ function(module, exports, __webpack_require__) {
       var INCORRECT_ITERATION = !__webpack_require__(80)(function(iterable) {
         Array.from(iterable)
       })
@@ -7233,13 +7956,13 @@
       __webpack_require__(7)(
         { target: 'Array', stat: true, forced: INCORRECT_ITERATION },
         {
-          from: __webpack_require__(134),
+          from: __webpack_require__(133),
         }
       )
 
       /***/
     },
-    /* 134 */
+    /* 133 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
@@ -7304,7 +8027,7 @@
 
       /***/
     },
-    /* 135 */
+    /* 134 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
@@ -7326,11 +8049,11 @@
       )
 
       // https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
-      __webpack_require__(136)('includes')
+      __webpack_require__(135)('includes')
 
       /***/
     },
-    /* 136 */
+    /* 135 */
     /***/ function(module, exports, __webpack_require__) {
       var UNSCOPABLES = __webpack_require__(43)('unscopables')
       var create = __webpack_require__(51)
@@ -7350,12 +8073,42 @@
 
       /***/
     },
+    /* 136 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict'
+
+      var internalIndexOf = __webpack_require__(35)(false)
+      var nativeIndexOf = [].indexOf
+
+      var NEGATIVE_ZERO = !!nativeIndexOf && 1 / [1].indexOf(1, -0) < 0
+      var SLOPPY_METHOD = __webpack_require__(66)('indexOf')
+
+      // `Array.prototype.indexOf` method
+      // https://tc39.github.io/ecma262/#sec-array.prototype.indexof
+      __webpack_require__(7)(
+        {
+          target: 'Array',
+          proto: true,
+          forced: NEGATIVE_ZERO || SLOPPY_METHOD,
+        },
+        {
+          indexOf: function indexOf(searchElement /* , fromIndex = 0 */) {
+            return NEGATIVE_ZERO
+              ? // convert -0 to +0
+                nativeIndexOf.apply(this, arguments) || 0
+              : internalIndexOf(this, searchElement, arguments[1])
+          },
+        }
+      )
+
+      /***/
+    },
     /* 137 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
       var toIndexedObject = __webpack_require__(11)
-      var addToUnscopables = __webpack_require__(136)
+      var addToUnscopables = __webpack_require__(135)
       var Iterators = __webpack_require__(77)
       var InternalStateModule = __webpack_require__(26)
       var defineIterator = __webpack_require__(138)
@@ -7798,9 +8551,662 @@
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
+      // `Map` constructor
+      // https://tc39.github.io/ecma262/#sec-map-objects
+      module.exports = __webpack_require__(149)(
+        'Map',
+        function(get) {
+          return function Map() {
+            return get(this, arguments.length > 0 ? arguments[0] : undefined)
+          }
+        },
+        __webpack_require__(153),
+        true
+      )
+
+      /***/
+    },
+    /* 149 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict'
+
+      var global = __webpack_require__(2)
+      var isForced = __webpack_require__(41)
+      var $export = __webpack_require__(7)
+      var redefine = __webpack_require__(22)
+      var InternalMetadataModule = __webpack_require__(150)
+      var iterate = __webpack_require__(75)
+      var anInstance = __webpack_require__(74)
+      var isObject = __webpack_require__(16)
+      var fails = __webpack_require__(5)
+      var checkCorrectnessOfIteration = __webpack_require__(80)
+      var setToStringTag = __webpack_require__(42)
+      var inheritIfRequired = __webpack_require__(152)
+
+      module.exports = function(
+        CONSTRUCTOR_NAME,
+        wrapper,
+        common,
+        IS_MAP,
+        IS_WEAK
+      ) {
+        var NativeConstructor = global[CONSTRUCTOR_NAME]
+        var NativePrototype = NativeConstructor && NativeConstructor.prototype
+        var Constructor = NativeConstructor
+        var ADDER = IS_MAP ? 'set' : 'add'
+        var exported = {}
+
+        var fixMethod = function(KEY) {
+          var nativeMethod = NativePrototype[KEY]
+          redefine(
+            NativePrototype,
+            KEY,
+            KEY == 'add'
+              ? function add(a) {
+                  nativeMethod.call(this, a === 0 ? 0 : a)
+                  return this
+                }
+              : KEY == 'delete'
+              ? function(a) {
+                  return IS_WEAK && !isObject(a)
+                    ? false
+                    : nativeMethod.call(this, a === 0 ? 0 : a)
+                }
+              : KEY == 'get'
+              ? function get(a) {
+                  return IS_WEAK && !isObject(a)
+                    ? undefined
+                    : nativeMethod.call(this, a === 0 ? 0 : a)
+                }
+              : KEY == 'has'
+              ? function has(a) {
+                  return IS_WEAK && !isObject(a)
+                    ? false
+                    : nativeMethod.call(this, a === 0 ? 0 : a)
+                }
+              : function set(a, b) {
+                  nativeMethod.call(this, a === 0 ? 0 : a, b)
+                  return this
+                }
+          )
+        }
+
+        // eslint-disable-next-line max-len
+        if (
+          isForced(
+            CONSTRUCTOR_NAME,
+            typeof NativeConstructor != 'function' ||
+              !(
+                IS_WEAK ||
+                (NativePrototype.forEach &&
+                  !fails(function() {
+                    new NativeConstructor().entries().next()
+                  }))
+              )
+          )
+        ) {
+          // create collection constructor
+          Constructor = common.getConstructor(
+            wrapper,
+            CONSTRUCTOR_NAME,
+            IS_MAP,
+            ADDER
+          )
+          InternalMetadataModule.REQUIRED = true
+        } else if (isForced(CONSTRUCTOR_NAME, true)) {
+          var instance = new Constructor()
+          // early implementations not supports chaining
+          var HASNT_CHAINING = instance[ADDER](IS_WEAK ? {} : -0, 1) != instance
+          // V8 ~  Chromium 40- weak-collections throws on primitives, but should return false
+          var THROWS_ON_PRIMITIVES = fails(function() {
+            instance.has(1)
+          })
+          // most early implementations doesn't supports iterables, most modern - not close it correctly
+          // eslint-disable-next-line no-new
+          var ACCEPT_ITERABLES = checkCorrectnessOfIteration(function(
+            iterable
+          ) {
+            new NativeConstructor(iterable)
+          })
+          // for early implementations -0 and +0 not the same
+          var BUGGY_ZERO =
+            !IS_WEAK &&
+            fails(function() {
+              // V8 ~ Chromium 42- fails only with 5+ elements
+              var $instance = new NativeConstructor()
+              var index = 5
+              while (index--) $instance[ADDER](index, index)
+              return !$instance.has(-0)
+            })
+
+          if (!ACCEPT_ITERABLES) {
+            Constructor = wrapper(function(target, iterable) {
+              anInstance(target, Constructor, CONSTRUCTOR_NAME)
+              var that = inheritIfRequired(
+                new NativeConstructor(),
+                target,
+                Constructor
+              )
+              if (iterable != undefined)
+                iterate(iterable, that[ADDER], that, IS_MAP)
+              return that
+            })
+            Constructor.prototype = NativePrototype
+            NativePrototype.constructor = Constructor
+          }
+
+          if (THROWS_ON_PRIMITIVES || BUGGY_ZERO) {
+            fixMethod('delete')
+            fixMethod('has')
+            IS_MAP && fixMethod('get')
+          }
+
+          if (BUGGY_ZERO || HASNT_CHAINING) fixMethod(ADDER)
+
+          // weak collections should not contains .clear method
+          if (IS_WEAK && NativePrototype.clear) delete NativePrototype.clear
+        }
+
+        exported[CONSTRUCTOR_NAME] = Constructor
+        $export(
+          { global: true, forced: Constructor != NativeConstructor },
+          exported
+        )
+
+        setToStringTag(Constructor, CONSTRUCTOR_NAME)
+
+        if (!IS_WEAK) common.setStrong(Constructor, CONSTRUCTOR_NAME, IS_MAP)
+
+        return Constructor
+      }
+
+      /***/
+    },
+    /* 150 */
+    /***/ function(module, exports, __webpack_require__) {
+      var METADATA = __webpack_require__(29)('meta')
+      var FREEZING = __webpack_require__(151)
+      var isObject = __webpack_require__(16)
+      var has = __webpack_require__(3)
+      var defineProperty = __webpack_require__(20).f
+      var id = 0
+
+      var isExtensible =
+        Object.isExtensible ||
+        function() {
+          return true
+        }
+
+      var setMetadata = function(it) {
+        defineProperty(it, METADATA, {
+          value: {
+            objectID: 'O' + ++id, // object ID
+            weakData: {}, // weak collections IDs
+          },
+        })
+      }
+
+      var fastKey = function(it, create) {
+        // return a primitive with prefix
+        if (!isObject(it))
+          return typeof it == 'symbol'
+            ? it
+            : (typeof it == 'string' ? 'S' : 'P') + it
+        if (!has(it, METADATA)) {
+          // can't set metadata to uncaught frozen object
+          if (!isExtensible(it)) return 'F'
+          // not necessary to add metadata
+          if (!create) return 'E'
+          // add missing metadata
+          setMetadata(it)
+          // return object ID
+        }
+        return it[METADATA].objectID
+      }
+
+      var getWeakData = function(it, create) {
+        if (!has(it, METADATA)) {
+          // can't set metadata to uncaught frozen object
+          if (!isExtensible(it)) return true
+          // not necessary to add metadata
+          if (!create) return false
+          // add missing metadata
+          setMetadata(it)
+          // return the store of weak collections IDs
+        }
+        return it[METADATA].weakData
+      }
+
+      // add metadata on freeze-family methods calling
+      var onFreeze = function(it) {
+        if (FREEZING && meta.REQUIRED && isExtensible(it) && !has(it, METADATA))
+          setMetadata(it)
+        return it
+      }
+
+      var meta = (module.exports = {
+        REQUIRED: false,
+        fastKey: fastKey,
+        getWeakData: getWeakData,
+        onFreeze: onFreeze,
+      })
+
+      __webpack_require__(30)[METADATA] = true
+
+      /***/
+    },
+    /* 151 */
+    /***/ function(module, exports, __webpack_require__) {
+      module.exports = !__webpack_require__(5)(function() {
+        return Object.isExtensible(Object.preventExtensions({}))
+      })
+
+      /***/
+    },
+    /* 152 */
+    /***/ function(module, exports, __webpack_require__) {
+      var isObject = __webpack_require__(16)
+      var setPrototypeOf = __webpack_require__(143)
+
+      module.exports = function(that, target, C) {
+        var S = target.constructor
+        var P
+        if (
+          S !== C &&
+          typeof S == 'function' &&
+          (P = S.prototype) !== C.prototype &&
+          isObject(P) &&
+          setPrototypeOf
+        ) {
+          setPrototypeOf(that, P)
+        }
+        return that
+      }
+
+      /***/
+    },
+    /* 153 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict'
+
+      var defineProperty = __webpack_require__(20).f
+      var create = __webpack_require__(51)
+      var redefineAll = __webpack_require__(89)
+      var bind = __webpack_require__(62)
+      var anInstance = __webpack_require__(74)
+      var iterate = __webpack_require__(75)
+      var defineIterator = __webpack_require__(138)
+      var setSpecies = __webpack_require__(90)
+      var DESCRIPTORS = __webpack_require__(4)
+      var fastKey = __webpack_require__(150).fastKey
+      var InternalStateModule = __webpack_require__(26)
+      var setInternalState = InternalStateModule.set
+      var internalStateGetterFor = InternalStateModule.getterFor
+
+      module.exports = {
+        getConstructor: function(wrapper, CONSTRUCTOR_NAME, IS_MAP, ADDER) {
+          var C = wrapper(function(that, iterable) {
+            anInstance(that, C, CONSTRUCTOR_NAME)
+            setInternalState(that, {
+              type: CONSTRUCTOR_NAME,
+              index: create(null),
+              first: undefined,
+              last: undefined,
+              size: 0,
+            })
+            if (!DESCRIPTORS) that.size = 0
+            if (iterable != undefined)
+              iterate(iterable, that[ADDER], that, IS_MAP)
+          })
+
+          var getInternalState = internalStateGetterFor(CONSTRUCTOR_NAME)
+
+          var define = function(that, key, value) {
+            var state = getInternalState(that)
+            var entry = getEntry(that, key)
+            var previous, index
+            // change existing entry
+            if (entry) {
+              entry.value = value
+              // create new entry
+            } else {
+              state.last = entry = {
+                index: (index = fastKey(key, true)),
+                key: key,
+                value: value,
+                previous: (previous = state.last),
+                next: undefined,
+                removed: false,
+              }
+              if (!state.first) state.first = entry
+              if (previous) previous.next = entry
+              if (DESCRIPTORS) state.size++
+              else that.size++
+              // add to index
+              if (index !== 'F') state.index[index] = entry
+            }
+            return that
+          }
+
+          var getEntry = function(that, key) {
+            var state = getInternalState(that)
+            // fast case
+            var index = fastKey(key)
+            var entry
+            if (index !== 'F') return state.index[index]
+            // frozen object case
+            for (entry = state.first; entry; entry = entry.next) {
+              if (entry.key == key) return entry
+            }
+          }
+
+          redefineAll(C.prototype, {
+            // 23.1.3.1 Map.prototype.clear()
+            // 23.2.3.2 Set.prototype.clear()
+            clear: function clear() {
+              var that = this
+              var state = getInternalState(that)
+              var data = state.index
+              var entry = state.first
+              while (entry) {
+                entry.removed = true
+                if (entry.previous)
+                  entry.previous = entry.previous.next = undefined
+                delete data[entry.index]
+                entry = entry.next
+              }
+              state.first = state.last = undefined
+              if (DESCRIPTORS) state.size = 0
+              else that.size = 0
+            },
+            // 23.1.3.3 Map.prototype.delete(key)
+            // 23.2.3.4 Set.prototype.delete(value)
+            delete: function(key) {
+              var that = this
+              var state = getInternalState(that)
+              var entry = getEntry(that, key)
+              if (entry) {
+                var next = entry.next
+                var prev = entry.previous
+                delete state.index[entry.index]
+                entry.removed = true
+                if (prev) prev.next = next
+                if (next) next.previous = prev
+                if (state.first == entry) state.first = next
+                if (state.last == entry) state.last = prev
+                if (DESCRIPTORS) state.size--
+                else that.size--
+              }
+              return !!entry
+            },
+            // 23.2.3.6 Set.prototype.forEach(callbackfn, thisArg = undefined)
+            // 23.1.3.5 Map.prototype.forEach(callbackfn, thisArg = undefined)
+            forEach: function forEach(callbackfn /* , that = undefined */) {
+              var state = getInternalState(this)
+              var boundFunction = bind(
+                callbackfn,
+                arguments.length > 1 ? arguments[1] : undefined,
+                3
+              )
+              var entry
+              while ((entry = entry ? entry.next : state.first)) {
+                boundFunction(entry.value, entry.key, this)
+                // revert to the last existing entry
+                while (entry && entry.removed) entry = entry.previous
+              }
+            },
+            // 23.1.3.7 Map.prototype.has(key)
+            // 23.2.3.7 Set.prototype.has(value)
+            has: function has(key) {
+              return !!getEntry(this, key)
+            },
+          })
+
+          redefineAll(
+            C.prototype,
+            IS_MAP
+              ? {
+                  // 23.1.3.6 Map.prototype.get(key)
+                  get: function get(key) {
+                    var entry = getEntry(this, key)
+                    return entry && entry.value
+                  },
+                  // 23.1.3.9 Map.prototype.set(key, value)
+                  set: function set(key, value) {
+                    return define(this, key === 0 ? 0 : key, value)
+                  },
+                }
+              : {
+                  // 23.2.3.1 Set.prototype.add(value)
+                  add: function add(value) {
+                    return define(this, (value =
+                      value === 0 ? 0 : value), value)
+                  },
+                }
+          )
+          if (DESCRIPTORS)
+            defineProperty(C.prototype, 'size', {
+              get: function() {
+                return getInternalState(this).size
+              },
+            })
+          return C
+        },
+        setStrong: function(C, CONSTRUCTOR_NAME, IS_MAP) {
+          var ITERATOR_NAME = CONSTRUCTOR_NAME + ' Iterator'
+          var getInternalCollectionState = internalStateGetterFor(
+            CONSTRUCTOR_NAME
+          )
+          var getInternalIteratorState = internalStateGetterFor(ITERATOR_NAME)
+          // add .keys, .values, .entries, [@@iterator]
+          // 23.1.3.4, 23.1.3.8, 23.1.3.11, 23.1.3.12, 23.2.3.5, 23.2.3.8, 23.2.3.10, 23.2.3.11
+          defineIterator(
+            C,
+            CONSTRUCTOR_NAME,
+            function(iterated, kind) {
+              setInternalState(this, {
+                type: ITERATOR_NAME,
+                target: iterated,
+                state: getInternalCollectionState(iterated),
+                kind: kind,
+                last: undefined,
+              })
+            },
+            function() {
+              var state = getInternalIteratorState(this)
+              var kind = state.kind
+              var entry = state.last
+              // revert to the last existing entry
+              while (entry && entry.removed) entry = entry.previous
+              // get next entry
+              if (
+                !state.target ||
+                !(state.last = entry = entry ? entry.next : state.state.first)
+              ) {
+                // or finish the iteration
+                state.target = undefined
+                return { value: undefined, done: true }
+              }
+              // return step by kind
+              if (kind == 'keys') return { value: entry.key, done: false }
+              if (kind == 'values') return { value: entry.value, done: false }
+              return { value: [entry.key, entry.value], done: false }
+            },
+            IS_MAP ? 'entries' : 'values',
+            !IS_MAP,
+            true
+          )
+
+          // add [@@species], 23.1.2.2, 23.2.2.2
+          setSpecies(CONSTRUCTOR_NAME)
+        },
+      }
+
+      /***/
+    },
+    /* 154 */
+    /***/ function(module, exports, __webpack_require__) {
+      var toObject = __webpack_require__(56)
+      var nativeGetPrototypeOf = __webpack_require__(141)
+      var CORRECT_PROTOTYPE_GETTER = __webpack_require__(142)
+      var FAILS_ON_PRIMITIVES = __webpack_require__(5)(function() {
+        nativeGetPrototypeOf(1)
+      })
+
+      // `Object.getPrototypeOf` method
+      // https://tc39.github.io/ecma262/#sec-object.getprototypeof
+      __webpack_require__(7)(
+        {
+          target: 'Object',
+          stat: true,
+          forced: FAILS_ON_PRIMITIVES,
+          sham: !CORRECT_PROTOTYPE_GETTER,
+        },
+        {
+          getPrototypeOf: function getPrototypeOf(it) {
+            return nativeGetPrototypeOf(toObject(it))
+          },
+        }
+      )
+
+      /***/
+    },
+    /* 155 */
+    /***/ function(module, exports, __webpack_require__) {
+      // `Object.setPrototypeOf` method
+      // https://tc39.github.io/ecma262/#sec-object.setprototypeof
+      __webpack_require__(7)(
+        { target: 'Object', stat: true },
+        {
+          setPrototypeOf: __webpack_require__(143),
+        }
+      )
+
+      /***/
+    },
+    /* 156 */
+    /***/ function(module, exports, __webpack_require__) {
+      var create = __webpack_require__(51)
+      var aFunction = __webpack_require__(63)
+      var anObject = __webpack_require__(21)
+      var isObject = __webpack_require__(16)
+      var fails = __webpack_require__(5)
+      var bind = __webpack_require__(157)
+      var nativeConstruct = (__webpack_require__(2).Reflect || {}).construct
+
+      // `Reflect.construct` method
+      // https://tc39.github.io/ecma262/#sec-reflect.construct
+      // MS Edge supports only 2 arguments and argumentsList argument is optional
+      // FF Nightly sets third argument as `new.target`, but does not create `this` from it
+      var NEW_TARGET_BUG = fails(function() {
+        function F() {
+          /* empty */
+        }
+        return !(
+          nativeConstruct(
+            function() {
+              /* empty */
+            },
+            [],
+            F
+          ) instanceof F
+        )
+      })
+      var ARGS_BUG = !fails(function() {
+        nativeConstruct(function() {
+          /* empty */
+        })
+      })
+      var FORCED = NEW_TARGET_BUG || ARGS_BUG
+
+      __webpack_require__(7)(
+        { target: 'Reflect', stat: true, forced: FORCED, sham: FORCED },
+        {
+          construct: function construct(Target, args /* , newTarget */) {
+            aFunction(Target)
+            anObject(args)
+            var newTarget =
+              arguments.length < 3 ? Target : aFunction(arguments[2])
+            if (ARGS_BUG && !NEW_TARGET_BUG)
+              return nativeConstruct(Target, args, newTarget)
+            if (Target == newTarget) {
+              // w/o altered newTarget, optimization for 0-4 arguments
+              switch (args.length) {
+                case 0:
+                  return new Target()
+                case 1:
+                  return new Target(args[0])
+                case 2:
+                  return new Target(args[0], args[1])
+                case 3:
+                  return new Target(args[0], args[1], args[2])
+                case 4:
+                  return new Target(args[0], args[1], args[2], args[3])
+              }
+              // w/o altered newTarget, lot of arguments case
+              var $args = [null]
+              $args.push.apply($args, args)
+              return new (bind.apply(Target, $args))()
+            }
+            // with altered newTarget, not support built-in constructors
+            var proto = newTarget.prototype
+            var instance = create(isObject(proto) ? proto : Object.prototype)
+            var result = Function.apply.call(Target, instance, args)
+            return isObject(result) ? result : instance
+          },
+        }
+      )
+
+      /***/
+    },
+    /* 157 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict'
+
+      var aFunction = __webpack_require__(63)
+      var isObject = __webpack_require__(16)
+      var arraySlice = [].slice
+      var factories = {}
+
+      var construct = function(C, argsLength, args) {
+        if (!(argsLength in factories)) {
+          for (var list = [], i = 0; i < argsLength; i++)
+            list[i] = 'a[' + i + ']'
+          // eslint-disable-next-line no-new-func
+          factories[argsLength] = Function(
+            'C,a',
+            'return new C(' + list.join(',') + ')'
+          )
+        }
+        return factories[argsLength](C, args)
+      }
+
+      // `Function.prototype.bind` method implementation
+      // https://tc39.github.io/ecma262/#sec-function.prototype.bind
+      module.exports =
+        Function.bind ||
+        function bind(that /* , ...args */) {
+          var fn = aFunction(this)
+          var partArgs = arraySlice.call(arguments, 1)
+          var boundFunction = function bound(/* args... */) {
+            var args = partArgs.concat(arraySlice.call(arguments))
+            return this instanceof boundFunction
+              ? construct(fn, args.length, args)
+              : fn.apply(that, args)
+          }
+          if (isObject(fn.prototype)) boundFunction.prototype = fn.prototype
+          return boundFunction
+        }
+
+      /***/
+    },
+    /* 158 */
+    /***/ function(module, exports, __webpack_require__) {
+      'use strict'
+
       var anObject = __webpack_require__(21)
       var fails = __webpack_require__(5)
-      var flags = __webpack_require__(149)
+      var flags = __webpack_require__(159)
       var DESCRIPTORS = __webpack_require__(4)
       var TO_STRING = 'toString'
       var nativeToString = /./[TO_STRING]
@@ -7835,7 +9241,7 @@
 
       /***/
     },
-    /* 149 */
+    /* 159 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
@@ -7856,14 +9262,14 @@
 
       /***/
     },
-    /* 150 */
+    /* 160 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
-      var validateArguments = __webpack_require__(151)
+      var validateArguments = __webpack_require__(161)
       var INCLUDES = 'includes'
 
-      var CORRECT_IS_REGEXP_LOGIC = __webpack_require__(153)(INCLUDES)
+      var CORRECT_IS_REGEXP_LOGIC = __webpack_require__(163)(INCLUDES)
 
       // `String.prototype.includes` method
       // https://tc39.github.io/ecma262/#sec-string.prototype.includes
@@ -7881,10 +9287,10 @@
 
       /***/
     },
-    /* 151 */
+    /* 161 */
     /***/ function(module, exports, __webpack_require__) {
       // helper for String#{startsWith, endsWith, includes}
-      var isRegExp = __webpack_require__(152)
+      var isRegExp = __webpack_require__(162)
       var requireObjectCoercible = __webpack_require__(14)
 
       module.exports = function(that, searchString, NAME) {
@@ -7896,7 +9302,7 @@
 
       /***/
     },
-    /* 152 */
+    /* 162 */
     /***/ function(module, exports, __webpack_require__) {
       var isObject = __webpack_require__(16)
       var classof = __webpack_require__(13)
@@ -7916,7 +9322,7 @@
 
       /***/
     },
-    /* 153 */
+    /* 163 */
     /***/ function(module, exports, __webpack_require__) {
       var MATCH = __webpack_require__(43)('match')
 
@@ -7937,11 +9343,11 @@
 
       /***/
     },
-    /* 154 */
+    /* 164 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
-      var codePointAt = __webpack_require__(155)
+      var codePointAt = __webpack_require__(165)
       var InternalStateModule = __webpack_require__(26)
       var defineIterator = __webpack_require__(138)
       var STRING_ITERATOR = 'String Iterator'
@@ -7976,7 +9382,7 @@
 
       /***/
     },
-    /* 155 */
+    /* 165 */
     /***/ function(module, exports, __webpack_require__) {
       var toInteger = __webpack_require__(37)
       var requireObjectCoercible = __webpack_require__(14)
@@ -8005,7 +9411,7 @@
 
       /***/
     },
-    /* 156 */
+    /* 166 */
     /***/ function(module, exports, __webpack_require__) {
       var DOMIterables = __webpack_require__(93)
       var ArrayIteratorMethods = __webpack_require__(137)
@@ -8052,7 +9458,7 @@
 
       /***/
     },
-    /* 157 */
+    /* 167 */
     /***/ function(module, __webpack_exports__, __webpack_require__) {
       'use strict'
       __webpack_require__.r(__webpack_exports__)
@@ -8076,7 +9482,7 @@
           core_js_modules_es_symbol_iterator__WEBPACK_IMPORTED_MODULE_2__
         )
         /* harmony import */ var core_js_modules_es_symbol_to_string_tag__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
-          159
+          169
         )
         /* harmony import */ var core_js_modules_es_symbol_to_string_tag__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_symbol_to_string_tag__WEBPACK_IMPORTED_MODULE_3__
@@ -8094,7 +9500,7 @@
           core_js_modules_es_array_filter__WEBPACK_IMPORTED_MODULE_5__
         )
         /* harmony import */ var core_js_modules_es_array_find__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(
-          160
+          170
         )
         /* harmony import */ var core_js_modules_es_array_find__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_array_find__WEBPACK_IMPORTED_MODULE_6__
@@ -8106,13 +9512,13 @@
           core_js_modules_es_array_for_each__WEBPACK_IMPORTED_MODULE_7__
         )
         /* harmony import */ var core_js_modules_es_array_from__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(
-          133
+          132
         )
         /* harmony import */ var core_js_modules_es_array_from__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_array_from__WEBPACK_IMPORTED_MODULE_8__
         )
         /* harmony import */ var core_js_modules_es_array_index_of__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(
-          161
+          136
         )
         /* harmony import */ var core_js_modules_es_array_index_of__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_array_index_of__WEBPACK_IMPORTED_MODULE_9__
@@ -8124,7 +9530,7 @@
           core_js_modules_es_array_iterator__WEBPACK_IMPORTED_MODULE_10__
         )
         /* harmony import */ var core_js_modules_es_array_join__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(
-          162
+          171
         )
         /* harmony import */ var core_js_modules_es_array_join__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_array_join__WEBPACK_IMPORTED_MODULE_11__
@@ -8136,7 +9542,7 @@
           core_js_modules_es_array_map__WEBPACK_IMPORTED_MODULE_12__
         )
         /* harmony import */ var core_js_modules_es_array_slice__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(
-          163
+          172
         )
         /* harmony import */ var core_js_modules_es_array_slice__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_array_slice__WEBPACK_IMPORTED_MODULE_13__
@@ -8154,25 +9560,25 @@
           core_js_modules_es_function_name__WEBPACK_IMPORTED_MODULE_15__
         )
         /* harmony import */ var core_js_modules_es_json_to_string_tag__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(
-          164
+          173
         )
         /* harmony import */ var core_js_modules_es_json_to_string_tag__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_json_to_string_tag__WEBPACK_IMPORTED_MODULE_16__
         )
         /* harmony import */ var core_js_modules_es_math_to_string_tag__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(
-          165
+          174
         )
         /* harmony import */ var core_js_modules_es_math_to_string_tag__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_math_to_string_tag__WEBPACK_IMPORTED_MODULE_17__
         )
         /* harmony import */ var core_js_modules_es_object_assign__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(
-          166
+          175
         )
         /* harmony import */ var core_js_modules_es_object_assign__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_object_assign__WEBPACK_IMPORTED_MODULE_18__
         )
         /* harmony import */ var core_js_modules_es_object_define_properties__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(
-          168
+          177
         )
         /* harmony import */ var core_js_modules_es_object_define_properties__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_object_define_properties__WEBPACK_IMPORTED_MODULE_19__
@@ -8190,25 +9596,25 @@
           core_js_modules_es_object_get_own_property_descriptor__WEBPACK_IMPORTED_MODULE_21__
         )
         /* harmony import */ var core_js_modules_es_object_get_own_property_descriptors__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(
-          169
+          178
         )
         /* harmony import */ var core_js_modules_es_object_get_own_property_descriptors__WEBPACK_IMPORTED_MODULE_22___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_object_get_own_property_descriptors__WEBPACK_IMPORTED_MODULE_22__
         )
         /* harmony import */ var core_js_modules_es_object_get_own_property_names__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(
-          170
+          179
         )
         /* harmony import */ var core_js_modules_es_object_get_own_property_names__WEBPACK_IMPORTED_MODULE_23___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_object_get_own_property_names__WEBPACK_IMPORTED_MODULE_23__
         )
         /* harmony import */ var core_js_modules_es_object_get_prototype_of__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(
-          171
+          154
         )
         /* harmony import */ var core_js_modules_es_object_get_prototype_of__WEBPACK_IMPORTED_MODULE_24___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_object_get_prototype_of__WEBPACK_IMPORTED_MODULE_24__
         )
         /* harmony import */ var core_js_modules_es_object_is_extensible__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(
-          172
+          180
         )
         /* harmony import */ var core_js_modules_es_object_is_extensible__WEBPACK_IMPORTED_MODULE_25___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_object_is_extensible__WEBPACK_IMPORTED_MODULE_25__
@@ -8220,13 +9626,13 @@
           core_js_modules_es_object_keys__WEBPACK_IMPORTED_MODULE_26__
         )
         /* harmony import */ var core_js_modules_es_object_prevent_extensions__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(
-          173
+          181
         )
         /* harmony import */ var core_js_modules_es_object_prevent_extensions__WEBPACK_IMPORTED_MODULE_27___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_object_prevent_extensions__WEBPACK_IMPORTED_MODULE_27__
         )
         /* harmony import */ var core_js_modules_es_object_set_prototype_of__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(
-          176
+          155
         )
         /* harmony import */ var core_js_modules_es_object_set_prototype_of__WEBPACK_IMPORTED_MODULE_28___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_object_set_prototype_of__WEBPACK_IMPORTED_MODULE_28__
@@ -8238,49 +9644,49 @@
           core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_29__
         )
         /* harmony import */ var core_js_modules_es_parse_float__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(
-          177
+          182
         )
         /* harmony import */ var core_js_modules_es_parse_float__WEBPACK_IMPORTED_MODULE_30___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_parse_float__WEBPACK_IMPORTED_MODULE_30__
         )
         /* harmony import */ var core_js_modules_es_regexp_constructor__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(
-          181
+          186
         )
         /* harmony import */ var core_js_modules_es_regexp_constructor__WEBPACK_IMPORTED_MODULE_31___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_regexp_constructor__WEBPACK_IMPORTED_MODULE_31__
         )
         /* harmony import */ var core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(
-          183
+          187
         )
         /* harmony import */ var core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_32___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_32__
         )
         /* harmony import */ var core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(
-          148
+          158
         )
         /* harmony import */ var core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_33___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_33__
         )
         /* harmony import */ var core_js_modules_es_string_iterator__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(
-          154
+          164
         )
         /* harmony import */ var core_js_modules_es_string_iterator__WEBPACK_IMPORTED_MODULE_34___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_string_iterator__WEBPACK_IMPORTED_MODULE_34__
         )
         /* harmony import */ var core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(
-          185
+          189
         )
         /* harmony import */ var core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_35___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_35__
         )
         /* harmony import */ var core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_36__ = __webpack_require__(
-          189
+          193
         )
         /* harmony import */ var core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_36___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_string_split__WEBPACK_IMPORTED_MODULE_36__
         )
         /* harmony import */ var core_js_modules_es_string_trim__WEBPACK_IMPORTED_MODULE_37__ = __webpack_require__(
-          190
+          194
         )
         /* harmony import */ var core_js_modules_es_string_trim__WEBPACK_IMPORTED_MODULE_37___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_es_string_trim__WEBPACK_IMPORTED_MODULE_37__
@@ -8292,7 +9698,7 @@
           core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_38__
         )
         /* harmony import */ var core_js_modules_web_dom_collections_iterator__WEBPACK_IMPORTED_MODULE_39__ = __webpack_require__(
-          156
+          166
         )
         /* harmony import */ var core_js_modules_web_dom_collections_iterator__WEBPACK_IMPORTED_MODULE_39___default = /*#__PURE__*/ __webpack_require__.n(
           core_js_modules_web_dom_collections_iterator__WEBPACK_IMPORTED_MODULE_39__
@@ -8324,7 +9730,7 @@
             (typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) &&
           'object' == (false ? undefined : _typeof(module))
             ? (module.exports = e())
-            : 'function' == typeof define && __webpack_require__(192)
+            : 'function' == typeof define && __webpack_require__(196)
             ? define([], e)
             : 'object' ==
               (typeof exports === 'undefined' ? 'undefined' : _typeof(exports))
@@ -12265,12 +13671,7 @@
                           'modal' !== t.element &&
                           !(s = g(i) ? i : this.document.querySelector(i))
                         )
-                          return (
-                            console.warn(
-                              'Element to highlight '.concat(i, ' not found')
-                            ),
-                            null
-                          )
+                          return null
                         var c = null
 
                         if (o.popover && o.popover.content) {
@@ -12335,11 +13736,11 @@
           ]).default
         })
         /* WEBPACK VAR INJECTION */
-      }.call(this, __webpack_require__(158)(module)))
+      }.call(this, __webpack_require__(168)(module)))
 
       /***/
     },
-    /* 158 */
+    /* 168 */
     /***/ function(module, exports) {
       module.exports = function(originalModule) {
         if (!originalModule.webpackPolyfill) {
@@ -12368,7 +13769,7 @@
 
       /***/
     },
-    /* 159 */
+    /* 169 */
     /***/ function(module, exports, __webpack_require__) {
       // `Symbol.toStringTag` well-known symbol
       // https://tc39.github.io/ecma262/#sec-symbol.tostringtag
@@ -12376,7 +13777,7 @@
 
       /***/
     },
-    /* 160 */
+    /* 170 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
@@ -12406,41 +13807,11 @@
       )
 
       // https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
-      __webpack_require__(136)(FIND)
+      __webpack_require__(135)(FIND)
 
       /***/
     },
-    /* 161 */
-    /***/ function(module, exports, __webpack_require__) {
-      'use strict'
-
-      var internalIndexOf = __webpack_require__(35)(false)
-      var nativeIndexOf = [].indexOf
-
-      var NEGATIVE_ZERO = !!nativeIndexOf && 1 / [1].indexOf(1, -0) < 0
-      var SLOPPY_METHOD = __webpack_require__(66)('indexOf')
-
-      // `Array.prototype.indexOf` method
-      // https://tc39.github.io/ecma262/#sec-array.prototype.indexof
-      __webpack_require__(7)(
-        {
-          target: 'Array',
-          proto: true,
-          forced: NEGATIVE_ZERO || SLOPPY_METHOD,
-        },
-        {
-          indexOf: function indexOf(searchElement /* , fromIndex = 0 */) {
-            return NEGATIVE_ZERO
-              ? // convert -0 to +0
-                nativeIndexOf.apply(this, arguments) || 0
-              : internalIndexOf(this, searchElement, arguments[1])
-          },
-        }
-      )
-
-      /***/
-    },
-    /* 162 */
+    /* 171 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
@@ -12466,7 +13837,7 @@
 
       /***/
     },
-    /* 163 */
+    /* 172 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
@@ -12524,7 +13895,7 @@
 
       /***/
     },
-    /* 164 */
+    /* 173 */
     /***/ function(module, exports, __webpack_require__) {
       // JSON[@@toStringTag] property
       // https://tc39.github.io/ecma262/#sec-json-@@tostringtag
@@ -12532,7 +13903,7 @@
 
       /***/
     },
-    /* 165 */
+    /* 174 */
     /***/ function(module, exports, __webpack_require__) {
       // Math[@@toStringTag] property
       // https://tc39.github.io/ecma262/#sec-math-@@tostringtag
@@ -12540,9 +13911,9 @@
 
       /***/
     },
-    /* 166 */
+    /* 175 */
     /***/ function(module, exports, __webpack_require__) {
-      var assign = __webpack_require__(167)
+      var assign = __webpack_require__(176)
 
       // `Object.assign` method
       // https://tc39.github.io/ecma262/#sec-object.assign
@@ -12553,7 +13924,7 @@
 
       /***/
     },
-    /* 167 */
+    /* 176 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
@@ -12608,7 +13979,7 @@
 
       /***/
     },
-    /* 168 */
+    /* 177 */
     /***/ function(module, exports, __webpack_require__) {
       var DESCRIPTORS = __webpack_require__(4)
 
@@ -12628,7 +13999,7 @@
 
       /***/
     },
-    /* 169 */
+    /* 178 */
     /***/ function(module, exports, __webpack_require__) {
       var DESCRIPTORS = __webpack_require__(4)
       var ownKeys = __webpack_require__(32)
@@ -12662,7 +14033,7 @@
 
       /***/
     },
-    /* 170 */
+    /* 179 */
     /***/ function(module, exports, __webpack_require__) {
       var nativeGetOwnPropertyNames = __webpack_require__(54).f
       var FAILS_ON_PRIMITIVES = __webpack_require__(5)(function() {
@@ -12680,34 +14051,7 @@
 
       /***/
     },
-    /* 171 */
-    /***/ function(module, exports, __webpack_require__) {
-      var toObject = __webpack_require__(56)
-      var nativeGetPrototypeOf = __webpack_require__(141)
-      var CORRECT_PROTOTYPE_GETTER = __webpack_require__(142)
-      var FAILS_ON_PRIMITIVES = __webpack_require__(5)(function() {
-        nativeGetPrototypeOf(1)
-      })
-
-      // `Object.getPrototypeOf` method
-      // https://tc39.github.io/ecma262/#sec-object.getprototypeof
-      __webpack_require__(7)(
-        {
-          target: 'Object',
-          stat: true,
-          forced: FAILS_ON_PRIMITIVES,
-          sham: !CORRECT_PROTOTYPE_GETTER,
-        },
-        {
-          getPrototypeOf: function getPrototypeOf(it) {
-            return nativeGetPrototypeOf(toObject(it))
-          },
-        }
-      )
-
-      /***/
-    },
-    /* 172 */
+    /* 180 */
     /***/ function(module, exports, __webpack_require__) {
       var isObject = __webpack_require__(16)
       var nativeIsExtensible = Object.isExtensible
@@ -12732,12 +14076,12 @@
 
       /***/
     },
-    /* 173 */
+    /* 181 */
     /***/ function(module, exports, __webpack_require__) {
       var isObject = __webpack_require__(16)
-      var onFreeze = __webpack_require__(174).onFreeze
+      var onFreeze = __webpack_require__(150).onFreeze
       var nativePreventExtensions = Object.preventExtensions
-      var FREEZING = __webpack_require__(175)
+      var FREEZING = __webpack_require__(151)
       var FAILS_ON_PRIMITIVES = __webpack_require__(5)(function() {
         nativePreventExtensions(1)
       })
@@ -12762,103 +14106,9 @@
 
       /***/
     },
-    /* 174 */
+    /* 182 */
     /***/ function(module, exports, __webpack_require__) {
-      var METADATA = __webpack_require__(29)('meta')
-      var FREEZING = __webpack_require__(175)
-      var isObject = __webpack_require__(16)
-      var has = __webpack_require__(3)
-      var defineProperty = __webpack_require__(20).f
-      var id = 0
-
-      var isExtensible =
-        Object.isExtensible ||
-        function() {
-          return true
-        }
-
-      var setMetadata = function(it) {
-        defineProperty(it, METADATA, {
-          value: {
-            objectID: 'O' + ++id, // object ID
-            weakData: {}, // weak collections IDs
-          },
-        })
-      }
-
-      var fastKey = function(it, create) {
-        // return a primitive with prefix
-        if (!isObject(it))
-          return typeof it == 'symbol'
-            ? it
-            : (typeof it == 'string' ? 'S' : 'P') + it
-        if (!has(it, METADATA)) {
-          // can't set metadata to uncaught frozen object
-          if (!isExtensible(it)) return 'F'
-          // not necessary to add metadata
-          if (!create) return 'E'
-          // add missing metadata
-          setMetadata(it)
-          // return object ID
-        }
-        return it[METADATA].objectID
-      }
-
-      var getWeakData = function(it, create) {
-        if (!has(it, METADATA)) {
-          // can't set metadata to uncaught frozen object
-          if (!isExtensible(it)) return true
-          // not necessary to add metadata
-          if (!create) return false
-          // add missing metadata
-          setMetadata(it)
-          // return the store of weak collections IDs
-        }
-        return it[METADATA].weakData
-      }
-
-      // add metadata on freeze-family methods calling
-      var onFreeze = function(it) {
-        if (FREEZING && meta.REQUIRED && isExtensible(it) && !has(it, METADATA))
-          setMetadata(it)
-        return it
-      }
-
-      var meta = (module.exports = {
-        REQUIRED: false,
-        fastKey: fastKey,
-        getWeakData: getWeakData,
-        onFreeze: onFreeze,
-      })
-
-      __webpack_require__(30)[METADATA] = true
-
-      /***/
-    },
-    /* 175 */
-    /***/ function(module, exports, __webpack_require__) {
-      module.exports = !__webpack_require__(5)(function() {
-        return Object.isExtensible(Object.preventExtensions({}))
-      })
-
-      /***/
-    },
-    /* 176 */
-    /***/ function(module, exports, __webpack_require__) {
-      // `Object.setPrototypeOf` method
-      // https://tc39.github.io/ecma262/#sec-object.setprototypeof
-      __webpack_require__(7)(
-        { target: 'Object', stat: true },
-        {
-          setPrototypeOf: __webpack_require__(143),
-        }
-      )
-
-      /***/
-    },
-    /* 177 */
-    /***/ function(module, exports, __webpack_require__) {
-      var parseFloatImplementation = __webpack_require__(178)
+      var parseFloatImplementation = __webpack_require__(183)
 
       // `parseFloat` method
       // https://tc39.github.io/ecma262/#sec-parsefloat-string
@@ -12871,11 +14121,11 @@
 
       /***/
     },
-    /* 178 */
+    /* 183 */
     /***/ function(module, exports, __webpack_require__) {
       var nativeParseFloat = __webpack_require__(2).parseFloat
-      var internalStringTrim = __webpack_require__(179)
-      var whitespaces = __webpack_require__(180)
+      var internalStringTrim = __webpack_require__(184)
+      var whitespaces = __webpack_require__(185)
       var FORCED = 1 / nativeParseFloat(whitespaces + '-0') !== -Infinity
 
       module.exports = FORCED
@@ -12888,10 +14138,10 @@
 
       /***/
     },
-    /* 179 */
+    /* 184 */
     /***/ function(module, exports, __webpack_require__) {
       var requireObjectCoercible = __webpack_require__(14)
-      var whitespace = '[' + __webpack_require__(180) + ']'
+      var whitespace = '[' + __webpack_require__(185) + ']'
       var ltrim = RegExp('^' + whitespace + whitespace + '*')
       var rtrim = RegExp(whitespace + whitespace + '*$')
 
@@ -12907,7 +14157,7 @@
 
       /***/
     },
-    /* 180 */
+    /* 185 */
     /***/ function(module, exports) {
       // a string of all valid unicode whitespaces
       // eslint-disable-next-line max-len
@@ -12916,17 +14166,17 @@
 
       /***/
     },
-    /* 181 */
+    /* 186 */
     /***/ function(module, exports, __webpack_require__) {
       var DESCRIPTORS = __webpack_require__(4)
       var MATCH = __webpack_require__(43)('match')
       var global = __webpack_require__(2)
       var isForced = __webpack_require__(41)
-      var inheritIfRequired = __webpack_require__(182)
+      var inheritIfRequired = __webpack_require__(152)
       var defineProperty = __webpack_require__(20).f
       var getOwnPropertyNames = __webpack_require__(33).f
-      var isRegExp = __webpack_require__(152)
-      var getFlags = __webpack_require__(149)
+      var isRegExp = __webpack_require__(162)
+      var getFlags = __webpack_require__(159)
       var redefine = __webpack_require__(22)
       var fails = __webpack_require__(5)
       var NativeRegExp = global.RegExp
@@ -13009,33 +14259,11 @@
 
       /***/
     },
-    /* 182 */
-    /***/ function(module, exports, __webpack_require__) {
-      var isObject = __webpack_require__(16)
-      var setPrototypeOf = __webpack_require__(143)
-
-      module.exports = function(that, target, C) {
-        var S = target.constructor
-        var P
-        if (
-          S !== C &&
-          typeof S == 'function' &&
-          (P = S.prototype) !== C.prototype &&
-          isObject(P) &&
-          setPrototypeOf
-        ) {
-          setPrototypeOf(that, P)
-        }
-        return that
-      }
-
-      /***/
-    },
-    /* 183 */
+    /* 187 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
-      var regexpExec = __webpack_require__(184)
+      var regexpExec = __webpack_require__(188)
 
       __webpack_require__(7)(
         { target: 'RegExp', proto: true, forced: /./.exec !== regexpExec },
@@ -13046,11 +14274,11 @@
 
       /***/
     },
-    /* 184 */
+    /* 188 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
-      var regexpFlags = __webpack_require__(149)
+      var regexpFlags = __webpack_require__(159)
 
       var nativeExec = RegExp.prototype.exec
       // This always refers to the native implementation, because the
@@ -13109,7 +14337,7 @@
 
       /***/
     },
-    /* 185 */
+    /* 189 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
@@ -13118,8 +14346,8 @@
       var toLength = __webpack_require__(36)
       var toInteger = __webpack_require__(37)
       var requireObjectCoercible = __webpack_require__(14)
-      var advanceStringIndex = __webpack_require__(186)
-      var regExpExec = __webpack_require__(187)
+      var advanceStringIndex = __webpack_require__(190)
+      var regExpExec = __webpack_require__(191)
       var max = Math.max
       var min = Math.min
       var floor = Math.floor
@@ -13131,7 +14359,7 @@
       }
 
       // @@replace logic
-      __webpack_require__(188)('replace', 2, function(
+      __webpack_require__(192)('replace', 2, function(
         REPLACE,
         nativeReplace,
         maybeCallNative
@@ -13276,11 +14504,11 @@
 
       /***/
     },
-    /* 186 */
+    /* 190 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
-      var codePointAt = __webpack_require__(155)
+      var codePointAt = __webpack_require__(165)
 
       // `AdvanceStringIndex` abstract operation
       // https://tc39.github.io/ecma262/#sec-advancestringindex
@@ -13290,10 +14518,10 @@
 
       /***/
     },
-    /* 187 */
+    /* 191 */
     /***/ function(module, exports, __webpack_require__) {
       var classof = __webpack_require__(13)
-      var regexpExec = __webpack_require__(184)
+      var regexpExec = __webpack_require__(188)
 
       // `RegExpExec` abstract operation
       // https://tc39.github.io/ecma262/#sec-regexpexec
@@ -13318,7 +14546,7 @@
 
       /***/
     },
-    /* 188 */
+    /* 192 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
@@ -13326,7 +14554,7 @@
       var redefine = __webpack_require__(22)
       var fails = __webpack_require__(5)
       var wellKnownSymbol = __webpack_require__(43)
-      var regexpExec = __webpack_require__(184)
+      var regexpExec = __webpack_require__(188)
 
       var SPECIES = wellKnownSymbol('species')
 
@@ -13444,18 +14672,18 @@
 
       /***/
     },
-    /* 189 */
+    /* 193 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
-      var isRegExp = __webpack_require__(152)
+      var isRegExp = __webpack_require__(162)
       var anObject = __webpack_require__(21)
       var requireObjectCoercible = __webpack_require__(14)
       var speciesConstructor = __webpack_require__(81)
-      var advanceStringIndex = __webpack_require__(186)
+      var advanceStringIndex = __webpack_require__(190)
       var toLength = __webpack_require__(36)
-      var callRegExpExec = __webpack_require__(187)
-      var regexpExec = __webpack_require__(184)
+      var callRegExpExec = __webpack_require__(191)
+      var regexpExec = __webpack_require__(188)
       var fails = __webpack_require__(5)
       var arrayPush = [].push
       var min = Math.min
@@ -13467,7 +14695,7 @@
       })
 
       // @@split logic
-      __webpack_require__(188)(
+      __webpack_require__(192)(
         'split',
         2,
         function(SPLIT, nativeSplit, maybeCallNative) {
@@ -13609,12 +14837,12 @@
 
       /***/
     },
-    /* 190 */
+    /* 194 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 
-      var internalStringTrim = __webpack_require__(179)
-      var FORCED = __webpack_require__(191)('trim')
+      var internalStringTrim = __webpack_require__(184)
+      var FORCED = __webpack_require__(195)('trim')
 
       // `String.prototype.trim` method
       // https://tc39.github.io/ecma262/#sec-string.prototype.trim
@@ -13629,10 +14857,10 @@
 
       /***/
     },
-    /* 191 */
+    /* 195 */
     /***/ function(module, exports, __webpack_require__) {
       var fails = __webpack_require__(5)
-      var whitespaces = __webpack_require__(180)
+      var whitespaces = __webpack_require__(185)
       var non = '\u200B\u0085\u180E'
 
       // check that a method works with the correct list
@@ -13649,7 +14877,7 @@
 
       /***/
     },
-    /* 192 */
+    /* 196 */
     /***/ function(module, exports) {
       /* WEBPACK VAR INJECTION */ ;(function(__webpack_amd_options__) {
         /* globals __webpack_amd_options__ */
@@ -13660,9 +14888,9 @@
 
       /***/
     },
-    /* 193 */
+    /* 197 */
     /***/ function(module, exports, __webpack_require__) {
-      var content = __webpack_require__(194)
+      var content = __webpack_require__(198)
 
       if (typeof content === 'string') {
         content = [[module.i, content, '']]
@@ -13673,7 +14901,7 @@
       options.insert = 'head'
       options.singleton = false
 
-      var update = __webpack_require__(196)(content, options)
+      var update = __webpack_require__(200)(content, options)
 
       if (content.locals) {
         module.exports = content.locals
@@ -13681,9 +14909,9 @@
 
       /***/
     },
-    /* 194 */
+    /* 198 */
     /***/ function(module, exports, __webpack_require__) {
-      exports = module.exports = __webpack_require__(195)(false)
+      exports = module.exports = __webpack_require__(199)(false)
       // imports
 
       // module
@@ -13697,7 +14925,7 @@
 
       /***/
     },
-    /* 195 */
+    /* 199 */
     /***/ function(module, exports) {
       /*
 	MIT License http://www.opensource.org/licenses/mit-license.php
@@ -13786,7 +15014,7 @@
 
       /***/
     },
-    /* 196 */
+    /* 200 */
     /***/ function(module, exports, __webpack_require__) {
       'use strict'
 

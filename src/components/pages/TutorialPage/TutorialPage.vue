@@ -41,7 +41,7 @@ export default {
       'updateTutorial',
       'addStep',
       'updateStep',
-      'upsertStep',
+      // 'upsertStep',
       'deleteStep',
       'setPendingStepIndex',
       'setPreviewing',

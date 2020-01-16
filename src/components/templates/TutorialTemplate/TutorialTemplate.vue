@@ -141,10 +141,11 @@
         <validation-observer ref="stepForm">
           <step-form
             :first-step="innerStep.order === 0"
+            :last-step="innerStep.order === innerTutorial.steps.length - 1"
             :path-value.sync="innerStep.pathValue"
             :path-operator.sync="innerStep.pathOperator"
-            :parameters.sync="innerStep.parameters"
             :trigger.sync="innerStep.trigger"
+            :config.sync="innerStep.config"
           />
         </validation-observer>
       </template>
@@ -371,6 +372,11 @@ export default {
         }
       },
     },
+    shouldShowStepForm(value) {
+      if (!value) {
+        this.innerStep = new StepEntity()
+      }
+    },
   },
   created() {
     window.addEventListener('message', this.onReceiveMessage)
@@ -430,9 +436,39 @@ export default {
           } else {
             this.innerTutorial.steps = [
               ...this.innerTutorial.steps.slice(0, this.newStepIndex),
-              step,
+              new StepEntity({
+                ...step,
+                trigger:
+                  this.newStepIndex === 0
+                    ? {
+                        target: 'window',
+                        event: 'load',
+                        waitingTime: 0,
+                      }
+                    : {
+                        target: null,
+                        event: null,
+                        waitingTime: 0,
+                      },
+              }),
               ...this.innerTutorial.steps.slice(this.newStepIndex),
-            ]
+            ].map((s, i) => {
+              if (
+                i > 0 &&
+                s.trigger.target === 'window' &&
+                s.trigger.event === 'load'
+              ) {
+                return new StepEntity({
+                  ...s,
+                  trigger: {
+                    target: null,
+                    event: null,
+                    waitingTime: 0,
+                  },
+                })
+              }
+              return s
+            })
             this.$emit('add:step', this.innerTutorial)
           }
           this.shouldShowSideNav = true
@@ -505,7 +541,7 @@ export default {
       this.$emit('delete:step', step)
     },
     onStepEditClick(step) {
-      this.innerStep = new StepEntity({ ...step })
+      this.innerStep = step
       this.shouldShowStepForm = true
     },
     onNavigateClick() {

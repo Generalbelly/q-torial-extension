@@ -1,14 +1,16 @@
 <template>
   <nav
-    class="navbar level has-background-neutral-700 has-margin-bottom-0 has-padding-5 is-fixed-bottom"
+    class="navbar level has-background-neutral-700 has-margin-bottom-0 has-padding-4 is-fixed-bottom"
   >
     <div class="level-left">
-      <span
-        class="has-text-white has-cursor-pointer"
-        @click="$emit('click:logo')"
-      >
-        Qtorial
-      </span>
+      <div class="level-item">
+        <base-logo
+          class="has-cursor-pointer"
+          @click.native="$emit('click:logo')"
+          :height="50"
+          :width="100"
+        />
+      </div>
     </div>
     <div class="level-right">
       <p class="level-item">
@@ -22,10 +24,12 @@
 
 <script>
 import BaseButton from '../../atoms/BaseButton'
+import BaseLogo from '../../atoms/BaseLogo'
 
 export default {
   name: 'TheNavbar',
   components: {
+    BaseLogo,
     BaseButton,
   },
 }

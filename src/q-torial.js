@@ -4,39 +4,37 @@ import './spaUrlWatcher'
 import createStore from './local-storage'
 import createController from './tutorial-controller'
 import './driver.js/driver.min'
-import './driver.js/sass/cdn.scss'
+import './driver.js/sass/q-torial.scss'
 
 window.Qtorial =
   window.Qtorial ||
   (() => {
-    const createApiClient = userKey => {
-      return {
-        storePerformance: async (data = {}) => {
-          const URL = `${process.env.VUE_APP_CLOUD_FUNCTION_ENDPOINT}/storePerformance`
-          return axios.post(URL, {
-            ...data,
+    const createApiClient = userKey => ({
+      storePerformance: async (data = {}) => {
+        return axios.post(
+          `${process.env.VUE_APP_CLOUD_FUNCTION_ENDPOINT}/storePerformance`,
+          { ...data, key: userKey }
+        )
+      },
+      getTutorial: async (url, once) => {
+        const response = await axios.post(
+          `${process.env.VUE_APP_CLOUD_FUNCTION_ENDPOINT}/getTutorial`,
+          // process.env.VUE_APP_CLOUD_RUN_ENDPOINT,
+          {
+            url,
             key: userKey,
-          })
-        },
-        getTutorial: async (url, once) => {
-          try {
-            const response = await axios.post(
-              `${process.env.VUE_APP_CLOUD_FUNCTION_ENDPOINT}/getTutorial`,
-              // process.env.VUE_APP_CLOUD_RUN_ENDPOINT,
-              {
-                url,
-                key: userKey,
-                once,
-              }
-            )
-            return response.data
-          } catch (e) {
-            console.error(e)
-            return {}
+            once,
           }
-        },
-      }
-    }
+        )
+        return response.data || {}
+      },
+      logError: async (data = {}) => {
+        await axios.post(
+          `${process.env.VUE_APP_CLOUD_FUNCTION_ENDPOINT}/logError`,
+          { ...data, key: userKey }
+        )
+      },
+    })
 
     const createGAClient = () => ({
       store(action, data) {
@@ -56,15 +54,14 @@ window.Qtorial =
         const apiClient = createApiClient(key)
         const gaClient = createGAClient()
         const tutorialController = createController(store, apiClient, gaClient)
-
         const fetchTutorial = async () => {
           const currentTutorial = store.get('tutorial', null)
           if (currentTutorial) {
-            tutorialController.prepare(currentTutorial)
+            await tutorialController.prepare(currentTutorial)
             return
           }
           if (
-            store.get('activeStep', -1) === -1 &&
+            store.get('activeStepIndex', -1) === -1 &&
             store.get('tutorial', null) === null
           ) {
             const once = store.get('once', [])
@@ -73,7 +70,7 @@ window.Qtorial =
               once
             )
             if (tutorial) {
-              tutorialController.prepare(tutorial)
+              await tutorialController.prepare(tutorial)
             }
           }
         }

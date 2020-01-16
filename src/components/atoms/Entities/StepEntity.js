@@ -12,7 +12,14 @@ export default class StepEntity extends Entity {
 
   highlightTarget = null // #id, .class, modal
 
-  config = {}
+  config = {
+    content: null,
+    nextBtnText: 'Next',
+    prevBtnText: 'Previous',
+    showButtons: true,
+    doneBtnText: 'Done',
+    closeBtnText: 'Close',
+  }
 
   order = 0
 
@@ -20,7 +27,7 @@ export default class StepEntity extends Entity {
 
   pathValue = null
 
-  parameters = []
+  // parameters = []
 
   constructor(data = {}) {
     super()

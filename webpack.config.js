@@ -95,7 +95,6 @@ const config = {
   ],
 }
 
-console.log(process.env.NODE_ENV)
 if (config.mode === 'production') {
   config.plugins = (config.plugins || []).concat([
     new webpack.DefinePlugin({

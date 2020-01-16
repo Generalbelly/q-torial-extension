@@ -147,19 +147,19 @@ const actions = {
       commit(SET_REQUESTING, false)
     }
   },
-  upsertStep: async ({ commit, state }, payload) => {
-    if (state.user) {
-      commit(SET_REQUESTING, true)
-      const data = await sendCommand(PASS_DATA_TO_BACKGROUND, {
-        action: `${payload.id ? 'update' : 'add'}Step`,
-        payload: {
-          data: payload,
-        },
-      })
-      commit(SYNC_DATA, data)
-      commit(SET_REQUESTING, false)
-    }
-  },
+  // upsertStep: async ({ commit, state }, payload) => {
+  //   if (state.user) {
+  //     commit(SET_REQUESTING, true)
+  //     const data = await sendCommand(PASS_DATA_TO_BACKGROUND, {
+  //       action: `${payload.id ? 'update' : 'add'}Step`,
+  //       payload: {
+  //         data: payload,
+  //       },
+  //     })
+  //     commit(SYNC_DATA, data)
+  //     commit(SET_REQUESTING, false)
+  //   }
+  // },
   addStep: async ({ commit, state }, payload) => {
     if (state.user) {
       commit(SET_REQUESTING, true)

@@ -35,7 +35,7 @@
       </div>
       <div>
         <checkbox-field v-model="parametersRequired">
-          with parameters
+          With parameters
         </checkbox-field>
         <parameter-fields
           v-show="parametersRequired"

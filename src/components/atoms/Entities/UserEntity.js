@@ -1,21 +1,50 @@
-export default class UserEntity {
-  uid = null
+import Entity, { toPlainObject } from './Entity';
 
-  email = null
+export default class UserEntity extends Entity {
+  uid = null;
 
-  displayName = null
+  email = null;
 
-  emailVerified = false
+  displayName = null;
+
+  emailVerified = false;
+
+  stripeCustomer = null;
+
+  firebaseConfig = null;
+
+  setupComplete = false;
 
   constructor(data = {}) {
-    this.fill(data)
+    super();
+    this.fill(data);
   }
 
-  fill(data = {}) {
-    Object.keys(data).forEach(field => {
-      if (Object.prototype.hasOwnProperty.call(this, field)) {
-        this[field] = data[field]
-      }
-    })
+  /**
+   * @param {firebase.User} auth
+   * @param {UserEntity|null} user
+   */
+
+  static createFromAuth(auth, user) {
+    if (user) {
+      const { setupComplete } = user;
+      return new UserEntity({
+        ...auth,
+        setupComplete,
+      });
+    }
+    return new UserEntity(auth);
+  }
+
+  toPlainObject() {
+    return toPlainObject(this, [
+      'createdAt',
+      'updatedAt',
+      'stripeCustomer',
+      'firebaseConfig',
+      'emailVerified',
+      'displayName',
+      'email',
+    ]);
   }
 }

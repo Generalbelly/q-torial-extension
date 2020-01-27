@@ -1,19 +1,15 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import UserEntity from '../components/atoms/Entities/UserEntity'
-import firebase, {
-  convertDocToObject,
-  convertDocumentsToArray,
-  FieldValue,
-} from '../firebase'
-import { QUERY_LIMIT } from '../constants/general'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import UserEntity from '../components/atoms/Entities/UserEntity';
+import { appFirebaseService, getUserFirebaseService } from '../firebase';
+import { QUERY_LIMIT } from '../constants/general';
 import {
   RESET_STATE,
   SELECT_TUTORIAL,
   SET_ACTIVE,
   SET_ALL_FETCHED,
   SET_REQUESTING,
-  SET_USER,
+  UPDATE_USER,
   UPDATE_ORDER_BY,
   UPDATE_SEARCH_QUERY,
   ADD_TUTORIAL,
@@ -22,401 +18,372 @@ import {
   SET_PREVIEWING,
   SET_NAVIGATING,
   SET_PENDING_STEP_INDEX,
-} from './mutation-types'
+  TUTORIAL_REPOSITORY_READY,
+  SET_TASK_ID,
+} from './mutation-types';
 
-Vue.use(Vuex)
+import repositoryFactory from '../repository';
+import TutorialEntity from '../components/atoms/Entities/TutorialEntity';
+import StepEntity from '../components/atoms/Entities/StepEntity';
+
+Vue.use(Vuex);
+
+const createUserRepository = () => {
+  let repo = null;
+  return () => {
+    if (!repo) {
+      repo = repositoryFactory.get('user')(appFirebaseService.getDB());
+    }
+    return repo;
+  };
+};
+const getUserRepository = createUserRepository();
+
+let tutorialRepository;
+
+/**
+ * @param {import('../components/atoms/Entities/FirebaseConfigEntity').default} firebaseConfig
+ */
+const initTutorialRepository = firebaseConfig => {
+  if (tutorialRepository) {
+    return;
+  }
+  const firebaseService = getUserFirebaseService(firebaseConfig, 'user');
+  tutorialRepository = repositoryFactory.get('tutorial')(
+    firebaseService.getDB()
+  );
+};
 
 const mutations = {
   [ADD_TUTORIAL](state, payload) {
-    state.tutorials = [...state.tutorials, payload]
+    state.tutorials = [...state.tutorials, payload];
   },
   [UPDATE_TUTORIAL](state, payload) {
     const index = state.tutorials.findIndex(
       tutorial => tutorial.id === payload.id
-    )
+    );
     state.tutorials = [
       ...state.tutorials.slice(0, index),
-      {
+      new TutorialEntity({
         ...state.tutorials[index],
         ...payload,
-      },
+      }),
       ...state.tutorials.slice(index + 1),
-    ]
+    ];
   },
   [DELETE_TUTORIAL](state, payload) {
     const index = state.tutorials.findIndex(
       tutorial => tutorial.id === payload.id
-    )
+    );
     state.tutorials = [
       ...state.tutorials.slice(0, index),
       ...state.tutorials.slice(index + 1),
-    ]
+    ];
   },
-  [SET_USER](state, payload) {
+  [UPDATE_USER](state, payload) {
     if (payload) {
       state.user = new UserEntity({
         ...state.user,
         ...payload,
-      })
+      });
     } else {
-      state.user = null
+      state.user = null;
     }
   },
   [SET_ACTIVE](state, payload) {
-    state.active = payload
+    state.active = payload;
   },
-  [RESET_STATE](state, payload) {
-    state.tutorials = []
-    state.steps = []
-    state.allFetched = false
-    state.requesting = false
-    state.searchQuery = ''
-    state.orderBy = ['createdAt', 'desc']
-    state.selectedTutorialID = null
-    state.serverSideErrors = {}
-    state.active = false
-    state.navigating = false
-    state.previewing = false
-    state.pendingStepIndex = -1
+  [RESET_STATE](state) {
+    state.tutorials = [];
+    state.steps = [];
+    state.allFetched = false;
+    state.requesting = false;
+    state.searchQuery = '';
+    state.orderBy = ['createdAt', 'desc'];
+    state.selectedTutorialId = null;
+    state.serverSideErrors = {};
+    state.active = false;
+    state.navigating = false;
+    state.previewing = false;
+    state.pendingStepIndex = -1;
   },
   [SET_ALL_FETCHED](state, payload) {
-    state.allFetched = payload
+    state.allFetched = payload;
   },
   [SET_REQUESTING](state, payload) {
-    state.requesting = payload
+    state.requesting = payload;
   },
   [SET_PREVIEWING](state, payload) {
-    state.previewing = payload
+    state.previewing = payload;
   },
   [SET_NAVIGATING](state, payload) {
-    state.navigating = payload
+    state.navigating = payload;
   },
   [SET_PENDING_STEP_INDEX](state, payload) {
-    state.pendingStepIndex = payload
+    state.pendingStepIndex = payload;
   },
   [UPDATE_SEARCH_QUERY](state, payload) {
-    state.searchQuery = payload
-    state.tutorials = []
+    state.searchQuery = payload;
+    state.tutorials = [];
   },
   [UPDATE_ORDER_BY](state, payload) {
-    state.orderBy = payload
-    state.tutorials = []
+    state.orderBy = payload;
+    state.tutorials = [];
   },
   [SELECT_TUTORIAL](state, payload) {
-    const { id } = payload
-    state.selectedTutorialID = id
+    state.selectedTutorialId = payload;
   },
-}
+  [TUTORIAL_REPOSITORY_READY](state, payload) {
+    state.tutorialRepositoryReady = payload;
+  },
+  [SET_TASK_ID](state, payload) {
+    state.taskId = payload;
+  },
+};
 
-let tutorialsLatestSnapshot = null
+let tutorialsLatestSnapshot = null;
 const actions = {
-  setUser({ commit }, payload) {
-    commit(SET_USER, payload)
+  setTaskId({ commit }, payload) {
+    commit(SET_TASK_ID, payload);
+  },
+  updateLocalUser({ commit }, payload) {
+    commit(UPDATE_USER, payload);
+  },
+  async getUser({ commit, state }) {
+    const { setupComplete } = await getUserRepository().get(state.user.uid);
+    commit(UPDATE_USER, {
+      setupComplete,
+    });
   },
   setActive({ commit }, payload) {
-    commit(SET_ACTIVE, payload)
+    commit(SET_ACTIVE, payload);
   },
-  listTutorials: async ({ state, commit }, payload = {}) => {
+  selectTutorial: async ({ commit, state, getters, dispatch }, { id }) => {
+    commit(SET_REQUESTING, true);
+    commit(SELECT_TUTORIAL, id);
+    if (state.selectedTutorialId) {
+      if (!getters.tutorial) {
+        let done;
+        while (!done) {
+          // eslint-disable-next-line no-await-in-loop
+          await dispatch('listTutorials', {});
+          if (getters.tutorial || state.allFetched) {
+            done = true;
+          }
+        }
+      }
+      // 選択されてるTutorialがあるのにみつからなかった場合
+      if (state.selectedTutorialId && !getters.tutorial) {
+        commit(SELECT_TUTORIAL, null);
+      } else {
+        const steps = await tutorialRepository.listSteps(
+          getters.firebaseConfig.uid,
+          state.selectedTutorialId
+        );
+        commit(UPDATE_TUTORIAL, {
+          ...getters.tutorial,
+          steps,
+        });
+      }
+    }
+    commit(SET_REQUESTING, false);
+  },
+  async listTutorials({ state, commit, getters }, payload = {}) {
     const {
       searchQuery = null,
       orderBy = ['createdAt', 'desc'],
-      useCache = false,
-    } = payload
-    commit(SET_REQUESTING, true)
-
+      source = 'default',
+    } = payload;
+    commit(SET_REQUESTING, true);
     if (searchQuery !== state.searchQuery) {
-      tutorialsLatestSnapshot = null
-      commit(UPDATE_SEARCH_QUERY, searchQuery)
-      commit(SET_ALL_FETCHED, false)
+      tutorialsLatestSnapshot = null;
+      commit(UPDATE_SEARCH_QUERY, searchQuery);
+      commit(SET_ALL_FETCHED, false);
     }
     if (orderBy[0] !== state.orderBy[0] || orderBy[1] !== state.orderBy[1]) {
-      tutorialsLatestSnapshot = null
-      commit(UPDATE_ORDER_BY, orderBy)
-      commit(SET_ALL_FETCHED, false)
+      tutorialsLatestSnapshot = null;
+      commit(UPDATE_ORDER_BY, orderBy);
+      commit(SET_ALL_FETCHED, false);
     }
 
-    let query = firebase
-      .getDB()
-      .collection('users')
-      .doc(state.user.uid)
-      .collection('tutorials')
-
-    if (state.searchQuery) {
-      query = query
-        .orderBy('name')
-        .startAt(searchQuery)
-        .endAt(`${searchQuery}\uf8ff`)
-    } else {
-      query = query.orderBy(state.orderBy[0], state.orderBy[1])
-    }
-
-    if (
-      tutorialsLatestSnapshot &&
-      tutorialsLatestSnapshot.docs &&
-      tutorialsLatestSnapshot.docs.length > 0
-    ) {
-      query = query.startAfter(
-        tutorialsLatestSnapshot.docs[tutorialsLatestSnapshot.docs.length - 1]
-      )
-    }
-
-    query = query.limit(QUERY_LIMIT)
-    let snapshot
-    if (useCache) {
-      snapshot = await query.get({ source: 'cache' })
-      if (snapshot.empty) {
-        snapshot = await query.get({ source: 'server' })
+    const {
+      tutorials,
+      allFetched = false,
+      snapshot,
+    } = await tutorialRepository.list(
+      getters.firebaseConfig.uid,
+      state.user.uid,
+      {
+        searchQuery,
+        orderBy,
+        source,
+        startAfter:
+          tutorialsLatestSnapshot &&
+          tutorialsLatestSnapshot.docs &&
+          tutorialsLatestSnapshot.docs.length > 0
+            ? tutorialsLatestSnapshot.docs[
+                tutorialsLatestSnapshot.docs.length - 1
+              ]
+            : null,
+        limit: QUERY_LIMIT,
       }
-    } else {
-      snapshot = await query.get()
-    }
-    snapshot.docs.forEach(doc => {
-      commit(ADD_TUTORIAL, convertDocToObject(doc))
-    })
-    commit(SET_ALL_FETCHED, snapshot.empty)
-    commit(SET_REQUESTING, false)
+    );
+
+    tutorials.forEach(tutorial => {
+      commit(ADD_TUTORIAL, tutorial);
+    });
+    commit(SET_ALL_FETCHED, allFetched);
+    commit(SET_REQUESTING, false);
     if (!tutorialsLatestSnapshot) {
-      tutorialsLatestSnapshot = snapshot
+      tutorialsLatestSnapshot = snapshot;
     }
   },
-  selectTutorial: async ({ commit, state, getters, dispatch }, payload) => {
-    commit(SET_REQUESTING, true)
-    commit(SELECT_TUTORIAL, payload)
-    if (state.selectedTutorialID) {
-      if (!getters.tutorial) {
-        // TODO tutorialが20以上ある場合は見つからないこともあるので、ループかなにかで対応する
-        await dispatch('listTutorials', { useCache: false })
-      }
-      const snapshot = await firebase
-        .getDB()
-        .collection('users')
-        .doc(state.user.uid)
-        .collection('tutorials')
-        .doc(state.selectedTutorialID)
-        .collection('steps')
-        .orderBy('order', 'asc')
-        .get()
-      commit(UPDATE_TUTORIAL, {
-        ...getters.tutorial,
-        steps: convertDocumentsToArray(snapshot),
-      })
-    }
-    commit(SET_REQUESTING, false)
+  async getTutorial({ commit, getters }, payload) {
+    commit(SET_REQUESTING, true);
+    const { firebaseConfig } = getters;
+    const tutorial = await tutorialRepository.find(firebaseConfig.uid, payload);
+    commit(ADD_TUTORIAL, tutorial);
+    commit(SET_REQUESTING, false);
   },
-  addTutorial: async ({ commit, state }, payload) => {
-    commit(SET_REQUESTING, true)
+  async addTutorial({ commit, getters }, payload) {
+    commit(SET_REQUESTING, true);
+    const { firebaseConfig } = getters;
+    const tutorial = await tutorialRepository.add(
+      firebaseConfig.uid,
+      new TutorialEntity(payload)
+    );
+    commit(ADD_TUTORIAL, tutorial);
+    commit(SELECT_TUTORIAL, tutorial.id);
 
-    const batch = firebase.getDB().batch()
-
-    const { data } = payload
-    const { id, steps, ...fields } = data
-    const tutorialRef = await firebase
-      .getDB()
-      .collection('users')
-      .doc(state.user.uid)
-      .collection('tutorials')
-      .doc()
-
-    batch.set(tutorialRef, {
-      ...fields,
-      createdAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
-    })
-    const savedSteps = []
-    steps.forEach(({ id = null, ...stepFields }, index) => {
-      const orderAttachedStep = {
-        ...stepFields,
-        order: index,
-      }
-      const stepRef = tutorialRef.collection('steps').doc()
-      batch.set(stepRef, {
-        ...orderAttachedStep,
-        createdAt: FieldValue.serverTimestamp(),
-        updatedAt: FieldValue.serverTimestamp(),
-      })
-      savedSteps.push({
-        ...orderAttachedStep,
-        id: stepRef.id,
-      })
-    })
-    await batch.commit()
-    const tutorial = {
-      ...fields,
-      id: tutorialRef.id,
-      steps: savedSteps,
-    }
-    commit(ADD_TUTORIAL, tutorial)
-    commit(SELECT_TUTORIAL, tutorial)
-    commit(SET_REQUESTING, false)
-  },
-  updateTutorial: async ({ commit, state }, payload) => {
-    commit(SET_REQUESTING, true)
-    const { saveSteps = false, saveTutorial = true, data } = payload
-    const { id, steps, ...fields } = data
-
-    const batch = firebase.getDB().batch()
-
-    const tutorialRef = await firebase
-      .getDB()
-      .collection('users')
-      .doc(state.user.uid)
-      .collection('tutorials')
-      .doc(id)
-
-    if (saveTutorial) {
-      batch.update(tutorialRef, {
-        ...fields,
-        updatedAt: FieldValue.serverTimestamp(),
-      })
-    }
-
-    const savedSteps = []
-    if (saveSteps) {
-      steps.forEach(({ id = null, ...stepFields }, index) => {
-        const orderAttachedStep = {
-          ...stepFields,
-          order: index,
-        }
-        let stepRef
-        if (id) {
-          stepRef = tutorialRef.collection('steps').doc(id)
-          batch.update(stepRef, {
-            ...orderAttachedStep,
-            updatedAt: FieldValue.serverTimestamp(),
-          })
-        } else {
-          stepRef = tutorialRef.collection('steps').doc()
-          batch.set(stepRef, {
-            ...orderAttachedStep,
-            createdAt: FieldValue.serverTimestamp(),
-            updatedAt: FieldValue.serverTimestamp(),
-          })
-        }
-        savedSteps.push({
-          ...orderAttachedStep,
-          id: stepRef.id,
-        })
-      })
-    }
-    await batch.commit()
+    const step = await tutorialRepository.addStep(
+      firebaseConfig.uid,
+      tutorial.id,
+      new StepEntity(payload.steps[0])
+    );
     commit(UPDATE_TUTORIAL, {
-      ...data,
-      steps: savedSteps,
-    })
-    commit(SET_REQUESTING, false)
+      ...tutorial,
+      steps: [...getters.tutorial.steps, step],
+    });
+    commit(SET_REQUESTING, false);
   },
-  deleteTutorial: async ({ commit, state }, payload) => {
-    commit(SET_REQUESTING, true)
-    const { data } = payload
-    const { id } = data
-    await firebase
-      .getDB()
-      .collection('users')
-      .doc(state.user.uid)
-      .collection('tutorials')
-      .doc(id)
-      .delete()
-    commit(DELETE_TUTORIAL, data)
-    commit(SET_REQUESTING, false)
+  async updateTutorial({ commit, getters }, payload) {
+    commit(SET_REQUESTING, true);
+    const tutorial = await tutorialRepository.update(
+      getters.firebaseConfig.uid,
+      new TutorialEntity(payload)
+    );
+    commit(UPDATE_TUTORIAL, tutorial);
+    commit(SET_REQUESTING, false);
   },
-  addStep: async ({ commit, state, getters }, payload) => {
-    commit(SET_REQUESTING, true)
-    const { data } = payload
-    const { id, ...fields } = data
-
-    const stepRef = await firebase
-      .getDB()
-      .collection('users')
-      .doc(state.user.uid)
-      .collection('tutorials')
-      .doc(state.selectedTutorialID)
-      .collection('steps')
-      .doc()
-    stepRef.set({
-      ...fields,
-      createdAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
-    })
-
+  async addStep({ commit, getters }, payload) {
+    commit(SET_REQUESTING, true);
+    const { tutorial, firebaseConfig } = getters;
+    const step = await tutorialRepository.addStep(
+      firebaseConfig.uid,
+      tutorial.id,
+      new StepEntity(payload)
+    );
     commit(UPDATE_TUTORIAL, {
-      ...getters.tutorial,
-      steps: [
-        ...getters.tutorial.steps,
-        {
-          id: stepRef.id,
-          ...fields,
-        },
-      ],
-    })
-    commit(SET_REQUESTING, false)
+      ...tutorial,
+      steps: [...getters.tutorial.steps, step],
+    });
+    commit(SET_REQUESTING, false);
   },
-  updateStep: async ({ commit, state, getters }, payload) => {
-    const { data } = payload
-    const { id, ...fields } = data
-    commit(SET_REQUESTING, true)
-    await firebase
-      .getDB()
-      .collection('users')
-      .doc(state.user.uid)
-      .collection('tutorials')
-      .doc(state.selectedTutorialID)
-      .collection('steps')
-      .doc(id)
-      .update({
-        ...fields,
-        updatedAt: FieldValue.serverTimestamp(),
-      })
-
-    const index = getters.tutorial.steps.findIndex(step => step.id === id)
+  async updateStep({ commit, getters }, payload) {
+    commit(SET_REQUESTING, true);
+    const { tutorial, firebaseConfig } = getters;
+    const step = await tutorialRepository.updateStep(
+      firebaseConfig.uid,
+      tutorial.id,
+      new StepEntity(payload)
+    );
+    const index = tutorial.steps.findIndex(s => s.id === step.id);
     commit(UPDATE_TUTORIAL, {
       ...getters.tutorial,
       steps: [
         ...getters.tutorial.steps.slice(0, index),
-        data,
+        step,
         ...getters.tutorial.steps.slice(index + 1),
       ],
-    })
-
-    commit(SET_REQUESTING, false)
+    });
+    commit(SET_REQUESTING, false);
   },
-  deleteStep: async ({ commit, state, getters }, payload) => {
-    const { data } = payload
-    const { id } = data
-    commit(SET_REQUESTING, true)
-    await firebase
-      .getDB()
-      .collection('users')
-      .doc(state.user.uid)
-      .collection('tutorials')
-      .doc(state.selectedTutorialID)
-      .collection('steps')
-      .doc(id)
-      .delete()
-
-    const index = getters.tutorial.steps.findIndex(step => step.id === id)
+  async deleteStep({ commit, getters }, payload) {
+    commit(SET_REQUESTING, true);
+    const { tutorial, firebaseConfig } = getters;
+    console.log(tutorial);
+    const step = await tutorialRepository.deleteStep(
+      firebaseConfig.uid,
+      tutorial.id,
+      new StepEntity(payload)
+    );
+    const index = tutorial.steps.findIndex(s => s.id === step.id);
     commit(UPDATE_TUTORIAL, {
       ...getters.tutorial,
       steps: [
         ...getters.tutorial.steps.slice(0, index),
         ...getters.tutorial.steps.slice(index + 1),
       ],
-    })
-
-    commit(SET_REQUESTING, false)
+    });
+    commit(SET_REQUESTING, false);
+  },
+  async updateSteps({ commit, getters }, payload) {
+    commit(SET_REQUESTING, true);
+    const { tutorial, firebaseConfig } = getters;
+    const steps = await tutorialRepository.updateSteps(
+      firebaseConfig.uid,
+      tutorial.id,
+      payload.steps.map(step => new StepEntity(step))
+    );
+    commit(UPDATE_TUTORIAL, {
+      ...tutorial,
+      steps,
+    });
+    commit(SET_REQUESTING, false);
+  },
+  async deleteTutorial({ commit, getters }, payload) {
+    commit(SET_REQUESTING, true);
+    const { firebaseConfig } = getters;
+    const tutorial = await tutorialRepository.delete(
+      firebaseConfig.uid,
+      new TutorialEntity(payload)
+    );
+    commit(DELETE_TUTORIAL, tutorial);
+    commit(SET_REQUESTING, false);
+  },
+  checkUserPaymentInfo({ commit, state }) {
+    getUserRepository().checkUserPaymentInfo(state.user.uid, stripeCustomer => {
+      commit(UPDATE_USER, { stripeCustomer });
+    });
+  },
+  checkFirebaseConfig({ commit, state }, { email, password } = {}) {
+    getUserRepository().checkFirebaseConfig(
+      state.user.uid,
+      async firebaseConfig => {
+        if (firebaseConfig && email && password) {
+          await getUserFirebaseService(firebaseConfig).signIn(email, password);
+        }
+        commit(UPDATE_USER, { firebaseConfig });
+      }
+    );
+  },
+  initTutorialRepository({ commit, getters }) {
+    initTutorialRepository(getters.firebaseConfig);
+    commit(TUTORIAL_REPOSITORY_READY, true);
   },
   setNavigating({ commit }, value) {
-    commit(SET_NAVIGATING, value)
+    commit(SET_NAVIGATING, value);
   },
   setPreviewing({ commit }, value) {
-    commit(SET_PREVIEWING, value)
+    commit(SET_PREVIEWING, value);
   },
   setPendingStepIndex({ commit }, value) {
-    commit(SET_PENDING_STEP_INDEX, value)
+    commit(SET_PENDING_STEP_INDEX, value);
   },
   resetState({ commit }, value) {
-    commit(RESET_STATE, value)
+    commit(RESET_STATE, value);
   },
-}
+};
 
 const state = {
   user: null,
@@ -426,22 +393,27 @@ const state = {
   searchQuery: '',
   orderBy: ['createdAt', 'desc'],
   tutorials: [],
-  selectedTutorialID: null,
+  selectedTutorialId: null,
   serverSideErrors: {},
   navigating: false,
   previewing: false,
   pendingStepIndex: -1,
-}
+  tutorialRepositoryReady: false,
+  taskId: null,
+};
 
 const getters = {
   // eslint-disable-next-line no-shadow
   tutorial(state) {
     const tutorial = state.tutorials.find(
-      tutorial => tutorial.id === state.selectedTutorialID
-    )
-    return tutorial || null
+      t => t.id === state.selectedTutorialId
+    );
+    return tutorial || null;
   },
-}
+  firebaseConfig(state) {
+    return state.user ? state.user.firebaseConfig : null;
+  },
+};
 
 export default new Vuex.Store({
   state,
@@ -449,4 +421,4 @@ export default new Vuex.Store({
   actions,
   getters,
   // strict: process.env.NODE_ENV !== 'production',
-})
+});

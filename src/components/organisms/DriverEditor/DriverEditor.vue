@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import finder from '@medv/finder'
-import purify from 'dompurify'
+import finder from '@medv/finder';
+import purify from 'dompurify';
 import {
   ADD,
   EDIT,
@@ -15,14 +15,14 @@ import {
   ELEMENT_NOT_FOUND,
   RESELECT_ELEMENT,
   RESET_PREVIEW,
-} from '../../../constants/drvier-editor-command-types'
-import StepEntity from '../../atoms/Entities/StepEntity'
-import { sendCommand } from '../../../api'
-import createStore from '../../../local-storage'
-import createController from '../../../tutorial-controller'
-import TutorialEntity from '../../atoms/Entities/TutorialEntity'
+} from '../../../constants/drvier-editor-command-types';
+import StepEntity from '../../atoms/Entities/StepEntity';
+import { sendCommand } from '../../../api';
+import createStore from '../../../local-storage';
+import createController from '../../../tutorial-controller';
+import TutorialEntity from '../../atoms/Entities/TutorialEntity';
 
-const MAX_RETRIES = 5
+const MAX_RETRIES = 5;
 export default {
   name: 'DriverEditor',
   data() {
@@ -35,47 +35,47 @@ export default {
       isEditing: false,
       previewController: null,
       localStorage: null,
-    }
+    };
   },
   watch: {
     isEditing(value) {
       if (!value) {
-        this.driver.reset()
-        this.driver.options.allowClose = true
-        this.driver.options.editable = false
-        this.selectorChoices = []
-        this.selectorChoiceIndex = 0
-        this.step = new StepEntity()
-        this.$emit('editDone')
+        this.driver.reset();
+        this.driver.options.allowClose = true;
+        this.driver.options.editable = false;
+        this.selectorChoices = [];
+        this.selectorChoiceIndex = 0;
+        this.step = new StepEntity();
+        this.$emit('editDone');
       }
     },
   },
   created() {
-    window.addEventListener('message', this.onReceiveMessage)
+    window.addEventListener('message', this.onReceiveMessage);
     this.driver = new Driver({
       animate: false,
-    })
-    this.localStorage = createStore(process.env.VUE_APP_NAME + '-extension')
-    this.previewController = createController(this.localStorage)
+    });
+    this.localStorage = createStore(`${process.env.VUE_APP_NAME}-extension`);
+    this.previewController = createController(this.localStorage);
   },
   beforeDestroy() {
-    window.removeEventListener('message', this.onReceiveMessage)
+    window.removeEventListener('message', this.onReceiveMessage);
   },
   destroyed() {
-    this.driver = null
+    this.driver = null;
   },
   methods: {
     onReceiveMessage(e) {
-      if (e.origin !== window.location.origin) return
-      if (typeof e.data !== 'object' || Array.isArray(e.data)) return
-      const { app = null, command = null, data = {} } = e.data
+      if (e.origin !== window.location.origin) return;
+      if (typeof e.data !== 'object' || Array.isArray(e.data)) return;
+      const { app = null, command = null, data = {} } = e.data;
       if (app === process.env.VUE_APP_NAME) {
-        this.handleCommand(command, data)
-        this.source = e.source
+        this.handleCommand(command, data);
+        this.source = e.source;
       }
     },
     sendCommand(command, data = {}) {
-      if (!this.source) return
+      if (!this.source) return;
       this.source.postMessage(
         {
           app: process.env.VUE_APP_NAME,
@@ -83,89 +83,89 @@ export default {
           data,
         },
         window.location.origin
-      )
+      );
     },
     handleCommand(command, data) {
-      const { step = {}, steps = [], type = null } = data
+      const { step = {}, steps = [], type = null } = data;
       if (command === ADD) {
-        this.selectElementToHighlight(type)
-        return
+        this.selectElementToHighlight(type);
+        return;
       }
 
       if (command === EDIT) {
-        this.isEditing = true
-        this.step = new StepEntity(step)
+        this.isEditing = true;
+        this.step = new StepEntity(step);
         if (
           step.highlightTarget === 'modal' ||
           document.querySelector(step.highlightTarget)
         ) {
-          this.highlight(step.highlightTarget, step.config)
+          this.highlight(step.highlightTarget, step.config);
         } else {
-          const targetNode = document.body
-          const config = { childList: true, subtree: true }
-          let done = false
+          const targetNode = document.body;
+          const config = { childList: true, subtree: true };
+          let done = false;
           const mutationObserver = new MutationObserver(
             (mutationsList, observer) => {
               if (document.querySelector(step.highlightTarget)) {
-                this.highlight(step.highlightTarget, step.config)
-                done = true
-                observer.disconnect()
+                this.highlight(step.highlightTarget, step.config);
+                done = true;
+                observer.disconnect();
               }
             }
-          )
-          mutationObserver.observe(targetNode, config)
+          );
+          mutationObserver.observe(targetNode, config);
           window.setTimeout(() => {
             if (!done) {
-              sendCommand(ELEMENT_NOT_FOUND)
-              mutationObserver.disconnect()
+              sendCommand(ELEMENT_NOT_FOUND);
+              mutationObserver.disconnect();
             }
-          }, 3000)
+          }, 3000);
         }
-        return
+        return;
       }
 
       if (command === RESELECT_ELEMENT) {
-        this.selectElementToHighlight('tooltip')
-        return
+        this.selectElementToHighlight('tooltip');
+        return;
       }
 
       if (command === PREVIEW) {
-        this.preview(steps)
-        return
+        this.preview(steps);
+        return;
       }
 
       if (command === RESET_PREVIEW) {
-        this.resetPreview()
+        this.resetPreview();
       }
     },
     selectElementToHighlight(type = 'modal') {
-      this.isEditing = true
-      this.addUserScreenClickHandler()
+      this.isEditing = true;
+      this.addUserScreenClickHandler();
       if (type === 'modal') {
-        this.highlight()
+        this.highlight();
       }
     },
     addUserScreenClickHandler() {
       document.querySelectorAll('body *').forEach(el => {
         if (el.tagName === 'A') {
-          el.style.pointerEvents = 'none'
-          el.style.cursor = 'default'
+          el.style.pointerEvents = 'none';
+          el.style.cursor = 'default';
         }
-        el.addEventListener('click', this.userScreenClickHandler, true)
-      })
+        el.addEventListener('click', this.userScreenClickHandler, true);
+      });
     },
     removeUserScreenClickHandler() {
       document.querySelectorAll('body *').forEach(el => {
         if (el.tagName === 'A') {
-          el.style.pointerEvents = null
-          el.style.cursor = null
+          el.style.pointerEvents = null;
+          el.style.cursor = null;
         }
-        el.removeEventListener('click', this.userScreenClickHandler, true)
-      })
+        el.removeEventListener('click', this.userScreenClickHandler, true);
+      });
     },
     getSelector(node) {
       if (node === 'modal') {
-        return node
+        return node;
       }
       if (node) {
         return finder(node, {
@@ -176,17 +176,17 @@ export default {
           seedMinLength: 5,
           optimizedMinLength: 4,
           threshold: 1000,
-        })
+        });
       }
-      return null
+      return null;
     },
     getDriverConfig() {
-      const activeElement = this.driver.getHighlightedElement()
-      const popover = activeElement.getPopover()
-      const content = purify.sanitize(popover.getContentNode().input)
+      const activeElement = this.driver.getHighlightedElement();
+      const popover = activeElement.getPopover();
+      const content = purify.sanitize(popover.getContentNode().input);
 
-      const activeNode = activeElement.getNode()
-      const selector = this.getSelector(activeNode)
+      const activeNode = activeElement.getNode();
+      const selector = this.getSelector(activeNode);
       return {
         element: selector,
         popover: {
@@ -197,27 +197,27 @@ export default {
           closeBtnText: 'Close',
           content,
         },
-      }
+      };
     },
     onClickNext(el) {
       if (this.isEditing) {
-        this.onClickSave(el)
+        this.onClickSave(el);
       }
     },
     onClickPrevious(el) {
       if (this.isEditing) {
-        this.onClickCancel(el)
+        this.onClickCancel(el);
       }
     },
     onClickCancel(el) {
-      this.removeUserScreenClickHandler()
-      this.isEditing = false
-      this.sendCommand(CANCEL)
+      this.removeUserScreenClickHandler();
+      this.isEditing = false;
+      this.sendCommand(CANCEL);
     },
     onClickSave(el) {
-      this.removeUserScreenClickHandler()
-      this.isEditing = false
-      const { element, popover } = this.getDriverConfig()
+      this.removeUserScreenClickHandler();
+      this.isEditing = false;
+      const { element, popover } = this.getDriverConfig();
       this.sendCommand(
         SAVE,
         new StepEntity({
@@ -226,34 +226,34 @@ export default {
           type: element === 'modal' ? 'modal' : 'tooltip',
           config: popover,
         })
-      )
+      );
     },
     extractSelectorChoices(e) {
-      const upperElements = []
-      const lowerElements = []
+      const upperElements = [];
+      const lowerElements = [];
       e.composedPath().find((el, index) => {
-        if (el.tagName.toLowerCase() === 'body') return true
-        const selector = this.getSelector(el)
-        upperElements.push(selector)
+        if (el.tagName.toLowerCase() === 'body') return true;
+        const selector = this.getSelector(el);
+        upperElements.push(selector);
         if (index === 0) {
           Array.from(el.children).forEach(childEl => {
-            const selector = this.getSelector(childEl)
-            lowerElements.push(selector)
-          })
+            const selector = this.getSelector(childEl);
+            lowerElements.push(selector);
+          });
         }
-        return false
-      })
+        return false;
+      });
 
-      return [...lowerElements, ...upperElements]
+      return [...lowerElements, ...upperElements];
     },
     userScreenClickHandler(e) {
-      e.stopPropagation() // for driver.js
+      e.stopPropagation(); // for driver.js
 
       if (this.isEditing) {
         if (this.selectorChoices.length === 0) {
-          this.selectorChoices = this.extractSelectorChoices(e)
-          this.showDriverChoice()
+          this.selectorChoices = this.extractSelectorChoices(e);
         }
+        this.showDriverChoice();
       }
     },
     async highlight(
@@ -262,28 +262,28 @@ export default {
     ) {
       return new Promise(resolve => {
         // watchでセットすると遅いのでここでやってる
-        this.driver.options.allowClose = false
-        this.driver.options.editable = true
+        this.driver.options.allowClose = false;
+        this.driver.options.editable = true;
         this.driver.defineSteps([
           {
             element,
             popover,
             onNext: el => {
-              this.onClickNext(el)
-              this.driver.preventMove()
+              this.onClickNext(el);
+              this.driver.preventMove();
             },
             onPrevious: el => {
-              this.onClickPrevious(el)
-              this.driver.preventMove()
+              this.onClickPrevious(el);
+              this.driver.preventMove();
             },
           },
-        ])
-        this.driver.start()
-        resolve(this.driver.hasHighlightedElement())
-      })
+        ]);
+        this.driver.start();
+        resolve(this.driver.hasHighlightedElement());
+      });
     },
     resetPreview() {
-      this.previewController.reset(true)
+      this.previewController.reset(true);
     },
     preview(steps = []) {
       this.previewController.prepare(
@@ -294,30 +294,26 @@ export default {
           allowClose: true,
           onReset: intendedReload => {
             if (!intendedReload) {
-              this.sendCommand(PREVIEW_DONE)
+              this.sendCommand(PREVIEW_DONE);
             }
           },
         }
-      )
+      );
     },
     async showDriverChoice() {
-      if (this.selectorChoices.length === 0) return
+      if (this.selectorChoices.length === 0) return;
       if (
         this.selectorChoiceIndex === this.selectorChoices.length - 1 ||
         this.selectorChoiceIndex + 1 > MAX_RETRIES
       ) {
-        this.selectorChoiceIndex = 0
+        this.selectorChoiceIndex = 0;
+      } else {
+        this.selectorChoiceIndex += 1;
       }
-      const hasHighlightedElement = await this.highlight(
-        this.selectorChoices[this.selectorChoiceIndex]
-      )
-      this.selectorChoiceIndex += 1
-      if (!hasHighlightedElement) {
-        this.showDriverChoice()
-      }
+      await this.highlight(this.selectorChoices[this.selectorChoiceIndex]);
     },
   },
-}
+};
 </script>
 
 <style scoped></style>

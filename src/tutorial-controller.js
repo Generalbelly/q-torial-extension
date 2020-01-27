@@ -1,102 +1,102 @@
-const ERROR_TRIGGER_NOT_FOUND = 'trigger element not found'
-const ERROR_NO_ELEMENTS_FOUND = 'no elements are found'
+const ERROR_TRIGGER_NOT_FOUND = 'trigger element not found';
+const ERROR_NO_ELEMENTS_FOUND = 'no elements are found';
 
 export class StepError extends Error {
-  stepIndex = 0
+  stepIndex = 0;
+
   constructor(stepIndex, message) {
-    super(message)
-    this.stepIndex = stepIndex
+    super(message);
+    this.stepIndex = stepIndex;
   }
 }
 
 const createController = (store, apiClient = null, gaClient = null) => {
-  let driver = null
-  let currentTutorial = null
-  let steps = []
-  let settings = {}
-  let startTime = 0
-  let activeStepIndex = 0
-  let intendedReload = false
-  let once = store.get('once', [])
-  const EU_ID = store.get('EU_ID', null)
-  let driverOptions = {}
+  let driver = null;
+  let currentTutorial = null;
+  let steps = [];
+  let settings = {};
+  let startTime = 0;
+  let activeStepIndex = 0;
+  let intendedReload = false;
+  let once = store.get('once', []);
+  const EU_ID = store.get('EU_ID', null);
+  let driverOptions = {};
 
   return {
     resetProgress() {
-      store.set('activeStepIndex', -1)
-      store.set('startTime', 0)
-      store.set('tutorial', null)
+      store.set('activeStepIndex', -1);
+      store.set('startTime', 0);
+      store.set('tutorial', null);
     },
     saveProgress() {
-      store.set('activeStepIndex', activeStepIndex)
-      store.set('startTime', startTime)
-      store.set('tutorial', currentTutorial)
+      store.set('activeStepIndex', activeStepIndex);
+      store.set('startTime', startTime);
+      store.set('tutorial', currentTutorial);
     },
     hasTheSamePath(step, step2) {
-      return step.pathValue === step2.pathValue
+      return step.pathValue === step2.pathValue;
     },
     reset(hard = false) {
       if (driver) {
-        driver.reset()
+        driver.reset();
       }
-      this.resetProgress()
+      this.resetProgress();
       if (hard) {
-        store.clear()
+        store.clear();
       }
     },
     async nextHandler() {
-      driver.preventMove()
-      const nextStepIndex = activeStepIndex + 1
+      driver.preventMove();
+      const nextStepIndex = activeStepIndex + 1;
       if (nextStepIndex === steps.length) {
-        driver.moveNext()
-        return
+        driver.moveNext();
+        return;
       }
-      const activeStep = steps[activeStepIndex]
-      const nextStep = steps[nextStepIndex]
-      const samePath = this.hasTheSamePath(nextStep, activeStep)
-      activeStepIndex = nextStepIndex
+      const activeStep = steps[activeStepIndex];
+      const nextStep = steps[nextStepIndex];
+      const samePath = this.hasTheSamePath(nextStep, activeStep);
+      activeStepIndex = nextStepIndex;
       if (samePath) {
-        const { trigger } = nextStep
-        const { target, event, waitingTime } = trigger
+        const { trigger } = nextStep;
+        const { target, event, waitingTime } = trigger;
         if (target && event) {
-          intendedReload = true
-          driver.reset()
-          await this.prepare(currentTutorial, driverOptions)
-          intendedReload = false
+          intendedReload = true;
+          driver.reset();
+          await this.prepare(currentTutorial, driverOptions);
+          intendedReload = false;
         } else {
           window.setTimeout(() => {
-            driver.moveNext()
-          }, waitingTime)
+            driver.moveNext();
+          }, waitingTime);
         }
       } else {
-        this.redirect(window.location.origin + nextStep.pathValue)
+        this.redirect(window.location.origin + nextStep.pathValue);
       }
     },
     previousHandler() {
-      driver.preventMove()
-      const prevStepIndex = activeStepIndex - 1
+      driver.preventMove();
+      const prevStepIndex = activeStepIndex - 1;
       if (prevStepIndex === -1) {
-        driver.movePrevious()
-        return
+        driver.movePrevious();
+        return;
       }
-      const samePath = this.hasTheSamePath(
-        steps[prevStepIndex],
-        steps[activeStepIndex]
-      )
-      activeStepIndex = prevStepIndex
+      const activeStep = steps[activeStepIndex];
+      const prevStep = steps[prevStepIndex];
+      const samePath = this.hasTheSamePath(prevStep, activeStep);
+      activeStepIndex = prevStepIndex;
       if (samePath) {
-        driver.movePrevious()
+        driver.movePrevious();
       } else {
-        this.redirect(window.location.origin + steps[prevStepIndex].pathValue)
+        this.redirect(window.location.origin + steps[prevStepIndex].pathValue);
       }
     },
     async resetHandler() {
       if (!intendedReload) {
         if (settings.once) {
           if (!once.includes(currentTutorial.id)) {
-            once = [...once, currentTutorial.id]
+            once = [...once, currentTutorial.id];
           }
-          store.set('once', once)
+          store.set('once', once);
         }
 
         if (apiClient) {
@@ -107,7 +107,7 @@ const createController = (store, apiClient = null, gaClient = null) => {
             complete: activeStepIndex === steps.length,
             elapsedTime: new Date().getTime() - startTime,
             euId: EU_ID,
-          })
+          });
         }
 
         if (gaClient) {
@@ -118,213 +118,210 @@ const createController = (store, apiClient = null, gaClient = null) => {
               event_category: 'Tutorial',
               value: activeStepIndex,
               non_interaction: true,
-            }
+            };
             if (activeStepIndex === steps.length) {
-              gaClient.store('complete', data)
+              gaClient.store('complete', data);
             } else {
-              gaClient.store('incomplete', data)
+              gaClient.store('incomplete', data);
             }
           }
         }
-        this.resetProgress()
+        this.resetProgress();
       } else {
-        this.saveProgress()
-        //window.removeEventListener('locationchange', this.saveProgress)
+        this.saveProgress();
+        // window.removeEventListener('locationchange', this.saveProgress)
       }
     },
     redirect(url) {
-      intendedReload = true
-      driver.reset()
-      window.location.href = url
+      intendedReload = true;
+      driver.reset();
+      window.location.href = url;
     },
     setTutorial(t) {
-      currentTutorial = t
-      settings = { ...t.settings }
-      let stepIndex = 0
+      activeStepIndex = store.get('activeStepIndex', 0);
+      startTime = store.get('startTime', 0);
+      currentTutorial = t;
+      settings = { ...t.settings };
+      let stepIndex = 0;
       steps = t.steps.map(s => {
-        if (s.pathValue === window.location.pathname) {
+        if (
+          s.pathValue === window.location.pathname &&
+          s.order >= activeStepIndex
+        ) {
           const updatedStep = {
             ...s,
             stepIndex,
-          }
-          stepIndex += 1
-          return updatedStep
+          };
+          stepIndex += 1;
+          return updatedStep;
         }
         return {
           ...s,
           stepIndex: -1,
-        }
-      })
+        };
+      });
     },
     validate(tutorial) {
       if (!apiClient) {
-        return true
+        return true;
       }
       if (
         tutorial.steps.length === 0 ||
         tutorial.steps.filter(s => s.pathValue === window.location.pathname)
           .length === 0
       ) {
-        return false
+        return false;
       }
-      return !(tutorial.settings.once && once.includes(EU_ID))
+      return !(tutorial.settings.once && once.includes(EU_ID));
     },
     async handleError(error) {
-      console.error(error)
+      console.error(error);
       if (error instanceof StepError) {
         if (apiClient) {
           await apiClient.logError({
             tutorialId: currentTutorial.id,
             stepIndex: error.stepIndex,
             message: error.message,
-          })
+          });
         }
       }
-      this.reset()
+      this.reset();
     },
     async prepare(tutorial, options = {}) {
       try {
         if (!this.validate(tutorial)) {
-          return
+          return;
         }
-        this.setTutorial(tutorial)
-        driverOptions = options
-        activeStepIndex = store.get('activeStepIndex', 0)
-        startTime = store.get('startTime', 0)
-        //window.addEventListener('locationchange', this.saveProgress)
+        driverOptions = options;
+        this.setTutorial(tutorial);
+        // window.addEventListener('locationchange', this.saveProgress)
 
         driver = new Driver({
           ...driverOptions,
           animate: false,
           onNext: async () => {
             try {
-              await this.nextHandler()
+              await this.nextHandler();
             } catch (error) {
-              await this.handleError(error)
+              await this.handleError(error);
             }
           },
           onPrevious: async () => {
             try {
-              this.previousHandler()
+              this.previousHandler();
             } catch (error) {
-              await this.handleError(error)
+              await this.handleError(error);
             }
           },
           onReset: driverOptions.onReset
             ? async () => {
                 try {
-                  await this.resetHandler()
-                  driverOptions.onReset(intendedReload)
+                  await this.resetHandler();
+                  driverOptions.onReset(intendedReload);
                 } catch (error) {
-                  await this.handleError(error)
+                  await this.handleError(error);
                 }
               }
             : async () => {
                 try {
-                  await this.resetHandler()
+                  await this.resetHandler();
                 } catch (error) {
-                  await this.handleError(error)
+                  await this.handleError(error);
                 }
               },
-        })
+        });
 
-        const firstStep = steps[activeStepIndex]
+        const firstStep = steps[activeStepIndex];
         if (firstStep.pathValue !== window.location.pathname) {
-          this.redirect(window.location.origin + firstStep.pathValue)
+          this.redirect(window.location.origin + firstStep.pathValue);
         }
-        const { trigger } = firstStep
-        const { target, event, waitingTime } = trigger
+        const { trigger, stepIndex } = firstStep;
+        const { target, event, waitingTime } = trigger;
 
         const handler = () => {
           window.setTimeout(() => {
-            driver.start(firstStep.stepIndex)
-            startTime = new Date().getTime()
-          }, waitingTime)
-        }
+            driver.start(stepIndex);
+            startTime = new Date().getTime();
+          }, waitingTime);
+        };
 
         const definedSteps = steps.map(s => ({
           element: s.highlightTarget,
           popover: s.config,
-        }))
+        }));
         if (
           firstStep.highlightTarget === 'modal' ||
           document.querySelector(firstStep.highlightTarget)
         ) {
-          driver.defineSteps(definedSteps)
+          console.log(steps);
+          driver.defineSteps(definedSteps);
           if (
             (target === 'window' && event === 'load') ||
             (target === null && event === null)
           ) {
-            handler()
+            handler();
           } else {
-            const el = document.querySelector(target)
+            const el = document.querySelector(target);
             if (!el) {
-              throw new StepError(activeStepIndex, ERROR_TRIGGER_NOT_FOUND)
+              throw new StepError(activeStepIndex, ERROR_TRIGGER_NOT_FOUND);
             }
             el.addEventListener(
               event,
               e => {
-                e.stopPropagation()
-                handler()
+                e.stopPropagation();
+                handler();
               },
               {
                 once: true,
               }
-            )
+            );
           }
         } else {
-          const targetNode = document.body
-          const config = { childList: true, subtree: true }
-          let done = false
+          const targetNode = document.body;
+          const config = { childList: true, subtree: true };
+          let done = false;
           const mutationObserver = new MutationObserver(
             async (mutationsList, observer) => {
-              // const ready = steps.every(s => {
-              //   if (s.stepIndex !== -1) {
-              //     return !!document.querySelector(s.highlightTarget)
-              //   }
-              //   return true
-              // })
-              // if (!ready) return
-              if (!document.querySelector(firstStep.highlightTarget)) return
-              driver.defineSteps(definedSteps)
+              if (!document.querySelector(firstStep.highlightTarget)) return;
+              driver.defineSteps(definedSteps);
               if (
                 (target === 'window' && event === 'load') ||
                 (target === null && event === null)
               ) {
-                handler()
+                handler();
               } else {
-                const el = document.querySelector(target)
+                const el = document.querySelector(target);
                 if (!el) {
-                  throw new StepError(activeStepIndex, ERROR_TRIGGER_NOT_FOUND)
+                  throw new StepError(activeStepIndex, ERROR_TRIGGER_NOT_FOUND);
                 }
                 el.addEventListener(
                   event,
                   e => {
-                    e.stopPropagation()
-                    handler()
+                    e.stopPropagation();
+                    handler();
                   },
                   {
                     once: true,
                   }
-                )
+                );
               }
-              done = true
-              observer.disconnect()
+              done = true;
+              observer.disconnect();
             }
-          )
-          mutationObserver.observe(targetNode, config)
+          );
+          mutationObserver.observe(targetNode, config);
           window.setTimeout(async () => {
             if (!done) {
-              mutationObserver.disconnect()
-              throw new StepError(activeStepIndex, ERROR_NO_ELEMENTS_FOUND)
+              mutationObserver.disconnect();
+              throw new StepError(activeStepIndex, ERROR_NO_ELEMENTS_FOUND);
             }
-          }, 10000)
+          }, 10000);
         }
       } catch (error) {
-        this.handleError(error)
+        this.handleError(error);
       }
     },
-  }
-}
+  };
+};
 
-export default createController
+export default createController;

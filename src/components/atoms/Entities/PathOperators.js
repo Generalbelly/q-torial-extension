@@ -1,10 +1,10 @@
-export const PATH_ALL = 'ALL'
-export const PATH_EQUALS = 'EQUALS'
-export const PATH_STARTS_WITH = 'STARTS_WITH'
+export const PATH_ALL = 'ALL';
+export const PATH_EQUALS = 'EQUALS';
+export const PATH_STARTS_WITH = 'STARTS_WITH';
 // export const PATH_ENDS_WITH = 'ENDS_WITH'
 // export const PATH_CONTAINS = 'CONTAINS'
 // export const PATH_NOT_EQUALS = 'NOT_EQUALS'
-export const PATH_REGEX = 'REGEX'
+export const PATH_REGEX = 'REGEX';
 
 export default [
   {
@@ -35,7 +35,7 @@ export default [
   //   value: PATH_NOT_EQUALS,
   //   text: 'Path names that are not equal to',
   // },
-]
+];
 
 export const validateUrlPath = (pathOperator, pathValue, urlPath) => {
   const evaluators = {
@@ -46,7 +46,7 @@ export const validateUrlPath = (pathOperator, pathValue, urlPath) => {
     [PATH_REGEX]: (pv, up) => new RegExp(pv).test(up),
     // [PATH_NOT_EQUALS]: (pv, up) => pv !== up,
     [PATH_ALL]: (pv, up) => true,
-  }
-  const valid = evaluators[pathOperator](pathValue, urlPath)
-  return valid
-}
+  };
+  const valid = evaluators[pathOperator](pathValue, urlPath);
+  return valid;
+};

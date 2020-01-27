@@ -1,67 +1,52 @@
-import Entity from './Entity'
-import StepEntity from './StepEntity'
-import { validateUrlPath } from './PathOperators'
-import { has } from '../../../utils'
+import Entity, { toPlainObject } from './Entity';
+import StepEntity from './StepEntity';
+import { validateUrlPath } from './PathOperators';
 
 export default class TutorialEntity extends Entity {
-  id = null
+  name = null;
 
-  name = null
+  description = null;
 
-  description = null
+  domain = null;
 
-  domain = null
+  pathOperator = 'EQUALS';
 
-  pathOperator = 'EQUALS'
+  pathValue = null;
 
-  pathValue = null
+  steps = [];
 
-  parameters = []
+  parameters = [];
 
   settings = {
     once: true,
-  }
+  };
 
-  buildUrl = null
+  buildUrl = null;
 
-  isActive = false
+  isActive = false;
 
-  gaId = null
+  gaId = null;
 
-  gaPropertyId = null
-
-  steps = []
+  gaPropertyId = null;
 
   constructor(data = {}) {
-    super()
-    const { steps = [], ...props } = data
-
-    this.fill(props)
-    this.steps = steps.map(step => new StepEntity(step))
-  }
-
-  toPlainObject() {
-    const privateProperty = [
-      'createdAtAsDateString',
-      'updatedAtAsDateString',
-      'createdAt',
-      'updatedAt',
-    ]
-    const object = {}
-    Object.keys(this).forEach(propertyName => {
-      if (propertyName === 'steps') {
-        object[propertyName] = this.steps.map(step => step.toPlainObject())
-      } else if (
-        !privateProperty.includes(propertyName) &&
-        has.call(this, propertyName)
-      ) {
-        object[propertyName] = this[propertyName]
-      }
-    })
-    return object
+    super();
+    const { performances = [], steps = [], ...props } = data;
+    this.fill(props);
+    this.steps = steps.map(s => new StepEntity(s));
   }
 
   couldBeShownOn(urlPath) {
-    return validateUrlPath(this.pathOperator, this.pathValue, urlPath)
+    if (!this.pathValue) return true;
+    return validateUrlPath(this.pathOperator, this.pathValue, urlPath);
+  }
+
+  toPlainObject() {
+    return toPlainObject(this, [
+      'createdAt',
+      'updatedAt',
+      'performances',
+      'steps',
+    ]);
   }
 }

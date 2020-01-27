@@ -1,16 +1,16 @@
-import Entity from './Entity'
-import { validateUrlPath } from './PathOperators'
+import Entity from './Entity';
+import { validateUrlPath } from './PathOperators';
 
 export default class StepEntity extends Entity {
-  type = 'tooltip' // tooltip, modal
+  type = 'tooltip'; // tooltip, modal
 
   trigger = {
     target: 'window', // window #id, .class
     event: 'load', // load, click, focus, error, null
     waitingTime: 0,
-  }
+  };
 
-  highlightTarget = null // #id, .class, modal
+  highlightTarget = null; // #id, .class, modal
 
   config = {
     content: null,
@@ -19,31 +19,23 @@ export default class StepEntity extends Entity {
     showButtons: true,
     doneBtnText: 'Done',
     closeBtnText: 'Close',
-  }
+  };
 
-  order = 0
+  order = 0;
 
-  pathOperator = 'EQUALS' // ALL, EQUALS, STARTS_WITH, ENDS_WITH, CONTAINS, REGEX, NOT_EQUALS
+  pathOperator = 'EQUALS'; // ALL, EQUALS, STARTS_WITH, ENDS_WITH, CONTAINS, REGEX, NOT_EQUALS
 
-  pathValue = null
+  pathValue = null;
 
   // parameters = []
 
   constructor(data = {}) {
-    super()
-    this.fill(data)
-  }
-
-  toPlainObject() {
-    return super.toPlainObject([
-      'createdAtAsDateString',
-      'updatedAtAsDateString',
-      'createdAt',
-      'updatedAt',
-    ])
+    super();
+    this.fill(data);
   }
 
   couldBeShownOn(urlPath) {
-    return validateUrlPath(this.pathOperator, this.pathValue, urlPath)
+    if (!this.pathValue) return true;
+    return validateUrlPath(this.pathOperator, this.pathValue, urlPath);
   }
 }

@@ -17,8 +17,8 @@
   />
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
-import TutorialTemplate from '../../templates/TutorialTemplate'
+import { mapState, mapActions } from 'vuex';
+import TutorialTemplate from '../../templates/TutorialTemplate';
 
 export default {
   name: 'TutorialPage',
@@ -48,35 +48,30 @@ export default {
       'setNavigating',
     ]),
     onAddStep(step) {
-      const data = step.toPlainObject()
-      this.addStep(data)
+      this.addStep(step);
     },
     onUpdateStep(step) {
-      const data = step.toPlainObject()
-      this.updateStep(data)
+      this.updateStep(step);
     },
     onDeleteStep(step) {
-      const data = step.toPlainObject()
-      this.deleteStep(data)
+      this.deleteStep(step);
     },
     onUpsertTutorial(tutorial) {
-      const data = tutorial.toPlainObject()
-      if (data.id) {
-        this.updateTutorial(data)
+      if (tutorial.id) {
+        this.updateTutorial(tutorial);
       } else {
-        this.addTutorial(data)
+        this.addTutorial(tutorial);
       }
     },
     onUpdatePendingStep(value) {
-      this.setPendingStepIndex(value)
+      this.setPendingStepIndex(value);
     },
     onUpdatePreviewing(value) {
-      console.log(value)
-      this.setPreviewing(value)
+      this.setPreviewing(value);
     },
     onClickNavigate() {
-      this.setNavigating(true)
+      this.setNavigating(true);
     },
   },
-}
+};
 </script>

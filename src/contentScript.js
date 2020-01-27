@@ -1,13 +1,13 @@
-import Vue from 'vue'
+import Vue from 'vue';
 // import VueI18n from 'vue-i18n'
-import Buefy from 'buefy'
-import VeeValidate from 'vee-validate'
-import './vee-validate'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import '../sass/main.scss'
-import './fontawesome'
-import store from './store/store'
-import App from './App'
+import Buefy from 'buefy';
+import VeeValidate from 'vee-validate';
+import './vee-validate';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import '../sass/main.scss';
+import './fontawesome';
+import store from './store/store';
+import App from './App';
 import {
   START_EXT,
   END_EXT,
@@ -16,9 +16,9 @@ import {
   UPDATE_AUTH_STATE,
   PASS_DATA_TO_BACKGROUND,
   UPDATE_STATE,
-} from './constants/command-types'
-import { ERROR, OK } from './constants/status-types'
-import { SYNC_DATA } from './store/mutation-types'
+} from './constants/command-types';
+import { ERROR, OK } from './constants/status-types';
+import { SYNC_DATA } from './store/mutation-types';
 
 // Vue.use(VueI18n)
 
@@ -26,7 +26,7 @@ import { SYNC_DATA } from './store/mutation-types'
 Vue.use(Buefy, {
   defaultIconPack: 'fas',
   defaultIconComponent: FontAwesomeIcon,
-})
+});
 
 // VeeValidate
 Vue.use(VeeValidate, {
@@ -43,7 +43,7 @@ Vue.use(VeeValidate, {
   inject: true,
   locale: 'en',
   validity: false,
-})
+});
 
 // class ExtAppError extends Error {
 //   constructor(type, message) {
@@ -54,119 +54,121 @@ Vue.use(VeeValidate, {
 // }
 
 class ExtApp {
-  iframeId = process.env.VUE_APP_NAME
+  iframeId = process.env.VUE_APP_NAME;
 
-  appId = 'app'
+  appId = 'app';
 
   injectScript(file, node) {
-    var th = document.getElementsByTagName(node)[0]
-    const script = document.createElement('script')
-    script.setAttribute('type', 'text/javascript')
-    script.setAttribute('src', file)
-    th.appendChild(script)
+    const th = document.getElementsByTagName(node)[0];
+    const script = document.createElement('script');
+    script.setAttribute('type', 'text/javascript');
+    script.setAttribute('src', file);
+    th.appendChild(script);
   }
 
   getIframeElement() {
-    return document.querySelector(`iframe#${this.iframeId}`)
+    return document.querySelector(`iframe#${this.iframeId}`);
   }
 
   start() {
-    const iframeElement = this.getIframeElement()
-    if (iframeElement) return
-    const iframe = document.createElement('iframe')
-    iframe.allow = 'fullscreen'
-    iframe.style.zIndex = '2147483649'
-    iframe.style.position = 'fixed'
-    iframe.style.bottom = '0'
-    iframe.style.right = '0'
-    iframe.style.left = '0'
-    iframe.style.width = '100%'
-    iframe.style.height = '100px'
-    iframe.id = this.iframeId
-    const self = this
+    const iframeElement = this.getIframeElement();
+    if (iframeElement) return;
+    const iframe = document.createElement('iframe');
+    iframe.allow = 'fullscreen';
+    iframe.style.zIndex = '2147483649';
+    iframe.style.position = 'fixed';
+    iframe.style.bottom = '0';
+    iframe.style.right = '0';
+    iframe.style.left = '0';
+    iframe.style.width = '100%';
+    iframe.style.height = '100px';
+    iframe.id = this.iframeId;
+    const self = this;
     iframe.onload = function() {
-      const doc = this.contentDocument || this.contentWindow.document
-      const linkElement = doc.createElement('link')
-      linkElement.rel = 'stylesheet'
-      linkElement.type = 'text/css'
-      linkElement.href = chrome.runtime.getURL('contentScript.css')
-      doc.head.appendChild(linkElement)
+      const doc = this.contentDocument || this.contentWindow.document;
+      const linkElement = doc.createElement('link');
+      linkElement.rel = 'stylesheet';
+      linkElement.type = 'text/css';
+      linkElement.href = chrome.runtime.getURL('contentScript.css');
+      doc.head.appendChild(linkElement);
 
-      const divElement = doc.createElement('div')
-      divElement.id = self.appId
-      doc.body.appendChild(divElement)
+      const divElement = doc.createElement('div');
+      divElement.id = self.appId;
+      doc.body.appendChild(divElement);
       const app = new Vue({
         render: h => h(App),
         store,
-      })
-      app.$mount(divElement)
-    }
-    document.body.appendChild(iframe)
+      });
+      app.$mount(divElement);
+    };
+    document.body.appendChild(iframe);
 
-    this.injectScript(chrome.runtime.getURL('spaUrlWatcher.js'), 'body')
+    this.injectScript(chrome.runtime.getURL('spaUrlWatcher.js'), 'body');
   }
 
   end() {
-    const iframeElement = this.getIframeElement()
-    iframeElement.parentNode.removeChild(iframeElement)
+    const iframeElement = this.getIframeElement();
+    iframeElement.parentNode.removeChild(iframeElement);
   }
 }
 
-let extApp = null
+let extApp = null;
 
 async function startApp() {
   if (!extApp) {
-    extApp = new ExtApp()
+    extApp = new ExtApp();
   }
-  extApp.start()
+  extApp.start();
 }
 
 async function endApp() {
-  if (!extApp) return
-  extApp.end()
+  if (!extApp) return;
+  extApp.end();
 }
 
 const port = chrome.runtime.connect({
   name: process.env.VUE_APP_NAME,
-})
+});
 
-let connected = true
+let connected = true;
 port.onDisconnect.addListener(() => {
-  connected = false
-})
+  connected = false;
+});
 
-let isWebListenerAttached = false
-let openedWindow = null
+let isWebListenerAttached = false;
+let openedWindow = null;
 port.onMessage.addListener(async request => {
   const sendCommand = (
-    { status = null, message = null, data = null, command = null },
+    { status = null, message = null, data = null, command = null, id = null },
     to = 'background'
   ) => {
     try {
       if (to === 'background') {
-        if (!connected) return
+        if (!connected) return;
         port.postMessage({
           status,
           message,
           command,
           data,
-        })
+          id,
+        });
       } else if (to === 'web') {
         window.postMessage(
           {
             app: process.env.VUE_APP_NAME,
             command: UPDATE_STATE,
             data,
+            id,
           },
           window.location.origin
-        )
+        );
       }
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
-  }
+  };
 
-  const handleCommand = async (command, data) => {
+  const handleCommand = async (command, data, id) => {
     switch (command) {
       case START_EXT:
         try {
@@ -176,109 +178,115 @@ port.onMessage.addListener(async request => {
               process.env.VUE_APP_URL,
             ].includes(window.location.origin)
           ) {
-            await startApp()
+            await startApp();
             sendCommand({
               status: OK,
-            })
+            });
           }
         } catch (e) {
           sendCommand({
             status: ERROR,
             message: e.message,
-          })
+          });
         }
-        break
+        break;
       case END_EXT:
         try {
           if (window.location.origin !== process.env.VUE_APP_URL) {
-            await endApp()
+            await endApp();
             sendCommand({
               status: OK,
-            })
+            });
           }
         } catch (e) {
           sendCommand({
             status: ERROR,
             message: e.message,
-          })
+          });
         }
-        break
+        break;
       case REDIRECT_TO_APP:
-        if (window.location.origin !== process.env.VUE_APP_URL) {
-          const w = 520
-          const h = 570
-          const left = window.screen.width / 2 - w / 2
-          const top = window.screen.height / 2 - h / 2
+        if (
+          window.location.origin !== process.env.VUE_APP_URL &&
+          !openedWindow
+        ) {
+          const w = 520;
+          const h = 570;
+          const left = window.screen.width / 2 - w / 2;
+          const top = window.screen.height / 2 - h / 2;
           openedWindow = window.open(
             `${process.env.VUE_APP_URL}/sign-in?source=extension&redirect=${window.location.href}`,
             '_blank',
             `location=yes,height=${h},width=${w},top=${top},left=${left},scrollbars=yes,status=yes`
-          )
+          );
         }
-        break
+        break;
       case ROUTE:
-        window.location.href = data
-        break
+        window.location.href = data;
+        break;
       case UPDATE_AUTH_STATE:
         try {
-          await store.dispatch('setUser', data)
+          await store.dispatch('updateLocalUser', data);
           if (store.state.user && openedWindow) {
-            openedWindow.close()
-            await startApp()
+            openedWindow.close();
+            await startApp();
           }
           sendCommand({
             status: OK,
-          })
+          });
         } catch (e) {
           sendCommand({
             status: ERROR,
             message: e.message,
-          })
+          });
         }
-        break
+        break;
       case PASS_DATA_TO_BACKGROUND:
         sendCommand({
           command,
           data,
-        })
-        break
+        });
+        break;
       case SYNC_DATA:
         sendCommand({
           command,
-        })
-        break
+          id,
+        });
+        break;
       case UPDATE_STATE:
         sendCommand(
           {
             command,
             data,
+            id,
           },
           'web'
-        )
-        break
+        );
+        break;
       default:
-        break
+        break;
     }
-  }
+  };
 
   const addWebListner = async () => {
     window.addEventListener('message', async event => {
-      if (event.source !== window) return
-      if (typeof event.data !== 'object' || Array.isArray(event.data)) return
-      const { app = null, command = null, data = null } = event.data
-      if (app !== process.env.VUE_APP_NAME) return
+      if (event.source !== window) return;
+      if (typeof event.data !== 'object' || Array.isArray(event.data)) return;
+      const { app = null, command = null, data = null, id = null } = event.data;
+      if (app !== process.env.VUE_APP_NAME) return;
       sendCommand({
         command,
         data,
-      })
-    })
-    isWebListenerAttached = true
-  }
+        id,
+      });
+    });
+    isWebListenerAttached = true;
+  };
 
   if (!isWebListenerAttached) {
-    await addWebListner()
+    await addWebListner();
   }
 
-  const { command = null, data = {} } = request
-  await handleCommand(command, data)
-})
+  const { command = null, data = {}, id = null } = request;
+  await handleCommand(command, data, id);
+});

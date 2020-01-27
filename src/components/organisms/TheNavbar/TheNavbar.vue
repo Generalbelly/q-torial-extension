@@ -23,8 +23,8 @@
 </template>
 
 <script>
-import BaseButton from '../../atoms/BaseButton'
-import BaseLogo from '../../atoms/BaseLogo'
+import BaseButton from '../../atoms/BaseButton';
+import BaseLogo from '../../atoms/BaseLogo';
 
 export default {
   name: 'TheNavbar',
@@ -32,11 +32,12 @@ export default {
     BaseLogo,
     BaseButton,
   },
-}
+};
 </script>
 
 <style scoped>
 .navbar {
   width: 100vw;
+  height: 100vh;
 }
 </style>

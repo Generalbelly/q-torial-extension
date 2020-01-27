@@ -18,11 +18,11 @@
   </div>
 </template>
 <script>
-import { mapActions, mapState } from 'vuex'
-import TutorialsPage from './components/pages/TutorialsPage'
-import TheNavbar from './components/organisms/TheNavbar'
-import TutorialPage from './components/pages/TutorialPage'
-import iframeStyler from './components/mixins/iframeStyler'
+import { mapActions, mapState } from 'vuex';
+import TutorialsPage from './components/pages/TutorialsPage';
+import TheNavbar from './components/organisms/TheNavbar';
+import TutorialPage from './components/pages/TutorialPage';
+import iframeStyler from './components/mixins/iframeStyler';
 
 export default {
   name: 'App',
@@ -37,7 +37,7 @@ export default {
       shouldShowNav: true,
       shouldShowTutorialsPage: false,
       shouldShowTutorialPage: false,
-    }
+    };
   },
   computed: {
     ...mapState(['tutorials', 'tutorial', 'navigating', 'previewing']),
@@ -45,71 +45,71 @@ export default {
   watch: {
     shouldShowTutorialsPage(value) {
       if (value && this.tutorials.length === 0) {
-        this.listTutorials()
+        this.listTutorials();
       }
     },
     shouldShowNav(value) {
       if (value) {
         this.changeIframeStyle({
           height: '100px',
-        })
+        });
       } else {
         this.changeIframeStyle({
           height: '100%',
-        })
+        });
       }
     },
   },
   mounted() {
-    this.startWatchingUrlForSPA()
-    this.recoverState()
+    this.startWatchingUrlForSPA();
+    this.recoverState();
   },
   methods: {
     ...mapActions(['listTutorials', 'syncData', 'setNavigating']),
     async recoverState() {
-      await this.syncData()
+      await this.syncData();
       if (this.tutorial) {
-        this.onSelectTutorial()
+        this.onSelectTutorial();
       }
       if (this.navigating) {
-        this.setNavigating(false)
+        this.setNavigating(false);
       }
     },
     onSelectTutorial() {
-      this.shouldShowNav = false
-      this.shouldShowTutorialsPage = false
-      this.shouldShowTutorialPage = true
+      this.shouldShowNav = false;
+      this.shouldShowTutorialsPage = false;
+      this.shouldShowTutorialPage = true;
     },
     onClickLogo() {
-      window.open(process.env.VUE_APP_URL, '_blank')
+      window.open(process.env.VUE_APP_URL, '_blank');
     },
     onClickTutorials() {
-      this.shouldShowNav = false
-      this.shouldShowTutorialPage = false
-      this.shouldShowTutorialsPage = true
+      this.shouldShowNav = false;
+      this.shouldShowTutorialPage = false;
+      this.shouldShowTutorialsPage = true;
     },
     onTutorialsClickClose() {
-      this.shouldShowTutorialsPage = false
-      this.shouldShowTutorialPage = false
-      this.shouldShowNav = true
+      this.shouldShowTutorialsPage = false;
+      this.shouldShowTutorialPage = false;
+      this.shouldShowNav = true;
     },
     onClickAdd() {
-      this.shouldShowNav = false
-      this.shouldShowTutorialsPage = false
-      this.shouldShowTutorialPage = true
+      this.shouldShowNav = false;
+      this.shouldShowTutorialsPage = false;
+      this.shouldShowTutorialPage = true;
     },
     onTutorialClickClose() {
-      this.shouldShowTutorialPage = false
-      this.shouldShowTutorialsPage = true
-      this.shouldShowNav = false
+      this.shouldShowTutorialPage = false;
+      this.shouldShowTutorialsPage = true;
+      this.shouldShowNav = false;
     },
     startWatchingUrlForSPA() {
       window.parent.addEventListener('locationchange', async () => {
-        this.recoverState()
-      })
+        this.recoverState();
+      });
     },
   },
-}
+};
 </script>
 <style>
 html {

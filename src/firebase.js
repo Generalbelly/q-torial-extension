@@ -1,60 +1,111 @@
-import firebase from 'firebase/app'
-import 'firebase/auth'
-import 'firebase/firestore'
-import store from './store/backgroundStore'
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/functions';
 
-export const { Timestamp, FieldValue } = firebase.firestore
+export const { FieldValue, Timestamp } = firebase.firestore;
 
-export const convertDocToObject = doc => {
-  const data = {
-    id: doc.id,
-    ...doc.data(),
+// export const convertDocToObject = doc => {
+//   const data = {
+//     id: doc.id,
+//     ...doc.data(),
+//   }
+//   // if (data.createdAt) {
+//   //   data.createdAtAsDateString = data.createdAt.toDate().toLocaleDateString()
+//   // }
+//   // if (data.updatedAt) {
+//   //   data.updatedAtAsDateString = data.updatedAt.toDate().toLocaleDateString()
+//   // }
+//   return data
+// }
+
+// export const convertDocumentsToArray = snapshot =>
+//   snapshot.docs.map(doc => doc.data())
+
+export default class FirebaseService {
+  app;
+
+  db;
+
+  functions;
+
+  auth;
+
+  constructor(config, name = null) {
+    this.app = firebase.initializeApp(config, name);
+    this.functions = this.app.functions();
+    this.db = this.app.firestore();
+    this.db.enablePersistence({ synchronizeTabs: true });
+    this.auth = this.app.auth();
+    this.auth.useDeviceLanguage();
   }
-  if (data.createdAt) {
-    data.createdAtAsDateString = data.createdAt.toDate().toLocaleDateString()
-  }
-  if (data.updatedAt) {
-    data.updatedAtAsDateString = data.updatedAt.toDate().toLocaleDateString()
-  }
-  return data
-}
 
-export const convertDocumentsToArray = snapshot => {
-  return snapshot.docs.map(doc => convertDocToObject(doc))
-}
+  // async signUp(email, password) {
+  //   return this.auth.createUserWithEmailAndPassword(email, password);
+  // }
 
-let db = null
-export default {
-  init(config) {
-    firebase.initializeApp(config)
-    firebase.auth().useDeviceLanguage()
-    db = firebase.firestore()
-    db.enablePersistence({ synchronizeTabs: true })
-  },
   async signIn(email, password) {
-    const { user } = await firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-    await store.dispatch('setUser', user)
-    return user
-  },
+    return this.auth.signInWithEmailAndPassword(email, password);
+  }
+
   async signOut() {
-    await firebase.auth().signOut()
-    await store.dispatch('setUser', null)
-  },
+    return this.auth.signOut();
+  }
+
   checkAuth() {
     return new Promise(resolve => {
-      firebase.auth().onAuthStateChanged(user => resolve(user))
-    })
-  },
-  watchAuth(cb) {
-    const unsubscribe = firebase.auth().onAuthStateChanged(async user => {
-      await store.dispatch('setUser', user)
-      cb(user)
-    })
-    return unsubscribe
-  },
+      const unsubscribe = this.auth.onAuthStateChanged(user => {
+        resolve(user);
+        unsubscribe();
+      });
+    });
+  }
+
+  watchAuth(handler) {
+    return this.auth.onAuthStateChanged(handler);
+  }
+
+  /**
+   * @return {firebase.firestore.Firestore}
+   *
+   */
   getDB() {
-    return db
-  },
+    return this.db;
+  }
 }
+
+export const appFirebaseService = new FirebaseService(
+  {
+    apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+    authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
+    databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
+    projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.VUE_APP_FIREBASE_APP_ID,
+  },
+  process.env.VUE_APP_NAME
+);
+
+const userFirebaseService = (name = 'user') => {
+  let service;
+  return (config = {}) => {
+    if (!service) {
+      service = new FirebaseService(
+        {
+          apiKey: config.apiKey,
+          authDomain: config.authDomain,
+          databaseURL: config.databaseURL,
+          projectId: config.projectId,
+          storageBucket: config.storageBucket,
+          messagingSenderId: config.messagingSenderId,
+          appId: config.appId,
+        },
+        name
+      );
+    }
+    return service;
+  };
+};
+
+export const getUserFirebaseService = userFirebaseService();

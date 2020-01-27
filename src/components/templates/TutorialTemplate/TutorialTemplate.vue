@@ -201,11 +201,11 @@
   </div>
 </template>
 <script>
-import Vue from 'vue'
-import { ValidationObserver } from 'vee-validate'
-import DriverEditor from '../../organisms/DriverEditor'
-import TutorialEntity from '../../atoms/Entities/TutorialEntity'
-import BaseHeading from '../../atoms/BaseHeading'
+import Vue from 'vue';
+import { ValidationObserver } from 'vee-validate';
+import DriverEditor from '../../organisms/DriverEditor';
+import TutorialEntity from '../../atoms/Entities/TutorialEntity';
+import BaseHeading from '../../atoms/BaseHeading';
 import {
   ADD,
   CANCEL,
@@ -216,31 +216,31 @@ import {
   SAVE,
   RESELECT_ELEMENT,
   RESET_PREVIEW,
-} from '../../../constants/drvier-editor-command-types'
-import AddStepButton from '../../organisms/AddStepButton/AddStepButton'
-import BaseModal from '../../molecules/BaseModal/BaseModal'
-import iframeStyler from '../../mixins/iframeStyler'
-import ScreenOverlayLayout from '../../molecules/layouts/ScreenOverlayLayout'
-import TipsMessage from '../../organisms/messages/TipsMessage'
-import WarningMessage from '../../organisms/messages/WarningMessage'
-import TheSidebar from '../../organisms/TheSidebar'
-import BaseLoading from '../../atoms/BaseLoading'
-import ModalIcon from '../../atoms/icons/ModalIcon'
-import TooltipIcon from '../../atoms/icons/TooltipIcon'
-import StepEntity from '../../atoms/Entities/StepEntity'
-import PreviewButton from '../../atoms/buttons/PreviewButton'
-import TrashButton from '../../atoms/buttons/TrashButton'
-import TutorialForm from '../../organisms/forms/TutorialForm'
-import BaseTooltip from '../../atoms/BaseTooltip'
-import NavigateButton from '../../atoms/buttons/NavigateButton'
-import ArrowIcon from '../../atoms/icons/ArrowIcon'
-import BaseFadeTransitionGroup from '../../atoms/transitions/BaseFadeTransitionGroup'
-import UrlPathForm from '../../organisms/forms/UrlPathForm'
-import GoButton from '../../atoms/buttons/GoButton'
-import { PATH_EQUALS } from '../../atoms/Entities/PathOperators'
-import StepForm from '../../organisms/forms/StepForm'
-import PenButton from '../../atoms/buttons/PenButton'
-import BaseButton from '../../atoms/BaseButton'
+} from '../../../constants/drvier-editor-command-types';
+import AddStepButton from '../../organisms/AddStepButton/AddStepButton';
+import BaseModal from '../../molecules/BaseModal/BaseModal';
+import iframeStyler from '../../mixins/iframeStyler';
+import ScreenOverlayLayout from '../../molecules/layouts/ScreenOverlayLayout';
+import TipsMessage from '../../organisms/messages/TipsMessage';
+import WarningMessage from '../../organisms/messages/WarningMessage';
+import TheSidebar from '../../organisms/TheSidebar';
+import BaseLoading from '../../atoms/BaseLoading';
+import ModalIcon from '../../atoms/icons/ModalIcon';
+import TooltipIcon from '../../atoms/icons/TooltipIcon';
+import StepEntity from '../../atoms/Entities/StepEntity';
+import PreviewButton from '../../atoms/buttons/PreviewButton';
+import TrashButton from '../../atoms/buttons/TrashButton';
+import TutorialForm from '../../organisms/forms/TutorialForm';
+import BaseTooltip from '../../atoms/BaseTooltip';
+import NavigateButton from '../../atoms/buttons/NavigateButton';
+import ArrowIcon from '../../atoms/icons/ArrowIcon';
+import BaseFadeTransitionGroup from '../../atoms/transitions/BaseFadeTransitionGroup';
+import UrlPathForm from '../../organisms/forms/UrlPathForm';
+import GoButton from '../../atoms/buttons/GoButton';
+import { PATH_EQUALS } from '../../atoms/Entities/PathOperators';
+import StepForm from '../../organisms/forms/StepForm';
+import PenButton from '../../atoms/buttons/PenButton';
+import BaseButton from '../../atoms/BaseButton';
 
 export default {
   name: 'TutorialTemplate',
@@ -308,16 +308,16 @@ export default {
       activeStepIndex: null,
       newStepIndex: null,
       urlPath: null,
-    }
+    };
   },
   watch: {
     tutorial: {
       immediate: true,
       handler(value) {
         if (value) {
-          this.innerTutorial = value
+          this.innerTutorial = value;
         } else {
-          this.innerTutorial = new TutorialEntity()
+          this.innerTutorial = new TutorialEntity();
         }
       },
     },
@@ -336,103 +336,104 @@ export default {
     previewing: {
       handler(value) {
         if (value) {
-          this.preview(value)
+          this.preview(value);
         }
       },
     },
     navigating: {
       handler(value) {
+        console.log(value);
         if (value) {
-          this.hideIframe()
+          this.hideIframe();
         } else {
-          this.showIframe()
+          this.showIframe();
         }
       },
     },
     pendingStepIndex: {
       handler(value) {
         if (value > -1) {
-          const step = new StepEntity({ ...this.innerTutorial.steps[value] })
+          const step = new StepEntity({ ...this.innerTutorial.steps[value] });
           if (step.couldBeShownOn(window.parent.location.pathname)) {
-            this.hideIframe()
-            this.shouldShowSideNav = false
+            this.hideIframe();
+            this.shouldShowSideNav = false;
             this.sendCommand(EDIT, {
               type: step.type,
               step,
-            })
-            return
+            });
+            return;
           }
           if (step.pathOperator === PATH_EQUALS) {
             window.parent.location.href =
-              window.parent.location.origin + step.pathValue
-            return
+              window.parent.location.origin + step.pathValue;
+            return;
           }
-          this.innerStep = step
-          this.shouldShowUrlPathForm = true
+          this.innerStep = step;
+          this.shouldShowUrlPathForm = true;
         }
       },
     },
     shouldShowStepForm(value) {
       if (!value) {
-        this.innerStep = new StepEntity()
+        this.innerStep = new StepEntity();
       }
     },
   },
   created() {
-    window.addEventListener('message', this.onReceiveMessage)
+    window.addEventListener('message', this.onReceiveMessage);
   },
   mounted() {
     if (!document.querySelector(`#${this.driverEditorID}`)) {
-      const divElement = window.parent.document.createElement('div')
-      divElement.id = this.driverEditorID
-      window.parent.document.body.appendChild(divElement)
+      const divElement = window.parent.document.createElement('div');
+      divElement.id = this.driverEditorID;
+      window.parent.document.body.appendChild(divElement);
       const vm = new Vue({
         render: h => h(DriverEditor),
-      })
-      vm.$mount(divElement)
+      });
+      vm.$mount(divElement);
     }
   },
   beforeDestroy() {
-    window.removeEventListener('message', this.onReceiveMessage)
+    window.removeEventListener('message', this.onReceiveMessage);
   },
   methods: {
     onReceiveMessage(event) {
-      if (event.origin !== window.parent.location.origin) return
-      if (typeof event.data !== 'object' || Array.isArray(event.data)) return
-      const { app = null, command = null, data = {} } = event.data
+      if (event.origin !== window.parent.location.origin) return;
+      if (typeof event.data !== 'object' || Array.isArray(event.data)) return;
+      const { app = null, command = null, data = {} } = event.data;
       if (app === process.env.VUE_APP_NAME) {
-        this.handleCommand(command, data)
+        this.handleCommand(command, data);
       }
     },
     handleCommand(command, data) {
       if (command === ELEMENT_NOT_FOUND) {
-        this.shouldShowSideNav = true
-        this.shouldShowElementToHighlightNotFoundModal = true
-        this.showIframe()
-        return
+        this.shouldShowSideNav = true;
+        this.shouldShowElementToHighlightNotFoundModal = true;
+        this.showIframe();
+        return;
       }
 
       if (command === PREVIEW_DONE) {
-        this.$emit('update:previewing', false)
-        this.shouldShowSideNav = true
-        this.showIframe()
-        return
+        this.$emit('update:previewing', false);
+        this.shouldShowSideNav = true;
+        this.showIframe();
+        return;
       }
       if (command === SAVE) {
-        this.$emit('update:pending-step', -1)
+        this.$emit('update:pending-step', -1);
         const step = new StepEntity({
           ...data,
           pathValue: data.pathValue || window.parent.location.pathname,
           pathOperator: data.pathOperator || PATH_EQUALS,
-        })
+        });
         if (!this.innerTutorial.id) {
-          this.innerTutorial.steps = [step]
-          this.innerTutorial.pathValue = window.parent.location.pathname
-          this.innerTutorial.buildUrl = window.parent.location.href
-          this.shouldShowTutorialForm = true
+          this.innerTutorial.steps = [step];
+          this.innerTutorial.pathValue = window.parent.location.pathname;
+          this.innerTutorial.buildUrl = window.parent.location.href;
+          this.shouldShowTutorialForm = true;
         } else {
           if (step.id) {
-            this.$emit('update:step', step)
+            this.$emit('update:step', step);
           } else {
             this.innerTutorial.steps = [
               ...this.innerTutorial.steps.slice(0, this.newStepIndex),
@@ -465,22 +466,22 @@ export default {
                     event: null,
                     waitingTime: 0,
                   },
-                })
+                });
               }
-              return s
-            })
-            this.$emit('add:step', this.innerTutorial)
+              return s;
+            });
+            this.$emit('add:step', this.innerTutorial);
           }
-          this.shouldShowSideNav = true
+          this.shouldShowSideNav = true;
         }
-        this.showIframe()
-        return
+        this.showIframe();
+        return;
       }
 
       if (command === CANCEL) {
-        this.$emit('update:pending-step', -1)
-        this.shouldShowSideNav = true
-        this.showIframe()
+        this.$emit('update:pending-step', -1);
+        this.shouldShowSideNav = true;
+        this.showIframe();
       }
     },
     sendCommand(command, data = {}) {
@@ -491,83 +492,83 @@ export default {
           data,
         },
         window.parent.location.origin
-      )
+      );
     },
     onClickStepType(stepType) {
       if (stepType === 'tooltip') {
-        this.showClickToAddStepMessage = true
+        this.showClickToAddStepMessage = true;
       } else {
-        this.hideIframe()
+        this.hideIframe();
       }
-      this.shouldShowSideNav = false
+      this.shouldShowSideNav = false;
       this.sendCommand(ADD, {
         type: stepType,
-      })
+      });
     },
     onCloseClickToAddStepMessage() {
-      this.showClickToAddStepMessage = false
-      this.hideIframe()
+      this.showClickToAddStepMessage = false;
+      this.hideIframe();
     },
     async onClickTutorialConfirm() {
-      const valid = await this.$refs.tutorialForm.validate()
+      const valid = await this.$refs.tutorialForm.validate();
       if (valid) {
-        this.$emit('upsert:tutorial', this.innerTutorial)
-        this.shouldShowTutorialForm = false
-        this.shouldShowSideNav = true
+        this.$emit('upsert:tutorial', this.innerTutorial);
+        this.shouldShowTutorialForm = false;
+        this.shouldShowSideNav = true;
       }
     },
     onClickStep(step, stepIndex) {
-      this.$emit('update:pending-step', stepIndex)
+      this.$emit('update:pending-step', stepIndex);
     },
     async onClickStepConfirm() {
-      const valid = await this.$refs.stepForm.validate()
+      const valid = await this.$refs.stepForm.validate();
       if (valid) {
-        this.$emit('update:step', this.innerStep)
-        this.shouldShowStepForm = false
-        this.shouldShowSideNav = true
+        this.$emit('update:step', this.innerStep);
+        this.shouldShowStepForm = false;
+        this.shouldShowSideNav = true;
       }
     },
     onClickPreview() {
-      this.sendCommand(RESET_PREVIEW)
-      this.$emit('update:previewing', true)
+      this.sendCommand(RESET_PREVIEW);
+      this.$emit('update:previewing', true);
     },
     preview() {
-      this.hideIframe()
+      this.hideIframe();
       this.sendCommand(PREVIEW, {
         steps: this.innerTutorial.steps,
-      })
+      });
     },
     onStepDeleteClick(step) {
-      this.$emit('delete:step', step)
+      this.$emit('delete:step', step);
     },
     onStepEditClick(step) {
-      this.innerStep = step
-      this.shouldShowStepForm = true
+      this.innerStep = step;
+      this.shouldShowStepForm = true;
     },
     onNavigateClick() {
-      this.$emit('click:navigate')
+      this.$emit('click:navigate');
     },
     async onClickGo() {
-      const valid = await this.$refs.urlPathForm.validate()
+      const valid = await this.$refs.urlPathForm.validate();
       if (valid) {
         window.parent.location.href =
-          window.parent.location.origin + this.urlPath
+          window.parent.location.origin + this.urlPath;
       }
     },
     onUrlPathFormCancel() {
-      this.shouldShowUrlPathForm = false
+      this.shouldShowUrlPathForm = false;
     },
     onClickReselectElementConfirm() {
-      this.shouldShowElementToHighlightNotFoundModal = false
-      this.shouldShowSideNav = false
-      this.hideIframe()
+      this.shouldShowElementToHighlightNotFoundModal = false;
+      this.shouldShowSideNav = false;
+      this.hideIframe();
       this.sendCommand(RESELECT_ELEMENT, {
         step: this.innerStep,
         type: 'tooltip',
-      })
+      });
     },
   },
-}
+};
 </script>
 <style scoped>
 >>> .dropdown.is-fullwidth {

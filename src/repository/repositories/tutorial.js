@@ -1,4 +1,4 @@
-import { FieldValue, Timestamp } from '../../firebase';
+import { FieldValue } from '../../firebase';
 import TutorialEntity from '../../components/atoms/Entities/TutorialEntity';
 import StepEntity from '../../components/atoms/Entities/StepEntity';
 
@@ -115,10 +115,6 @@ export default class TutorialRepository {
       const docRef = this.getTutorialCollection(userId).doc(tutorial.id);
       await docRef.update({
         ...tutorial.toPlainObject(),
-        createdAt: new Timestamp(
-          tutorial.createdAt.seconds,
-          tutorial.createdAt.nanoseconds
-        ),
         updatedAt: FieldValue.serverTimestamp(),
       });
       const unsubscribe = docRef.onSnapshot(doc => {
@@ -180,12 +176,8 @@ export default class TutorialRepository {
         .doc(tutorialId)
         .collection('steps')
         .doc(step.id);
-      await docRef.set({
+      await docRef.update({
         ...step.toPlainObject(),
-        createdAt: new Timestamp(
-          step.createdAt.seconds,
-          step.createdAt.nanoseconds
-        ),
         updatedAt: FieldValue.serverTimestamp(),
       });
       const unsubscribe = docRef.onSnapshot(doc => {
@@ -233,10 +225,10 @@ export default class TutorialRepository {
         });
       const batch = this.getBatch();
       steps.forEach((step, index) => {
-        const orderAttachedStep = {
+        const orderAttachedStep = new StepEntity({
           ...step,
           order: index,
-        };
+        });
         let docRef;
         if (step.id) {
           docRef = this.getTutorialCollection(userId)
@@ -244,11 +236,7 @@ export default class TutorialRepository {
             .collection('steps')
             .doc(step.id);
           batch.update(docRef, {
-            ...orderAttachedStep,
-            createdAt: new Timestamp(
-              step.createdAt.seconds,
-              step.createdAt.nanoseconds
-            ),
+            ...orderAttachedStep.toPlainObject(),
             updatedAt: FieldValue.serverTimestamp(),
           });
         } else {
@@ -257,7 +245,7 @@ export default class TutorialRepository {
             .collection('steps')
             .doc();
           batch.set(docRef, {
-            ...orderAttachedStep,
+            ...orderAttachedStep.toPlainObject(),
             id: docRef.id,
             createdAt: FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp(),

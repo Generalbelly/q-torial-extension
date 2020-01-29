@@ -3,24 +3,7 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/functions';
 
-export const { FieldValue, Timestamp } = firebase.firestore;
-
-// export const convertDocToObject = doc => {
-//   const data = {
-//     id: doc.id,
-//     ...doc.data(),
-//   }
-//   // if (data.createdAt) {
-//   //   data.createdAtAsDateString = data.createdAt.toDate().toLocaleDateString()
-//   // }
-//   // if (data.updatedAt) {
-//   //   data.updatedAtAsDateString = data.updatedAt.toDate().toLocaleDateString()
-//   // }
-//   return data
-// }
-
-// export const convertDocumentsToArray = snapshot =>
-//   snapshot.docs.map(doc => doc.data())
+export const { FieldValue } = firebase.firestore;
 
 export default class FirebaseService {
   app;

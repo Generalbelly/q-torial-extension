@@ -1,4 +1,4 @@
-import { FieldValue, Timestamp } from '../../firebase';
+import { FieldValue } from '../../firebase';
 import FirebaseConfigEntity from '../../components/atoms/Entities/FirebaseConfigEntity';
 import UserEntity from '../../components/atoms/Entities/UserEntity';
 import StripeCustomerEntity from '../../components/atoms/Entities/StripeCustomerEntity';
@@ -80,10 +80,6 @@ export default class UserRepository {
       const docRef = this.getUserCollection().doc(user.uid);
       await docRef.update({
         ...user.toPlainObject(),
-        createdAt: new Timestamp(
-          user.createdAt.seconds,
-          user.createdAt.nanoseconds
-        ),
         updatedAt: FieldValue.serverTimestamp(),
       });
       const unsubscribe = docRef.onSnapshot(doc => {
@@ -139,10 +135,6 @@ export default class UserRepository {
           .doc(firebaseConfig.id)
           .update({
             ...firebaseConfig.toPlainObject(),
-            createdAt: new Timestamp(
-              firebaseConfig.createdAt.seconds,
-              firebaseConfig.createdAt.nanoseconds
-            ),
             updatedAt: FieldValue.serverTimestamp(),
           });
       } else {

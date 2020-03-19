@@ -19,11 +19,11 @@
   />
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
-import { debounce } from 'debounce'
-import TutorialsTemplate from '../../templates/TutorialsTemplate'
-import { QUERY_LIMIT } from '../../../constants/general'
-import { PATH_EQUALS } from '../../atoms/Entities/PathOperators'
+import { mapState, mapActions } from 'vuex';
+import { debounce } from 'debounce';
+import TutorialsTemplate from '../../templates/TutorialsTemplate';
+import { QUERY_LIMIT } from '../../../constants/general';
+import { PATH_EQUALS } from '../../atoms/Entities/PathOperators';
 
 export default {
   name: 'TutorialsPage',
@@ -33,11 +33,11 @@ export default {
   data() {
     return {
       tutorialNeedsToBeRedirected: false,
-    }
+    };
   },
   computed: {
     loadable() {
-      return !this.allFetched && this.tutorials.length >= QUERY_LIMIT
+      return !this.allFetched && this.tutorials.length >= QUERY_LIMIT;
     },
     ...mapState([
       'tutorial',
@@ -58,45 +58,45 @@ export default {
       'updateTutorial',
     ]),
     async onClickAdd() {
-      this.selectTutorial({ id: null })
-      this.$emit('click:add')
+      this.selectTutorial({ id: null });
+      this.$emit('click:add');
     },
     async onSelect(tutorial) {
-      await this.selectTutorial(tutorial)
+      await this.selectTutorial(tutorial);
       if (tutorial.couldBeShownOn(window.parent.location.pathname)) {
-        this.$emit('select:tutorial', tutorial)
+        this.$emit('select:tutorial', tutorial);
       } else if (tutorial.pathOperator === PATH_EQUALS) {
         // TODO 遷移しますよっていうmodal出す
         window.parent.location.href =
-          window.parent.location.origin + tutorial.pathValue
+          window.parent.location.origin + tutorial.pathValue;
       } else {
-        this.tutorialNeedsToBeRedirected = true
+        this.tutorialNeedsToBeRedirected = true;
       }
     },
     async onSort(orderBy) {
       if (this.loadable) {
         this.listTutorials({
           orderBy,
-        })
+        });
       } else {
-        this.sortTutorials(orderBy)
+        this.sortTutorials(orderBy);
       }
     },
     onClickShowMore() {
-      this.listTutorials()
+      this.listTutorials();
     },
     onClickDelete(tutorial) {
-      this.deleteTutorial(tutorial.toPlainObject())
+      this.deleteTutorial(tutorial.toPlainObject());
     },
     onChangeQuery: debounce(function(query) {
       this.listTutorials({
         searchQuery: query,
-      })
+      });
     }, 500),
     onUpdateTutorial(tutorial) {
-      const data = tutorial.toPlainObject()
-      this.updateTutorial(data)
+      const data = tutorial.toPlainObject();
+      this.updateTutorial(data);
     },
   },
-}
+};
 </script>

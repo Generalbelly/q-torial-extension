@@ -1,18 +1,5 @@
 import { has } from '../../../utils';
 
-export const toPlainObject = (instance, excludes = []) => {
-  const object = {};
-  Object.keys(instance).forEach(propertyName => {
-    if (
-      !excludes.includes(propertyName) &&
-      Object.prototype.hasOwnProperty.call(instance, propertyName)
-    ) {
-      object[propertyName] = instance[propertyName];
-    }
-  });
-  return object;
-};
-
 export default class Entity {
   id = null;
 
@@ -28,7 +15,16 @@ export default class Entity {
     });
   }
 
-  toPlainObject() {
-    return toPlainObject(this, ['createdAt', 'updatedAt']);
+  toPlainObject(excludes = ['createdAt', 'updatedAt']) {
+    const object = {};
+    Object.keys(this).forEach(propertyName => {
+      if (
+        !excludes.includes(propertyName) &&
+        Object.prototype.hasOwnProperty.call(this, propertyName)
+      ) {
+        object[propertyName] = this[propertyName];
+      }
+    });
+    return object;
   }
 }

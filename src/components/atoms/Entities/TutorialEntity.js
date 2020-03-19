@@ -1,4 +1,4 @@
-import Entity, { toPlainObject } from './Entity';
+import Entity from './Entity';
 import StepEntity from './StepEntity';
 import { validateUrlPath } from './PathOperators';
 
@@ -31,7 +31,7 @@ export default class TutorialEntity extends Entity {
 
   constructor(data = {}) {
     super();
-    const { performances = [], steps = [], ...props } = data;
+    const { steps = [], ...props } = data;
     this.fill(props);
     this.steps = steps.map(s => new StepEntity(s));
   }
@@ -42,7 +42,7 @@ export default class TutorialEntity extends Entity {
   }
 
   toPlainObject() {
-    return toPlainObject(this, [
+    return super.toPlainObject([
       'createdAt',
       'updatedAt',
       'performances',

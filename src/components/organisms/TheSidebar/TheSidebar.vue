@@ -20,8 +20,8 @@
   </nav>
 </template>
 <script>
-import CloseIcon from '../../atoms/icons/CloseIcon'
-import SwitchIcon from '../../atoms/icons/SwitchIcon'
+import CloseIcon from '../../atoms/icons/CloseIcon';
+import SwitchIcon from '../../atoms/icons/SwitchIcon';
 
 export default {
   name: 'TheSidebar',
@@ -39,11 +39,12 @@ export default {
       default: '300px',
     },
   },
-}
+};
 </script>
 <style scoped>
 .side-bar {
   height: 100vh;
+  border: solid 1px rgba(0, 0, 0, 0.7);
 }
 .side-bar__header {
   display: flex;

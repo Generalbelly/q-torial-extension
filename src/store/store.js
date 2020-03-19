@@ -207,16 +207,12 @@ const actions = {
     });
     commit(SET_PENDING_STEP_INDEX, value);
   },
-  async syncData({ commit, state }) {
-    if (state.user) {
-      commit(SET_REQUESTING, true);
-      const data = await sendCommand(SYNC_DATA);
-      commit(SYNC_DATA, data);
-      commit(SET_REQUESTING, false);
-    }
-  },
-  setServerSideErrors({ commit }, payload) {
-    commit(SET_SERVER_SIDE_ERRORS, payload);
+  async syncData({ commit }) {
+    commit(SET_REQUESTING, true);
+    const data = await sendCommand(SYNC_DATA);
+    commit(SYNC_DATA, data);
+    console.log(data);
+    commit(SET_REQUESTING, false);
   },
 };
 

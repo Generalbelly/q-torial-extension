@@ -1,4 +1,4 @@
-import Entity, { toPlainObject } from './Entity';
+import Entity from './Entity';
 
 export default class UserEntity extends Entity {
   uid = null;
@@ -37,7 +37,7 @@ export default class UserEntity extends Entity {
   }
 
   toPlainObject() {
-    return toPlainObject(this, [
+    return super.toPlainObject([
       'createdAt',
       'updatedAt',
       'stripeCustomer',

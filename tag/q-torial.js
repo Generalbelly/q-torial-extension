@@ -479,9 +479,9 @@
                             ]
                           )('q-torial');
 
-                          if (!store.get('EU_ID')) {
+                          if (!store.get('customerId')) {
                             store.set(
-                              'EU_ID',
+                              'customerId',
                               uuid__WEBPACK_IMPORTED_MODULE_12___default()()
                             );
                           }
@@ -7068,7 +7068,7 @@
         var activeStepIndex = 0;
         var intendedReload = false;
         var once = store.get('once', []);
-        var EU_ID = store.get('EU_ID', null);
+        var customerId = store.get('customerId', null);
         var driverOptions = {};
         return {
           resetProgress: function resetProgress() {
@@ -7251,7 +7251,7 @@
                             allSteps: steps.length,
                             complete: activeStepIndex === steps.length,
                             elapsedTime: new Date().getTime() - startTime,
-                            euId: EU_ID,
+                            customerId: customerId,
                           });
 
                         case 5:
@@ -7336,7 +7336,7 @@
               return false;
             }
 
-            return !(tutorial.settings.once && once.includes(EU_ID));
+            return !(tutorial.settings.once && once.includes(customerId));
           },
           handleError: (function() {
             var _handleError = _asyncToGenerator(

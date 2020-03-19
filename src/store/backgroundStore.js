@@ -149,11 +149,9 @@ const actions = {
   updateLocalUser({ commit }, payload) {
     commit(UPDATE_USER, payload);
   },
-  async getUser({ commit, state }) {
+  async getUser({ dispatch, state }) {
     const { setupComplete } = await getUserRepository().get(state.user.uid);
-    commit(UPDATE_USER, {
-      setupComplete,
-    });
+    await dispatch('updateLocalUser', { setupComplete });
   },
   setActive({ commit }, payload) {
     commit(SET_ACTIVE, payload);
@@ -311,7 +309,6 @@ const actions = {
   async deleteStep({ commit, getters }, payload) {
     commit(SET_REQUESTING, true);
     const { tutorial, firebaseConfig } = getters;
-    console.log(tutorial);
     const step = await tutorialRepository.deleteStep(
       firebaseConfig.uid,
       tutorial.id,
@@ -351,21 +348,22 @@ const actions = {
     commit(DELETE_TUTORIAL, tutorial);
     commit(SET_REQUESTING, false);
   },
-  checkUserPaymentInfo({ commit, state }) {
-    getUserRepository().checkUserPaymentInfo(state.user.uid, stripeCustomer => {
-      commit(UPDATE_USER, { stripeCustomer });
-    });
-  },
-  checkFirebaseConfig({ commit, state }, { email, password } = {}) {
-    getUserRepository().checkFirebaseConfig(
-      state.user.uid,
-      async firebaseConfig => {
-        if (firebaseConfig && email && password) {
-          await getUserFirebaseService(firebaseConfig).signIn(email, password);
-        }
-        commit(UPDATE_USER, { firebaseConfig });
-      }
+  async checkUserPaymentInfo({ commit, state }) {
+    const stripeCustomer = await getUserRepository().getUserPaymentInfo(
+      state.user.uid
     );
+    if (stripeCustomer) {
+      commit(UPDATE_USER, { stripeCustomer });
+    }
+  },
+  async getFirebaseConfig({ dispatch, state }) {
+    const firebaseConfig = await getUserRepository().getFirebaseConfig(
+      state.user.uid
+    );
+    if (firebaseConfig) {
+      await dispatch('updateLocalUser', { firebaseConfig });
+      await dispatch('initTutorialRepository');
+    }
   },
   initTutorialRepository({ commit, getters }) {
     initTutorialRepository(getters.firebaseConfig);
@@ -382,6 +380,22 @@ const actions = {
   },
   resetState({ commit }, value) {
     commit(RESET_STATE, value);
+  },
+  async signIn({ dispatch }, { email, password }) {
+    const { user } = await appFirebaseService.signIn(email, password);
+    await dispatch('updateLocalUser', user);
+    await dispatch('getUser');
+  },
+  async signOut({ state, dispatch }) {
+    await appFirebaseService.signOut();
+    await getUserFirebaseService(state.user.firebaseConfig).signOut();
+    await dispatch('updateLocalUser', null);
+  },
+  async firebaseSignIn({ state }, { email, password }) {
+    await getUserFirebaseService(state.user.firebaseConfig).signIn(
+      email,
+      password
+    );
   },
 };
 

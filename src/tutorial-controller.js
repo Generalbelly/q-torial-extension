@@ -19,7 +19,7 @@ const createController = (store, apiClient = null, gaClient = null) => {
   let activeStepIndex = 0;
   let intendedReload = false;
   let once = store.get('once', []);
-  const EU_ID = store.get('EU_ID', null);
+  const customerId = store.get('customerId', null);
   let driverOptions = {};
 
   return {
@@ -106,7 +106,7 @@ const createController = (store, apiClient = null, gaClient = null) => {
             allSteps: steps.length,
             complete: activeStepIndex === steps.length,
             elapsedTime: new Date().getTime() - startTime,
-            euId: EU_ID,
+            customerId,
           });
         }
 
@@ -172,7 +172,7 @@ const createController = (store, apiClient = null, gaClient = null) => {
       ) {
         return false;
       }
-      return !(tutorial.settings.once && once.includes(EU_ID));
+      return !(tutorial.settings.once && once.includes(customerId));
     },
     async handleError(error) {
       console.error(error);
@@ -253,7 +253,6 @@ const createController = (store, apiClient = null, gaClient = null) => {
           firstStep.highlightTarget === 'modal' ||
           document.querySelector(firstStep.highlightTarget)
         ) {
-          console.log(steps);
           driver.defineSteps(definedSteps);
           if (
             (target === 'window' && event === 'load') ||

@@ -23,10 +23,10 @@
 </template>
 
 <script>
-import BaseSelect from '../../../atoms/BaseSelect'
-import BaseInput from '../../../atoms/BaseInput'
-import BaseField from '../../../atoms/BaseField'
-import BaseLabel from '../../../atoms/BaseLabel'
+import BaseSelect from '../../../atoms/BaseSelect';
+import BaseInput from '../../../atoms/BaseInput';
+import BaseField from '../../../atoms/BaseField';
+import BaseLabel from '../../../atoms/BaseLabel';
 
 export default {
   name: 'DomainField',
@@ -50,32 +50,29 @@ export default {
     return {
       protocol: 'https://',
       domain: null,
-    }
+    };
   },
   watch: {
     value: {
       immediate: true,
       handler(value) {
         if (value && value.includes('://')) {
-          const [protocol, domain] = value.split('://')
-          this.protocol = `${protocol}://`
-          this.domain = domain
+          const [protocol, domain] = value.split('://');
+          this.protocol = `${protocol}://`;
+          this.domain = domain;
         }
       },
     },
-  },
-  computed: {
-    domainUrl: {
-      get() {
-        const url = this.protocol + this.domain
-        return url || null
-      },
-      set(newValue) {
-        this.$emit('input', newValue)
-      },
+    protocol(value) {
+      const url = value + this.domain;
+      this.$emit('input', url || null);
+    },
+    domain(value) {
+      const url = this.protocol + value;
+      this.$emit('input', url || null);
     },
   },
-}
+};
 </script>
 
 <style scoped>

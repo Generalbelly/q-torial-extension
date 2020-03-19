@@ -13,7 +13,6 @@ import {
   END_EXT,
   ROUTE,
   REDIRECT_TO_APP,
-  UPDATE_AUTH_STATE,
   PASS_DATA_TO_BACKGROUND,
   UPDATE_STATE,
 } from './constants/command-types';
@@ -114,11 +113,18 @@ class ExtApp {
 
 let extApp = null;
 
+const WHITE_LIST = [
+  'https://console.firebase.google.com',
+  process.env.VUE_APP_URL,
+];
+
 async function startApp() {
   if (!extApp) {
     extApp = new ExtApp();
   }
-  extApp.start();
+  if (!WHITE_LIST.includes(window.location.origin)) {
+    extApp.start();
+  }
 }
 
 async function endApp() {
@@ -136,7 +142,7 @@ port.onDisconnect.addListener(() => {
 });
 
 let isWebListenerAttached = false;
-let openedWindow = null;
+// let openedWindow = null;
 port.onMessage.addListener(async request => {
   const sendCommand = (
     { status = null, message = null, data = null, command = null, id = null },
@@ -172,17 +178,10 @@ port.onMessage.addListener(async request => {
     switch (command) {
       case START_EXT:
         try {
-          if (
-            ![
-              'https://console.firebase.google.com',
-              process.env.VUE_APP_URL,
-            ].includes(window.location.origin)
-          ) {
-            await startApp();
-            sendCommand({
-              status: OK,
-            });
-          }
+          await startApp();
+          sendCommand({
+            status: OK,
+          });
         } catch (e) {
           sendCommand({
             status: ERROR,
@@ -206,40 +205,21 @@ port.onMessage.addListener(async request => {
         }
         break;
       case REDIRECT_TO_APP:
-        if (
-          window.location.origin !== process.env.VUE_APP_URL &&
-          !openedWindow
-        ) {
-          const w = 520;
-          const h = 570;
-          const left = window.screen.width / 2 - w / 2;
-          const top = window.screen.height / 2 - h / 2;
-          openedWindow = window.open(
-            `${process.env.VUE_APP_URL}/sign-in?source=extension&redirect=${window.location.href}`,
-            '_blank',
-            `location=yes,height=${h},width=${w},top=${top},left=${left},scrollbars=yes,status=yes`
-          );
+        if (window.location.origin !== process.env.VUE_APP_URL) {
+          // const w = 520;
+          // const h = 570;
+          // const left = window.screen.width / 2 - w / 2;
+          // const top = window.screen.height / 2 - h / 2;
+          window.location.href = `${process.env.VUE_APP_URL}/sign-in?source=extension&redirect=${window.location.href}`;
+          // openedWindow = window.open(
+          //   ,
+          //   '_blank',
+          //   `location=yes,height=${h},width=${w},top=${top},left=${left},scrollbars=yes,status=yes`
+          // );
         }
         break;
       case ROUTE:
         window.location.href = data;
-        break;
-      case UPDATE_AUTH_STATE:
-        try {
-          await store.dispatch('updateLocalUser', data);
-          if (store.state.user && openedWindow) {
-            openedWindow.close();
-            await startApp();
-          }
-          sendCommand({
-            status: OK,
-          });
-        } catch (e) {
-          sendCommand({
-            status: ERROR,
-            message: e.message,
-          });
-        }
         break;
       case PASS_DATA_TO_BACKGROUND:
         sendCommand({

@@ -45,10 +45,11 @@ window.Qtorial =
     });
 
     return {
-      async init(key) {
+      async init(key, customerId = null) {
         const store = createStore(process.env.VUE_APP_NAME);
-        if (!store.get('EU_ID')) {
-          store.set('EU_ID', uuidv4());
+        const storedCustomerId = store.get('customerId');
+        if (!storedCustomerId || storedCustomerId !== customerId) {
+          store.set('customerId', customerId || uuidv4());
         }
         const apiClient = createApiClient(key);
         const gaClient = createGAClient();

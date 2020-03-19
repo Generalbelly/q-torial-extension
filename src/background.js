@@ -6,13 +6,14 @@ import {
   SIGN_OUT,
   VERSION,
   REDIRECT_TO_APP,
-  UPDATE_AUTH_STATE,
   PASS_DATA_TO_BACKGROUND,
   SELECT_TUTORIAL,
   UPDATE_STATE,
+  CHECK_AUTH,
+  FIREBAE_SIGN_IN,
 } from './constants/command-types';
 import { ERROR, OK } from './constants/status-types';
-import { appFirebaseService } from './firebase';
+import { appFirebaseService, getUserFirebaseService } from './firebase';
 import store from './store/backgroundStore';
 import { SYNC_DATA } from './store/mutation-types';
 
@@ -33,14 +34,24 @@ const connectHandler = async port => {
   }
 
   async function startApp(resetState = false) {
+    if (resetState) {
+      await store.dispatch('resetState');
+    }
+    await store.dispatch('setActive', true);
     const user = await appFirebaseService.checkAuth();
-    if (user) {
-      if (resetState) {
-        await store.dispatch('resetState');
-      }
-      await store.dispatch('setActive', true);
+    if (!user) {
+      sendCommand(REDIRECT_TO_APP);
+      return;
+    }
+    await store.dispatch('updateLocalUser', user);
+    await store.dispatch('getFirebaseConfig');
+    const firebaseUser = store.state.user.firebaseConfig
+      ? await getUserFirebaseService(
+          store.state.user.firebaseConfig
+        ).checkAuth()
+      : null;
+    if (firebaseUser) {
       await store.dispatch('getUser');
-      await store.dispatch('checkFirebaseConfig');
       await store.dispatch('checkUserPaymentInfo');
       sendCommand(START_EXT);
     } else {
@@ -61,6 +72,7 @@ const connectHandler = async port => {
       ...getters,
     }),
     async value => {
+      console.log(value);
       if (!value.requesting && value.taskId) {
         const { taskId, ...val } = value;
         sendCommand(UPDATE_STATE, val, taskId);
@@ -75,7 +87,6 @@ const connectHandler = async port => {
 
   const unsubscribe = appFirebaseService.watchAuth(async user => {
     await store.dispatch('updateLocalUser', user);
-    sendCommand(UPDATE_AUTH_STATE, user);
   });
 
   const browserActionHandler = async () => {
@@ -91,6 +102,7 @@ const connectHandler = async port => {
 
   const onMessageHandler = async request => {
     const { command = '', data = {}, id = null } = request;
+    console.log(command);
     console.log(data);
     switch (command) {
       case PASS_DATA_TO_BACKGROUND:
@@ -127,17 +139,20 @@ chrome.runtime.onConnect.addListener(connectHandler);
 chrome.runtime.onMessageExternal.addListener(
   async (request = {}, sender, sendResponse) => {
     const { command = null, data = {} } = request;
+    const user = await appFirebaseService.checkAuth();
+    console.log(command);
     switch (command) {
       case SIGN_IN:
         try {
-          const { user } = await appFirebaseService.signIn(
-            data.email,
-            data.password
-          );
-          await store.dispatch('updateLocalUser', user);
-          await store.dispatch('getUser');
-          await store.dispatch('checkFirebaseConfig', data);
-          await store.dispatch('checkUserPaymentInfo');
+          await store.dispatch('signIn', data);
+          sendResponse({ status: OK });
+        } catch (e) {
+          sendResponse({ status: ERROR, message: e.message });
+        }
+        break;
+      case FIREBAE_SIGN_IN:
+        try {
+          await store.dispatch('firebaseSignIn', data);
           sendResponse({ status: OK });
         } catch (e) {
           sendResponse({ status: ERROR, message: e.message });
@@ -145,8 +160,7 @@ chrome.runtime.onMessageExternal.addListener(
         break;
       case SIGN_OUT:
         try {
-          await appFirebaseService.signOut();
-          await store.dispatch('updateLocalUser', null);
+          await store.dispatch('signOut');
           sendResponse({ status: OK });
         } catch (e) {
           sendResponse({ status: ERROR, message: e.message });
@@ -159,11 +173,23 @@ chrome.runtime.onMessageExternal.addListener(
         });
         break;
       case SELECT_TUTORIAL:
-        await store.dispatch('selectTutorial', data);
-        await store.dispatch('setActive', true);
+        if (user) {
+          await store.dispatch('selectTutorial', data);
+          await store.dispatch('setActive', true);
+          sendResponse({
+            status: OK,
+            message: 'tutorial is just selected.',
+          });
+        } else {
+          sendResponse({
+            status: ERROR,
+            message: 'login required',
+          });
+        }
+        break;
+      case CHECK_AUTH:
         sendResponse({
-          status: OK,
-          message: 'Tutorial is just selected.',
+          status: user ? OK : ERROR,
         });
         break;
       default:

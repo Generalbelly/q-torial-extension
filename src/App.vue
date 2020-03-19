@@ -1,18 +1,18 @@
 <template>
   <div class="has-background-neutral-050">
     <the-navbar
-      v-show="shouldShowNav"
+      v-if="shouldShowNav"
       @click:tutorials="onClickTutorials"
       @click:logo="onClickLogo"
     />
     <tutorials-page
-      v-show="shouldShowTutorialsPage"
+      v-if="shouldShowTutorialsPage"
       @click:close="onTutorialsClickClose"
       @click:add="onClickAdd"
       @select:tutorial="onSelectTutorial"
     />
     <tutorial-page
-      v-show="shouldShowTutorialPage"
+      v-if="shouldShowTutorialPage"
       @click:close="onTutorialClickClose"
     />
   </div>
@@ -40,7 +40,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['tutorials', 'tutorial', 'navigating', 'previewing']),
+    ...mapState(['tutorials', 'tutorial', 'navigating', 'previewing', 'user']),
   },
   watch: {
     shouldShowTutorialsPage(value) {

@@ -1,32 +1,35 @@
-import { mapState } from 'vuex'
+import { mapState } from 'vuex';
 
 export default {
   data() {
     return {
       iframeElement: null,
-    }
-  },
-  mounted() {
-    this.iframeElement = window.parent.document.querySelector(
-      `iframe#${process.env.VUE_APP_NAME}`
-    )
+    };
   },
   methods: {
+    getIframeElement() {
+      if (!this.iframeElement) {
+        this.iframeElement = window.parent.document.querySelector(
+          `iframe#${process.env.VUE_APP_NAME}`
+        );
+      }
+      return this.iframeElement;
+    },
     changeIframeStyle(styles) {
       Object.keys(styles).forEach(attribute => {
-        this.iframeElement.style[attribute] = styles[attribute]
-      })
+        this.getIframeElement().style[attribute] = styles[attribute];
+      });
     },
     toggleIframe() {
-      const displayValue = this.iframeElement.style.display
-      this.iframeElement.style.display =
-        displayValue === 'none' ? 'block' : 'none'
+      const displayValue = this.getIframeElement().style.display;
+      this.getIframeElement().style.display =
+        displayValue === 'none' ? 'block' : 'none';
     },
     showIframe() {
-      this.iframeElement.style.display = 'block'
+      this.getIframeElement().style.display = 'block';
     },
     hideIframe() {
-      this.iframeElement.style.display = 'none'
+      this.getIframeElement().style.display = 'none';
     },
   },
-}
+};

@@ -321,19 +321,8 @@ export default {
         }
       },
     },
-    // activeStepIndex: {
-    //   handler(value) {
-    //     if (value !== null && value > -1) {
-    //       this.innerStep = this.innerTutorial.steps.find(
-    //         (_, index) => index === this.activeStepIndex
-    //       )
-    //     } else {
-    //       this.innerStep = new StepEntity()
-    //     }
-    //     console.log(this.innerStep)
-    //   },
-    // },
     previewing: {
+      immediate: true,
       handler(value) {
         if (value) {
           this.preview(value);
@@ -341,8 +330,8 @@ export default {
       },
     },
     navigating: {
+      immediate: true,
       handler(value) {
-        console.log(value);
         if (value) {
           this.hideIframe();
         } else {
@@ -351,6 +340,7 @@ export default {
       },
     },
     pendingStepIndex: {
+      immediate: true,
       handler(value) {
         if (value > -1) {
           const step = new StepEntity({ ...this.innerTutorial.steps[value] });

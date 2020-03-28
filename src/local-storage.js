@@ -1,9 +1,9 @@
 const createStore = logKey => {
-  let log = {}
+  let log = {};
   try {
-    log = JSON.parse(localStorage.getItem(logKey)) || {}
+    log = JSON.parse(localStorage.getItem(logKey)) || {};
   } catch (e) {
-    console.error(e)
+    console.error(e);
   }
   return {
     set(key, value) {
@@ -11,27 +11,33 @@ const createStore = logKey => {
         log = {
           ...log,
           [key]: value,
-        }
-        localStorage.setItem(logKey, JSON.stringify(log))
-        return true
+        };
+        localStorage.setItem(logKey, JSON.stringify(log));
+        return true;
       } catch (e) {
-        console.error(e)
-        return false
+        console.error(e);
+        return false;
       }
     },
+    /**
+     * @param key string
+     * @param defaultValue string|int|object|null
+     * @return string|int|boolean|object|null
+     *
+     */
     get(key, defaultValue = null) {
       return Object.prototype.hasOwnProperty.call(log, key)
         ? log[key]
-        : defaultValue
+        : defaultValue;
     },
     clear(key = null) {
       if (key && log[key]) {
-        log[key] = null
+        log[key] = null;
       } else {
-        log = {}
+        log = {};
       }
     },
-  }
-}
+  };
+};
 
-export default createStore
+export default createStore;

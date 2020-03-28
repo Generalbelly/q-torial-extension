@@ -14,13 +14,20 @@ const createController = (store, apiClient = null, gaClient = null) => {
   let driver = null;
   let currentTutorial = null;
   let steps = [];
-  let settings = {};
   let startTime = 0;
   let activeStepIndex = 0;
   let intendedReload = false;
   let once = store.get('once', []);
   const customerId = store.get('customerId', null);
   let driverOptions = {};
+  const pseudoDivId = 'q-torial-pseudo';
+
+  if (!document.querySelector(`#${pseudoDivId}`)) {
+    const divElement = document.createElement('div');
+    // divElement.style.display = 'none';
+    divElement.id = pseudoDivId;
+    document.body.appendChild(divElement);
+  }
 
   return {
     resetProgress() {
@@ -92,7 +99,7 @@ const createController = (store, apiClient = null, gaClient = null) => {
     },
     async resetHandler() {
       if (!intendedReload) {
-        if (settings.once) {
+        if (currentTutorial.settings.once) {
           if (!once.includes(currentTutorial.id)) {
             once = [...once, currentTutorial.id];
           }
@@ -137,30 +144,6 @@ const createController = (store, apiClient = null, gaClient = null) => {
       driver.reset();
       window.location.href = url;
     },
-    setTutorial(t) {
-      activeStepIndex = store.get('activeStepIndex', 0);
-      startTime = store.get('startTime', 0);
-      currentTutorial = t;
-      settings = { ...t.settings };
-      let stepIndex = 0;
-      steps = t.steps.map(s => {
-        if (
-          s.pathValue === window.location.pathname &&
-          s.order >= activeStepIndex
-        ) {
-          const updatedStep = {
-            ...s,
-            stepIndex,
-          };
-          stepIndex += 1;
-          return updatedStep;
-        }
-        return {
-          ...s,
-          stepIndex: -1,
-        };
-      });
-    },
     validate(tutorial) {
       if (!apiClient) {
         return true;
@@ -193,9 +176,18 @@ const createController = (store, apiClient = null, gaClient = null) => {
           return;
         }
         driverOptions = options;
-        this.setTutorial(tutorial);
-        // window.addEventListener('locationchange', this.saveProgress)
-
+        activeStepIndex = store.get('activeStepIndex', 0);
+        startTime = store.get('startTime', 0);
+        currentTutorial = tutorial;
+        steps = currentTutorial.steps.map(step => {
+          if (step.pathValue === window.location.pathname) {
+            return step;
+          }
+          return {
+            ...step,
+            highlightTarget: `#${pseudoDivId}`,
+          };
+        });
         driver = new Driver({
           ...driverOptions,
           animate: false,
@@ -230,28 +222,26 @@ const createController = (store, apiClient = null, gaClient = null) => {
                 }
               },
         });
+        const definedSteps = steps.map(s => ({
+          element: s.highlightTarget,
+          popover: s.config,
+        }));
 
         const firstStep = steps[activeStepIndex];
         if (firstStep.pathValue !== window.location.pathname) {
           this.redirect(window.location.origin + firstStep.pathValue);
         }
-        const { trigger, stepIndex } = firstStep;
+        const { trigger, order, highlightTarget } = firstStep;
         const { target, event, waitingTime } = trigger;
-
         const handler = () => {
           window.setTimeout(() => {
-            driver.start(stepIndex);
+            driver.start(order);
             startTime = new Date().getTime();
           }, waitingTime);
         };
-
-        const definedSteps = steps.map(s => ({
-          element: s.highlightTarget,
-          popover: s.config,
-        }));
         if (
-          firstStep.highlightTarget === 'modal' ||
-          document.querySelector(firstStep.highlightTarget)
+          highlightTarget === 'modal' ||
+          document.querySelector(highlightTarget)
         ) {
           driver.defineSteps(definedSteps);
           if (
@@ -281,7 +271,7 @@ const createController = (store, apiClient = null, gaClient = null) => {
           let done = false;
           const mutationObserver = new MutationObserver(
             async (mutationsList, observer) => {
-              if (!document.querySelector(firstStep.highlightTarget)) return;
+              if (!document.querySelector(highlightTarget)) return;
               driver.defineSteps(definedSteps);
               if (
                 (target === 'window' && event === 'load') ||

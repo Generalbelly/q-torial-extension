@@ -5,7 +5,7 @@
         Show this step for a user visiting a page matching the following
         conditions.
       </div>
-      <base-columns>
+      <base-columns class="is-gapless">
         <base-column>
           <select-field :items="pathOperators" v-model="innerPathOperator" />
         </base-column>
@@ -17,10 +17,6 @@
           />
         </base-column>
       </base-columns>
-      <!--      <checkbox-field v-model="parametersRequired">-->
-      <!--        With parameters-->
-      <!--      </checkbox-field>-->
-      <!--      <parameter-fields v-show="parametersRequired" v-model="innerParameters" />-->
     </div>
     <div>
       <validatable-select-field
@@ -37,10 +33,12 @@
         label="CSS Selector for the HTML element"
         placeholder="body > div > span.info"
         v-model="selectorForClickTrigger"
+        @click.native="$emit('click:selector-field')"
       />
     </div>
     <div>
       <validatable-text-field
+        v-if="hasOtherSteps && !lastStep"
         name="Next button text"
         rules="required"
         label="Next button text"
@@ -48,6 +46,7 @@
         v-model="nextBtnText"
       />
       <validatable-text-field
+        v-if="hasOtherSteps && !firstStep"
         name="Previous button text"
         rules="required"
         label="Previous button text"
@@ -73,38 +72,41 @@
   </div>
 </template>
 <script>
-import BaseColumn from '../../../atoms/BaseColumn'
-import BaseColumns from '../../../atoms/BaseColumns'
-import CheckboxField from '../../../molecules/fields/CheckboxField'
-import ParameterFields from '../../../molecules/fields/ParameterFields'
-import SelectField from '../../../molecules/fields/SelectField'
-import ValidatableTextField from '../../../molecules/fields/ValidatableTextField'
-import PathOperators from '../../../atoms/Entities/PathOperators'
-import ValidatableSelectField from '../../../molecules/fields/ValidatableSelectField'
+import BaseColumn from '../../../atoms/BaseColumn';
+import BaseColumns from '../../../atoms/BaseColumns';
+import CheckboxField from '../../../molecules/fields/CheckboxField';
+import ParameterFields from '../../../molecules/fields/ParameterFields';
+import SelectField from '../../../molecules/fields/SelectField';
+import ValidatableTextField from '../../../molecules/fields/ValidatableTextField';
+import PathOperators from '../../../atoms/Entities/PathOperators';
+import ValidatableSelectField from '../../../molecules/fields/ValidatableSelectField';
+import BaseLevelItem from '../../../atoms/BaseLevelItem/BaseLevelItem';
+import BaseLevel from '../../../atoms/BaseLevel/BaseLevel';
+import BaseButton from '../../../atoms/BaseButton/BaseButton';
 
 const TRIGGER_TYPE_1 = {
   event: 'load',
   target: 'window',
   waitingTime: 0,
-}
+};
 
 const TRIGGER_TYPE_2 = {
   event: 'click',
   target: null,
   waitingTime: 0,
-}
+};
 
 const TRIGGER_TYPE_3 = {
   event: null,
   target: null,
   waitingTime: 0,
-}
+};
 
 const triggerMap = {
   triggerType1: TRIGGER_TYPE_1,
   triggerType2: TRIGGER_TYPE_2,
   triggerType3: TRIGGER_TYPE_3,
-}
+};
 
 const firstStepTriggers = [
   {
@@ -115,7 +117,7 @@ const firstStepTriggers = [
     text: 'After a certain HTML element has been clicked',
     value: 'triggerType2',
   },
-]
+];
 const otherStepTriggers = [
   {
     text: 'When users click "Next" on the previous step',
@@ -125,11 +127,14 @@ const otherStepTriggers = [
     text: 'After a certain HTML element has been clicked',
     value: 'triggerType2',
   },
-]
+];
 
 export default {
   name: 'StepForm',
   components: {
+    BaseButton,
+    BaseLevel,
+    BaseLevelItem,
     ValidatableSelectField,
     BaseColumn,
     BaseColumns,
@@ -144,6 +149,10 @@ export default {
       default: false,
     },
     lastStep: {
+      type: Boolean,
+      default: false,
+    },
+    hasOtherSteps: {
       type: Boolean,
       default: false,
     },
@@ -167,7 +176,7 @@ export default {
         return {
           target: null,
           event: null,
-        }
+        };
       },
     },
     config: {
@@ -180,7 +189,7 @@ export default {
           showButtons: true,
           doneBtnText: 'Done',
           closeBtnText: 'Close',
-        }
+        };
       },
     },
   },
@@ -188,29 +197,29 @@ export default {
     return {
       parametersRequired: false,
       pathOperators: PathOperators,
-    }
+    };
   },
   computed: {
     triggers() {
       if (this.firstStep) {
-        return firstStepTriggers
+        return firstStepTriggers;
       }
-      return otherStepTriggers
+      return otherStepTriggers;
     },
     innerPathOperator: {
       get() {
-        return this.pathOperator
+        return this.pathOperator;
       },
       set(newValue) {
-        this.$emit('update:path-operator', newValue)
+        this.$emit('update:path-operator', newValue);
       },
     },
     innerPathValue: {
       get() {
-        return this.pathValue
+        return this.pathValue;
       },
       set(newValue) {
-        this.$emit('update:path-value', newValue)
+        this.$emit('update:path-value', newValue);
       },
     },
     // innerParameters: {
@@ -223,83 +232,83 @@ export default {
     // },
     innerConfig: {
       get() {
-        return this.config
+        return this.config;
       },
       set(newValue) {
-        this.$emit('update:config', newValue)
+        this.$emit('update:config', newValue);
       },
     },
     nextBtnText: {
       get() {
-        return this.innerConfig.nextBtnText
+        return this.innerConfig.nextBtnText;
       },
       set(newValue) {
         this.innerConfig = {
           ...this.innerConfig,
           nextBtnText: newValue,
-        }
+        };
       },
     },
     prevBtnText: {
       get() {
-        return this.innerConfig.prevBtnText
+        return this.innerConfig.prevBtnText;
       },
       set(newValue) {
         this.innerConfig = {
           ...this.innerConfig,
           prevBtnText: newValue,
-        }
+        };
       },
     },
     doneBtnText: {
       get() {
-        return this.innerConfig.doneBtnText
+        return this.innerConfig.doneBtnText;
       },
       set(newValue) {
         this.innerConfig = {
           ...this.innerConfig,
           doneBtnText: newValue,
-        }
+        };
       },
     },
     closeBtnText: {
       get() {
-        return this.innerConfig.closeBtnText
+        return this.innerConfig.closeBtnText;
       },
       set(newValue) {
         this.innerConfig = {
           ...this.innerConfig,
           closeBtnText: newValue,
-        }
+        };
       },
     },
     innerTrigger: {
       get() {
         if (this.trigger.event === 'load' && this.trigger.target === 'window') {
-          return 'triggerType1'
+          return 'triggerType1';
         }
-        return 'triggerType2'
+        return 'triggerType2';
       },
       set(newValue) {
         if (triggerMap[newValue]) {
-          this.$emit('update:trigger', triggerMap[newValue])
+          this.$emit('update:trigger', triggerMap[newValue]);
         } else {
-          this.$emit('update:trigger', newValue)
+          this.$emit('update:trigger', newValue);
         }
       },
     },
     selectorForClickTrigger: {
       get() {
         if (this.trigger.target === 'window') {
-          return null
+          return null;
         }
-        return this.trigger.target
+        return this.trigger.target;
       },
       set(newValue) {
         this.innerTrigger = {
           ...this.trigger,
           target: newValue,
-        }
+        };
       },
     },
   },
@@ -312,12 +321,12 @@ export default {
               key: '',
               value: '',
             },
-          ]
+          ];
         }
       },
     },
   },
-}
+};
 </script>
 <style scoped>
 .form > div + div {

@@ -160,11 +160,11 @@ const actions = {
     commit(SET_REQUESTING, true);
     commit(SELECT_TUTORIAL, id);
     if (state.selectedTutorialId) {
-      if (!getters.tutorial) {
+      if (!getters.tutorial && state.tutorialRepositoryReady) {
         let done;
         while (!done) {
           // eslint-disable-next-line no-await-in-loop
-          await dispatch('listTutorials', {});
+          await dispatch('listTutorials');
           if (getters.tutorial || state.allFetched) {
             done = true;
           }

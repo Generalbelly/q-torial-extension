@@ -141,6 +141,7 @@ chrome.runtime.onMessageExternal.addListener(
     const { command = null, data = {} } = request;
     const user = await appFirebaseService.checkAuth();
     console.log(command);
+    console.log(data);
     switch (command) {
       case SIGN_IN:
         try {
@@ -172,21 +173,22 @@ chrome.runtime.onMessageExternal.addListener(
           message: chrome.runtime.getManifest().version,
         });
         break;
-      case SELECT_TUTORIAL:
-        if (user) {
-          await store.dispatch('selectTutorial', data);
-          await store.dispatch('setActive', true);
-          sendResponse({
-            status: OK,
-            message: 'tutorial is just selected.',
-          });
-        } else {
-          sendResponse({
-            status: ERROR,
-            message: 'login required',
-          });
-        }
-        break;
+      // case SELECT_TUTORIAL:
+      //   if (user) {
+      //     await store.dispatch('initTutorialRepository');
+      //     await store.dispatch('selectTutorial', data);
+      //     await store.dispatch('setActive', true);
+      //     sendResponse({
+      //       status: OK,
+      //       message: 'tutorial is just selected.',
+      //     });
+      //   } else {
+      //     sendResponse({
+      //       status: ERROR,
+      //       message: 'login required',
+      //     });
+      //   }
+      //   break;
       case CHECK_AUTH:
         sendResponse({
           status: user ? OK : ERROR,

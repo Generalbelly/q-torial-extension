@@ -93,6 +93,8 @@ const actions = {
     });
   },
   async listTutorials({ commit, state }, payload) {
+    console.log('listTutorials');
+    console.log(state);
     if (state.user) {
       commit(SET_REQUESTING, true);
       const data = await sendCommand(PASS_DATA_TO_BACKGROUND, {
@@ -211,7 +213,6 @@ const actions = {
     commit(SET_REQUESTING, true);
     const data = await sendCommand(SYNC_DATA);
     commit(SYNC_DATA, data);
-    console.log(data);
     commit(SET_REQUESTING, false);
   },
 };

@@ -24,7 +24,7 @@
           You haven't added any steps yet.
           <add-step-button
             class="has-margin-5"
-            @click:step-type="onClickStepType"
+            @click:step-type="onClickStepTypeFirstStep"
           />
         </p>
         <template v-for="(step, stepIndex) in innerTutorial.steps">
@@ -146,6 +146,8 @@
             :path-operator.sync="innerStep.pathOperator"
             :trigger.sync="innerStep.trigger"
             :config.sync="innerStep.config"
+            :has-other-steps="tutorial.steps > 1"
+            @click:selector-field="onClickSelectorField"
           />
         </validation-observer>
       </template>
@@ -159,9 +161,9 @@
         active
         @close="onCloseClickToAddStepMessage"
       >
-        Click to select and edit text.<br />
+        Click to select a HTML element.<br />
         Selections start small.<br />
-        The more you click, the larger your section to edit will become.<br />
+        The more you click, the larger your section to select will become.<br />
         To select a different small section, press cancel and click a new
         section.
       </tips-message>
@@ -216,6 +218,7 @@ import {
   SAVE,
   RESELECT_ELEMENT,
   RESET_PREVIEW,
+  SELECT_TRIGGER_TARGET,
 } from '../../../constants/drvier-editor-command-types';
 import AddStepButton from '../../organisms/AddStepButton/AddStepButton';
 import BaseModal from '../../molecules/BaseModal/BaseModal';
@@ -425,6 +428,7 @@ export default {
           if (step.id) {
             this.$emit('update:step', step);
           } else {
+            console.log(this.newStepIndex);
             this.innerTutorial.steps = [
               ...this.innerTutorial.steps.slice(0, this.newStepIndex),
               new StepEntity({
@@ -495,6 +499,14 @@ export default {
         type: stepType,
       });
     },
+    onClickSelectorField() {
+      this.shouldShowStepForm = false;
+      this.showClickToAddStepMessage = true;
+      this.shouldShowSideNav = false;
+      this.sendCommand(SELECT_TRIGGER_TARGET, {
+        step: this.innerStep,
+      });
+    },
     onCloseClickToAddStepMessage() {
       this.showClickToAddStepMessage = false;
       this.hideIframe();
@@ -527,6 +539,10 @@ export default {
       this.sendCommand(PREVIEW, {
         steps: this.innerTutorial.steps,
       });
+    },
+    onClickStepTypeFirstStep(stepType) {
+      this.newStepIndex = 0;
+      this.onClickStepType(stepType);
     },
     onStepDeleteClick(step) {
       this.$emit('delete:step', step);

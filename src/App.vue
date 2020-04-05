@@ -1,5 +1,5 @@
 <template>
-  <div class="has-background-neutral-050">
+  <div class="has-background-neutral-050" v-if="user">
     <the-navbar
       v-if="shouldShowNav"
       @click:tutorials="onClickTutorials"
@@ -37,6 +37,7 @@ export default {
       shouldShowNav: true,
       shouldShowTutorialsPage: false,
       shouldShowTutorialPage: false,
+      stateRecovered: false,
     };
   },
   computed: {

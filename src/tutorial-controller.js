@@ -16,7 +16,7 @@ const createController = (store, apiClient = null, gaClient = null) => {
   let steps = [];
   let startTime = 0;
   let activeStepIndex = 0;
-  let intendedReload = false;
+  let intendedReload = store.get('intendedReload', false);
   let once = store.get('once', []);
   const customerId = store.get('customerId', null);
   let driverOptions = {};
@@ -31,11 +31,13 @@ const createController = (store, apiClient = null, gaClient = null) => {
 
   return {
     resetProgress() {
+      store.set('intendedReload', false);
       store.set('activeStepIndex', -1);
       store.set('startTime', 0);
       store.set('tutorial', null);
     },
     saveProgress() {
+      store.set('intendedReload', intendedReload);
       store.set('activeStepIndex', activeStepIndex);
       store.set('startTime', startTime);
       store.set('tutorial', currentTutorial);
@@ -98,6 +100,7 @@ const createController = (store, apiClient = null, gaClient = null) => {
       }
     },
     async resetHandler() {
+      console.log('intendedReload', intendedReload);
       if (!intendedReload) {
         if (currentTutorial.settings.once) {
           if (!once.includes(currentTutorial.id)) {
@@ -106,30 +109,35 @@ const createController = (store, apiClient = null, gaClient = null) => {
           store.set('once', once);
         }
 
+        const completeSteps = activeStepIndex + 1;
         if (apiClient) {
           await apiClient.storePerformance({
             tutorialId: currentTutorial.id,
-            completeSteps: activeStepIndex,
             allSteps: steps.length,
-            complete: activeStepIndex === steps.length,
+            complete: completeSteps === steps.length,
             elapsedTime: new Date().getTime() - startTime,
+            completeSteps,
             customerId,
           });
         }
 
-        if (gaClient) {
-          if (currentTutorial.gaPropertyId) {
-            const data = {
-              send_to: currentTutorial.gaPropertyId,
-              event_label: currentTutorial.name,
-              event_category: 'Tutorial',
-              value: activeStepIndex,
-              non_interaction: true,
-            };
-            if (activeStepIndex === steps.length) {
+        if (gaClient && currentTutorial.gaPropertyId) {
+          const data = {
+            send_to: currentTutorial.gaPropertyId,
+            event_label: currentTutorial.name,
+            event_category: 'Tutorial',
+            value: completeSteps,
+            non_interaction: true,
+          };
+          try {
+            if (completeSteps === steps.length) {
               gaClient.store('complete', data);
             } else {
               gaClient.store('incomplete', data);
+            }
+          } catch (e) {
+            if (e.toString() !== 'ReferenceError: gtag is not defined') {
+              throw e;
             }
           }
         }
@@ -158,7 +166,6 @@ const createController = (store, apiClient = null, gaClient = null) => {
       return !(tutorial.settings.once && once.includes(customerId));
     },
     async handleError(error) {
-      console.error(error);
       if (error instanceof StepError) {
         if (apiClient) {
           await apiClient.logError({
@@ -172,6 +179,7 @@ const createController = (store, apiClient = null, gaClient = null) => {
     },
     async prepare(tutorial, options = {}) {
       try {
+        intendedReload = false;
         if (!this.validate(tutorial)) {
           return;
         }
@@ -207,6 +215,7 @@ const createController = (store, apiClient = null, gaClient = null) => {
           },
           onReset: driverOptions.onReset
             ? async () => {
+                console.log('onResetCalled');
                 try {
                   await this.resetHandler();
                   driverOptions.onReset(intendedReload);
@@ -215,6 +224,7 @@ const createController = (store, apiClient = null, gaClient = null) => {
                 }
               }
             : async () => {
+                console.log('onResetCalled');
                 try {
                   await this.resetHandler();
                 } catch (error) {

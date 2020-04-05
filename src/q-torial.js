@@ -29,10 +29,11 @@ window.Qtorial =
 
     const createGAClient = () => ({
       store(action, data) {
-        if (!gtag) {
-          return;
+        try {
+          gtag('event', action, data);
+        } catch (e) {
+          throw e;
         }
-        gtag('event', action, data);
       },
     });
 

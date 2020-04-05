@@ -1,5 +1,18 @@
 <template>
-  <div />
+  <div>
+    <div
+      v-if="isSelectingTriggerTarget && selectorChoices.length > 0"
+      class="is-fixed-bottom-right"
+      style="z-index: 10000000000000;"
+    >
+      <button class="button" id="selecting-trigger-target-cancel">
+        Cancel
+      </button>
+      <button class="button is-primary" id="selecting-trigger-target-select">
+        Select
+      </button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -15,6 +28,7 @@ import {
   ELEMENT_NOT_FOUND,
   RESELECT_ELEMENT,
   RESET_PREVIEW,
+  SELECT_TRIGGER_TARGET,
 } from '../../../constants/drvier-editor-command-types';
 import StepEntity from '../../atoms/Entities/StepEntity';
 import { sendCommand } from '../../../api';
@@ -33,6 +47,7 @@ export default {
       step: new StepEntity(),
       source: null,
       isEditing: false,
+      isSelectingTriggerTarget: false,
       previewController: null,
       localStorage: null,
     };
@@ -46,7 +61,16 @@ export default {
         this.selectorChoices = [];
         this.selectorChoiceIndex = 0;
         this.step = new StepEntity();
-        this.$emit('editDone');
+      }
+    },
+    isSelectingTriggerTarget(value) {
+      if (!value) {
+        this.driver.reset();
+        this.driver.options.allowClose = true;
+        this.driver.options.editable = false;
+        this.selectorChoices = [];
+        this.selectorChoiceIndex = 0;
+        this.step = new StepEntity();
       }
     },
   },
@@ -89,6 +113,12 @@ export default {
       const { step = {}, steps = [], type = null } = data;
       if (command === ADD) {
         this.selectElementToHighlight(type);
+        return;
+      }
+      if (command === SELECT_TRIGGER_TARGET) {
+        this.isSelectingTriggerTarget = true;
+        this.step = new StepEntity(step);
+        this.addUserScreenClickHandler();
         return;
       }
 
@@ -181,12 +211,15 @@ export default {
       return null;
     },
     getDriverConfig() {
+      let content = '';
+      let selector = '';
       const activeElement = this.driver.getHighlightedElement();
-      const popover = activeElement.getPopover();
-      const content = purify.sanitize(popover.getContentNode().input);
-
       const activeNode = activeElement.getNode();
-      const selector = this.getSelector(activeNode);
+      selector = this.getSelector(activeNode);
+      const popover = activeElement.getPopover();
+      if (popover) {
+        content = purify.sanitize(popover.getContentNode().input);
+      }
       return {
         element: selector,
         popover: {
@@ -200,33 +233,48 @@ export default {
       };
     },
     onClickNext(el) {
-      if (this.isEditing) {
+      if (this.isEditing || this.isSelectingTriggerTarget) {
         this.onClickSave(el);
       }
     },
     onClickPrevious(el) {
-      if (this.isEditing) {
+      if (this.isEditing || this.isSelectingTriggerTarget) {
         this.onClickCancel(el);
       }
     },
     onClickCancel(el) {
       this.removeUserScreenClickHandler();
       this.isEditing = false;
+      this.isSelectingTriggerTarget = false;
       this.sendCommand(CANCEL);
     },
     onClickSave(el) {
       this.removeUserScreenClickHandler();
-      this.isEditing = false;
       const { element, popover } = this.getDriverConfig();
-      this.sendCommand(
-        SAVE,
-        new StepEntity({
-          ...this.step,
-          highlightTarget: element,
-          type: element === 'modal' ? 'modal' : 'tooltip',
-          config: popover,
-        })
-      );
+      if (this.isEditing) {
+        this.sendCommand(
+          SAVE,
+          new StepEntity({
+            ...this.step,
+            highlightTarget: element,
+            type: element === 'modal' ? 'modal' : 'tooltip',
+            config: popover,
+          })
+        );
+      } else {
+        this.sendCommand(
+          SAVE,
+          new StepEntity({
+            ...this.step,
+            trigger: {
+              ...this.step.trigger,
+              target: element,
+            },
+          })
+        );
+      }
+      this.isEditing = false;
+      this.isSelectingTriggerTarget = false;
     },
     extractSelectorChoices(e) {
       const upperElements = [];
@@ -248,8 +296,16 @@ export default {
     },
     userScreenClickHandler(e) {
       e.stopPropagation(); // for driver.js
+      if (e.target.id === 'selecting-trigger-target-cancel') {
+        this.onClickPrevious();
+        return;
+      }
+      if (e.target.id === 'selecting-trigger-target-select') {
+        this.onClickNext();
+        return;
+      }
 
-      if (this.isEditing) {
+      if (this.isEditing || this.isSelectingTriggerTarget) {
         if (this.selectorChoices.length === 0) {
           this.selectorChoices = this.extractSelectorChoices(e);
         }
@@ -263,21 +319,32 @@ export default {
       return new Promise(resolve => {
         // watchでセットすると遅いのでここでやってる
         this.driver.options.allowClose = false;
-        this.driver.options.editable = true;
-        this.driver.defineSteps([
-          {
-            element,
-            popover,
-            onNext: el => {
-              this.onClickNext(el);
-              this.driver.preventMove();
+        if (this.isSelectingTriggerTarget) {
+          this.driver.defineSteps([
+            {
+              element,
+              popover: {
+                content: '',
+              },
             },
-            onPrevious: el => {
-              this.onClickPrevious(el);
-              this.driver.preventMove();
+          ]);
+        } else {
+          this.driver.options.editable = true;
+          this.driver.defineSteps([
+            {
+              element,
+              popover,
+              onNext: el => {
+                this.onClickNext(el);
+                this.driver.preventMove();
+              },
+              onPrevious: el => {
+                this.onClickPrevious(el);
+                this.driver.preventMove();
+              },
             },
-          },
-        ]);
+          ]);
+        }
         this.driver.start();
         resolve(this.driver.hasHighlightedElement());
       });

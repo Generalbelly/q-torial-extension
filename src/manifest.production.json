@@ -15,7 +15,7 @@
   "background": {
     "scripts": ["background.js"]
   },
-  "permissions": ["tabs", "background", "activeTab"],
+  "permissions": ["background"],
   "content_scripts": [
     {
       "matches": ["*://*/*"],
@@ -24,7 +24,7 @@
     }
   ],
   "externally_connectable": {
-    "matches": ["https://q-torial.firebaseapp.com/*", "https://q-torial.app/*"]
+    "matches": ["https://q-torial.app/*"]
   },
   "web_accessible_resources": ["contentScript.css", "spaUrlWatcher.js"],
   "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"

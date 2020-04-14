@@ -287,6 +287,9 @@ export default {
         if (this.trigger.event === 'load' && this.trigger.target === 'window') {
           return 'triggerType1';
         }
+        if (!this.trigger.event && !this.trigger.target) {
+          return 'triggerType3';
+        }
         return 'triggerType2';
       },
       set(newValue) {

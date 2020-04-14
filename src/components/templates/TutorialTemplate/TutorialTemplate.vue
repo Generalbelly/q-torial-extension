@@ -146,7 +146,7 @@
             :path-operator.sync="innerStep.pathOperator"
             :trigger.sync="innerStep.trigger"
             :config.sync="innerStep.config"
-            :has-other-steps="tutorial.steps > 1"
+            :has-other-steps="innerTutorial.steps.length > 1"
             @click:selector-field="onClickSelectorField"
           />
         </validation-observer>

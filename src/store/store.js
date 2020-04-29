@@ -229,7 +229,7 @@ const state = {
   serverSideErrors: {},
   navigating: false,
   previewing: false,
-  pendingStepIndex: -1,
+  pendingStepIndex: -2, // ステップ0の前に挿入したいときに-1はありうる
 };
 
 export default new Vuex.Store({

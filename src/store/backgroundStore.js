@@ -105,7 +105,7 @@ const mutations = {
     state.active = false;
     state.navigating = false;
     state.previewing = false;
-    state.pendingStepIndex = -1;
+    state.pendingStepIndex = -2;
   },
   [SET_ALL_FETCHED](state, payload) {
     state.allFetched = payload;
@@ -411,7 +411,7 @@ const state = {
   serverSideErrors: {},
   navigating: false,
   previewing: false,
-  pendingStepIndex: -1,
+  pendingStepIndex: -2,
   tutorialRepositoryReady: false,
   taskId: null,
 };

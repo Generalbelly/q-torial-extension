@@ -55,7 +55,7 @@ Vue.use(VeeValidate, {
 class ExtApp {
   iframeId = process.env.VUE_APP_NAME;
 
-  appId = 'app';
+  appId = `${process.env.VUE_APP_NAME}-app`;
 
   injectScript(file, node) {
     const th = document.getElementsByTagName(node)[0];

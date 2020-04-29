@@ -292,7 +292,7 @@ export default {
     },
     pendingStepIndex: {
       type: Number,
-      default: -1,
+      default: -2,
     },
   },
   data() {
@@ -345,7 +345,7 @@ export default {
     pendingStepIndex: {
       immediate: true,
       handler(value) {
-        if (value > -1) {
+        if (value > -2) {
           const step = new StepEntity({ ...this.innerTutorial.steps[value] });
           if (step.couldBeShownOn(window.parent.location.pathname)) {
             this.hideIframe();
@@ -413,7 +413,7 @@ export default {
         return;
       }
       if (command === SAVE) {
-        this.$emit('update:pending-step', -1);
+        this.$emit('update:pending-step', -2);
         const step = new StepEntity({
           ...data,
           pathValue: data.pathValue || window.parent.location.pathname,
@@ -473,7 +473,7 @@ export default {
       }
 
       if (command === CANCEL) {
-        this.$emit('update:pending-step', -1);
+        this.$emit('update:pending-step', -2);
         this.shouldShowSideNav = true;
         this.showIframe();
       }

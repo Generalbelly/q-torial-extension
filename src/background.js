@@ -72,6 +72,7 @@ const connectHandler = async port => {
       ...getters,
     }),
     async value => {
+      console.log(value);
       if (!value.requesting && value.taskId) {
         const { taskId, ...val } = value;
         sendCommand(UPDATE_STATE, val, taskId);
@@ -101,6 +102,8 @@ const connectHandler = async port => {
 
   const onMessageHandler = async request => {
     const { command = '', data = {}, id = null } = request;
+    console.log(command);
+    console.log(data);
     switch (command) {
       case PASS_DATA_TO_BACKGROUND:
         await store.dispatch(data.action, data.payload);
@@ -137,6 +140,8 @@ chrome.runtime.onMessageExternal.addListener(
   async (request = {}, sender, sendResponse) => {
     const { command = null, data = {} } = request;
     const user = await appFirebaseService.checkAuth();
+    console.log(command);
+    console.log(data);
     switch (command) {
       case SIGN_IN:
         try {

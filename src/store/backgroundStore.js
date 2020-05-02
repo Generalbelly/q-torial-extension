@@ -385,6 +385,8 @@ const actions = {
     const { user } = await appFirebaseService.signIn(email, password);
     await dispatch('updateLocalUser', user);
     await dispatch('getUser');
+    await dispatch('getFirebaseConfig');
+    await store.dispatch('checkUserPaymentInfo');
   },
   async signOut({ state, dispatch }) {
     await appFirebaseService.signOut();

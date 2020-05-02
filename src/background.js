@@ -19,13 +19,16 @@ import { SYNC_DATA } from './store/mutation-types';
 
 global.browser = browser;
 
+let connectedPort = null;
 const connectHandler = async port => {
+  if (connectedPort) {
+    connectedPort.disconnect();
+  }
+  connectedPort = port;
+
   if (port.name !== process.env.VUE_APP_NAME) return;
 
-  let connected = true;
-
   function sendCommand(command, data, id = null) {
-    if (!connected) return;
     port.postMessage({
       command,
       data,
@@ -43,16 +46,12 @@ const connectHandler = async port => {
       sendCommand(REDIRECT_TO_APP);
       return;
     }
-    await store.dispatch('updateLocalUser', user);
-    await store.dispatch('getFirebaseConfig');
     const firebaseUser = store.state.user.firebaseConfig
       ? await getUserFirebaseService(
           store.state.user.firebaseConfig
         ).checkAuth()
       : null;
     if (firebaseUser) {
-      await store.dispatch('getUser');
-      await store.dispatch('checkUserPaymentInfo');
       sendCommand(START_EXT);
     } else {
       sendCommand(REDIRECT_TO_APP);
@@ -120,7 +119,7 @@ const connectHandler = async port => {
   port.onMessage.addListener(onMessageHandler);
 
   port.onDisconnect.addListener(async () => {
-    connected = false;
+    connectedPort = null;
     unwatch();
     unsubscribe();
     chrome.browserAction.onClicked.removeListener(browserActionHandler);
@@ -128,8 +127,7 @@ const connectHandler = async port => {
     port.disconnect();
   });
 
-  const user = await appFirebaseService.checkAuth();
-  if (user && store.state.active) {
+  if (store.state.active) {
     await startApp();
   }
 };
@@ -173,22 +171,6 @@ chrome.runtime.onMessageExternal.addListener(
           message: chrome.runtime.getManifest().version,
         });
         break;
-      // case SELECT_TUTORIAL:
-      //   if (user) {
-      //     await store.dispatch('initTutorialRepository');
-      //     await store.dispatch('selectTutorial', data);
-      //     await store.dispatch('setActive', true);
-      //     sendResponse({
-      //       status: OK,
-      //       message: 'tutorial is just selected.',
-      //     });
-      //   } else {
-      //     sendResponse({
-      //       status: ERROR,
-      //       message: 'login required',
-      //     });
-      //   }
-      //   break;
       case CHECK_AUTH:
         sendResponse({
           status: user ? OK : ERROR,

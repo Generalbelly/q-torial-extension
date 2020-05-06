@@ -346,7 +346,7 @@ export default {
       immediate: true,
       handler(value) {
         if (value > -2) {
-          const step = new StepEntity({ ...this.innerTutorial.steps[value] });
+          const step = new StepEntity(this.innerTutorial.steps[value]);
           if (step.couldBeShownOn(window.parent.location.pathname)) {
             this.hideIframe();
             this.shouldShowSideNav = false;
@@ -568,9 +568,11 @@ export default {
       this.shouldShowElementToHighlightNotFoundModal = false;
       this.shouldShowSideNav = false;
       this.hideIframe();
+      const step = new StepEntity(
+        this.innerTutorial.steps[this.pendingStepIndex]
+      );
       this.sendCommand(RESELECT_ELEMENT, {
-        step: this.innerStep,
-        type: 'tooltip',
+        step,
       });
     },
   },

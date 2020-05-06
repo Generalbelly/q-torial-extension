@@ -9770,8 +9770,8 @@
                     for (;;)
                       switch ((r.prev = r.next)) {
                         case 0:
-                          if ((console.log('intendedReload', c), c)) {
-                            r.next = 20;
+                          if (c) {
+                            r.next = 19;
                             break;
                           }
                           if (
@@ -9782,11 +9782,11 @@
                             (f = s + 1),
                             !e)
                           ) {
-                            r.next = 7;
+                            r.next = 6;
                             break;
                           }
                           return (
-                            (r.next = 7),
+                            (r.next = 6),
                             e.storePerformance({
                               tutorialId: o.id,
                               allSteps: i.length,
@@ -9796,9 +9796,9 @@
                               customerId: l,
                             })
                           );
-                        case 7:
+                        case 6:
                           if (!n || !o.gaPropertyId) {
-                            r.next = 17;
+                            r.next = 16;
                             break;
                           }
                           (h = {
@@ -9808,36 +9808,36 @@
                             value: f,
                             non_interaction: !0,
                           }),
-                            (r.prev = 9),
+                            (r.prev = 8),
                             f === i.length
                               ? n.store('complete', h)
                               : n.store('incomplete', h),
-                            (r.next = 17);
+                            (r.next = 16);
                           break;
-                        case 13:
+                        case 12:
                           if (
-                            ((r.prev = 13),
-                            (r.t0 = r.catch(9)),
+                            ((r.prev = 12),
+                            (r.t0 = r.catch(8)),
                             'ReferenceError: gtag is not defined' ===
                               r.t0.toString())
                           ) {
-                            r.next = 17;
+                            r.next = 16;
                             break;
                           }
                           throw r.t0;
-                        case 17:
-                          this.resetProgress(), (r.next = 21);
+                        case 16:
+                          this.resetProgress(), (r.next = 20);
                           break;
-                        case 20:
+                        case 19:
                           this.saveProgress();
-                        case 21:
+                        case 20:
                         case 'end':
                           return r.stop();
                       }
                   },
                   r,
                   this,
-                  [[9, 13]]
+                  [[8, 12]]
                 );
               })
             )),
@@ -10030,31 +10030,28 @@
                                               switch ((t.prev = t.next)) {
                                                 case 0:
                                                   return (
-                                                    console.log(
-                                                      'onResetCalled'
-                                                    ),
-                                                    (t.prev = 1),
-                                                    (t.next = 4),
+                                                    (t.prev = 0),
+                                                    (t.next = 3),
                                                     T.resetHandler()
                                                   );
-                                                case 4:
-                                                  h.onReset(c), (t.next = 11);
+                                                case 3:
+                                                  h.onReset(c), (t.next = 10);
                                                   break;
-                                                case 7:
+                                                case 6:
                                                   return (
-                                                    (t.prev = 7),
-                                                    (t.t0 = t.catch(1)),
-                                                    (t.next = 11),
+                                                    (t.prev = 6),
+                                                    (t.t0 = t.catch(0)),
+                                                    (t.next = 10),
                                                     T.handleError(t.t0)
                                                   );
-                                                case 11:
+                                                case 10:
                                                 case 'end':
                                                   return t.stop();
                                               }
                                           },
                                           t,
                                           null,
-                                          [[1, 7]]
+                                          [[0, 6]]
                                         );
                                       })
                                     )
@@ -10066,31 +10063,28 @@
                                               switch ((t.prev = t.next)) {
                                                 case 0:
                                                   return (
-                                                    console.log(
-                                                      'onResetCalled'
-                                                    ),
-                                                    (t.prev = 1),
-                                                    (t.next = 4),
+                                                    (t.prev = 0),
+                                                    (t.next = 3),
                                                     T.resetHandler()
                                                   );
-                                                case 4:
-                                                  t.next = 10;
+                                                case 3:
+                                                  t.next = 9;
                                                   break;
-                                                case 6:
+                                                case 5:
                                                   return (
-                                                    (t.prev = 6),
-                                                    (t.t0 = t.catch(1)),
-                                                    (t.next = 10),
+                                                    (t.prev = 5),
+                                                    (t.t0 = t.catch(0)),
+                                                    (t.next = 9),
                                                     T.handleError(t.t0)
                                                   );
-                                                case 10:
+                                                case 9:
                                                 case 'end':
                                                   return t.stop();
                                               }
                                           },
                                           t,
                                           null,
-                                          [[1, 6]]
+                                          [[0, 5]]
                                         );
                                       })
                                     ),

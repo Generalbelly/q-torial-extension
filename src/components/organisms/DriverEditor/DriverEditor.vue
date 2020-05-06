@@ -1,7 +1,10 @@
 <template>
   <div>
     <div
-      v-if="isSelectingTriggerTarget && selectorChoices.length > 0"
+      v-if="
+        (isSelectingHighlightTarget || isSelectingTriggerTarget) &&
+          selectorChoices.length > 0
+      "
       class="is-fixed-bottom-right"
       style="z-index: 10000000000000;"
     >
@@ -48,6 +51,7 @@ export default {
       source: null,
       isEditing: false,
       isSelectingTriggerTarget: false,
+      isSelectingHighlightTarget: false,
       previewController: null,
       localStorage: null,
     };
@@ -64,6 +68,16 @@ export default {
       }
     },
     isSelectingTriggerTarget(value) {
+      if (!value) {
+        this.driver.reset();
+        this.driver.options.allowClose = true;
+        this.driver.options.editable = false;
+        this.selectorChoices = [];
+        this.selectorChoiceIndex = 0;
+        this.step = new StepEntity();
+      }
+    },
+    isSelectingHighlightTarget(value) {
       if (!value) {
         this.driver.reset();
         this.driver.options.allowClose = true;
@@ -111,12 +125,20 @@ export default {
     },
     handleCommand(command, data) {
       const { step = {}, steps = [], type = null } = data;
+      console.log(command);
+      console.log(data);
       if (command === ADD) {
         this.selectElementToHighlight(type);
         return;
       }
       if (command === SELECT_TRIGGER_TARGET) {
         this.isSelectingTriggerTarget = true;
+        this.step = new StepEntity(step);
+        this.addUserScreenClickHandler();
+        return;
+      }
+      if (command === RESELECT_ELEMENT) {
+        this.isSelectingHighlightTarget = true;
         this.step = new StepEntity(step);
         this.addUserScreenClickHandler();
         return;
@@ -151,11 +173,6 @@ export default {
             }
           }, 3000);
         }
-        return;
-      }
-
-      if (command === RESELECT_ELEMENT) {
-        this.selectElementToHighlight('tooltip');
         return;
       }
 
@@ -233,12 +250,20 @@ export default {
       };
     },
     onClickNext(el) {
-      if (this.isEditing || this.isSelectingTriggerTarget) {
+      if (
+        this.isEditing ||
+        this.isSelectingTriggerTarget ||
+        this.isSelectingHighlightTarget
+      ) {
         this.onClickSave(el);
       }
     },
     onClickPrevious(el) {
-      if (this.isEditing || this.isSelectingTriggerTarget) {
+      if (
+        this.isEditing ||
+        this.isSelectingTriggerTarget ||
+        this.isSelectingHighlightTarget
+      ) {
         this.onClickCancel(el);
       }
     },
@@ -246,6 +271,7 @@ export default {
       this.removeUserScreenClickHandler();
       this.isEditing = false;
       this.isSelectingTriggerTarget = false;
+      this.isSelectingHighlightTarget = false;
       this.sendCommand(CANCEL);
     },
     onClickSave(el) {
@@ -275,6 +301,7 @@ export default {
       }
       this.isEditing = false;
       this.isSelectingTriggerTarget = false;
+      this.isSelectingHighlightTarget = false;
     },
     extractSelectorChoices(e) {
       const upperElements = [];
@@ -305,7 +332,11 @@ export default {
         return;
       }
 
-      if (this.isEditing || this.isSelectingTriggerTarget) {
+      if (
+        this.isEditing ||
+        this.isSelectingTriggerTarget ||
+        this.isSelectingHighlightTarget
+      ) {
         if (this.selectorChoices.length === 0) {
           this.selectorChoices = this.extractSelectorChoices(e);
         }
@@ -319,7 +350,7 @@ export default {
       return new Promise(resolve => {
         // watchでセットすると遅いのでここでやってる
         this.driver.options.allowClose = false;
-        if (this.isSelectingTriggerTarget) {
+        if (this.isSelectingTriggerTarget || this.isSelectingHighlightTarget) {
           this.driver.defineSteps([
             {
               element,

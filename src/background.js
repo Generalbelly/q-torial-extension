@@ -7,7 +7,6 @@ import {
   VERSION,
   REDIRECT_TO_APP,
   PASS_DATA_TO_BACKGROUND,
-  SELECT_TUTORIAL,
   UPDATE_STATE,
   CHECK_AUTH,
   FIREBAE_SIGN_IN,
@@ -26,14 +25,16 @@ const connectHandler = async port => {
   }
   connectedPort = port;
 
-  if (port.name !== process.env.VUE_APP_NAME) return;
+  if (connectedPort.name !== process.env.VUE_APP_NAME) return;
 
   function sendCommand(command, data, id = null) {
-    port.postMessage({
-      command,
-      data,
-      id,
-    });
+    if (connectedPort) {
+      connectedPort.postMessage({
+        command,
+        data,
+        id,
+      });
+    }
   }
 
   async function startApp(resetState = false) {
@@ -116,15 +117,13 @@ const connectHandler = async port => {
     }
   };
 
-  port.onMessage.addListener(onMessageHandler);
+  connectedPort.onMessage.addListener(onMessageHandler);
 
-  port.onDisconnect.addListener(async () => {
+  connectedPort.onDisconnect.addListener(async () => {
     connectedPort = null;
     unwatch();
     unsubscribe();
     chrome.browserAction.onClicked.removeListener(browserActionHandler);
-    port.onMessage.removeListener(onMessageHandler);
-    port.disconnect();
   });
 
   if (store.state.active) {

@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="
-        (isSelectingHighlightTarget || isSelectingTriggerTarget) &&
+        (isReSelectingHighlightTarget || isSelectingTriggerTarget) &&
           selectorChoices.length > 0
       "
       class="is-fixed-bottom-right"
@@ -51,7 +51,7 @@ export default {
       source: null,
       isEditing: false,
       isSelectingTriggerTarget: false,
-      isSelectingHighlightTarget: false,
+      isReSelectingHighlightTarget: false,
       previewController: null,
       localStorage: null,
     };
@@ -77,7 +77,7 @@ export default {
         this.step = new StepEntity();
       }
     },
-    isSelectingHighlightTarget(value) {
+    isReSelectingHighlightTarget(value) {
       if (!value) {
         this.driver.reset();
         this.driver.options.allowClose = true;
@@ -138,7 +138,7 @@ export default {
         return;
       }
       if (command === RESELECT_ELEMENT) {
-        this.isSelectingHighlightTarget = true;
+        this.isReSelectingHighlightTarget = true;
         this.step = new StepEntity(step);
         this.addUserScreenClickHandler();
         return;
@@ -253,7 +253,7 @@ export default {
       if (
         this.isEditing ||
         this.isSelectingTriggerTarget ||
-        this.isSelectingHighlightTarget
+        this.isReSelectingHighlightTarget
       ) {
         this.onClickSave(el);
       }
@@ -262,7 +262,7 @@ export default {
       if (
         this.isEditing ||
         this.isSelectingTriggerTarget ||
-        this.isSelectingHighlightTarget
+        this.isReSelectingHighlightTarget
       ) {
         this.onClickCancel(el);
       }
@@ -271,7 +271,7 @@ export default {
       this.removeUserScreenClickHandler();
       this.isEditing = false;
       this.isSelectingTriggerTarget = false;
-      this.isSelectingHighlightTarget = false;
+      this.isReSelectingHighlightTarget = false;
       this.sendCommand(CANCEL);
     },
     onClickSave(el) {
@@ -301,7 +301,7 @@ export default {
       }
       this.isEditing = false;
       this.isSelectingTriggerTarget = false;
-      this.isSelectingHighlightTarget = false;
+      this.isReSelectingHighlightTarget = false;
     },
     extractSelectorChoices(e) {
       const upperElements = [];
@@ -335,7 +335,7 @@ export default {
       if (
         this.isEditing ||
         this.isSelectingTriggerTarget ||
-        this.isSelectingHighlightTarget
+        this.isReSelectingHighlightTarget
       ) {
         if (this.selectorChoices.length === 0) {
           this.selectorChoices = this.extractSelectorChoices(e);
@@ -350,7 +350,14 @@ export default {
       return new Promise(resolve => {
         // watchでセットすると遅いのでここでやってる
         this.driver.options.allowClose = false;
-        if (this.isSelectingTriggerTarget || this.isSelectingHighlightTarget) {
+        if (this.isReSelectingHighlightTarget) {
+          this.driver.defineSteps([
+            {
+              element,
+              popover: this.step.config,
+            },
+          ]);
+        } else if (this.isSelectingTriggerTarget) {
           this.driver.defineSteps([
             {
               element,

@@ -287,7 +287,7 @@ export default {
             config: popover,
           })
         );
-      } else {
+      } else if (this.isSelectingTriggerTarget) {
         this.sendCommand(
           SAVE,
           new StepEntity({
@@ -296,6 +296,14 @@ export default {
               ...this.step.trigger,
               target: element,
             },
+          })
+        );
+      } else if (this.isReSelectingHighlightTarget) {
+        this.sendCommand(
+          SAVE,
+          new StepEntity({
+            ...this.step,
+            highlightTarget: element,
           })
         );
       }
@@ -350,14 +358,10 @@ export default {
       return new Promise(resolve => {
         // watchでセットすると遅いのでここでやってる
         this.driver.options.allowClose = false;
-        if (this.isReSelectingHighlightTarget) {
-          this.driver.defineSteps([
-            {
-              element,
-              popover: this.step.config,
-            },
-          ]);
-        } else if (this.isSelectingTriggerTarget) {
+        if (
+          this.isSelectingTriggerTarget ||
+          this.isReSelectingHighlightTarget
+        ) {
           this.driver.defineSteps([
             {
               element,

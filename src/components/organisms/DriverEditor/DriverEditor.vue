@@ -168,6 +168,7 @@ export default {
           mutationObserver.observe(targetNode, config);
           window.setTimeout(() => {
             if (!done) {
+              this.isEditing = false;
               sendCommand(ELEMENT_NOT_FOUND);
               mutationObserver.disconnect();
             }
@@ -299,6 +300,7 @@ export default {
           })
         );
       } else if (this.isReSelectingHighlightTarget) {
+        console.log(this.step);
         this.sendCommand(
           SAVE,
           new StepEntity({

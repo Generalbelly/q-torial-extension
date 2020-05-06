@@ -428,7 +428,6 @@ export default {
           if (step.id) {
             this.$emit('update:step', step);
           } else {
-            console.log(this.newStepIndex);
             this.innerTutorial.steps = [
               ...this.innerTutorial.steps.slice(0, this.newStepIndex),
               new StepEntity({

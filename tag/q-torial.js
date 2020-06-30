@@ -9850,12 +9850,13 @@
           validate: function(t) {
             return (
               !e ||
-              (0 !== t.steps.length &&
-                0 !==
+              !(
+                0 === t.steps.length ||
+                0 ===
                   t.steps.filter(function(t) {
                     return t.pathValue === window.location.pathname;
-                  }).length &&
-                !(t.settings.once && u.includes(l)))
+                  }).length
+              )
             );
           },
           handleError:

@@ -153,17 +153,15 @@ const createController = (store, apiClient = null, gaClient = null) => {
       window.location.href = url;
     },
     validate(tutorial) {
+      // chrom拡張からの呼び出し
       if (!apiClient) {
         return true;
       }
-      if (
+      return !(
         tutorial.steps.length === 0 ||
         tutorial.steps.filter(s => s.pathValue === window.location.pathname)
           .length === 0
-      ) {
-        return false;
-      }
-      return !(tutorial.settings.once && once.includes(customerId));
+      );
     },
     async handleError(error) {
       if (error instanceof StepError) {

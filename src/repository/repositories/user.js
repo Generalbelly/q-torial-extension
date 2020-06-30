@@ -105,6 +105,7 @@ export default class UserRepository {
   /** @param {string} userId */
   async getFirebaseConfig(userId) {
     const snapshot = await this.getFirebaseConfigCollection(userId)
+      .orderBy('createdAt', 'desc')
       .limit(1)
       .get();
     return snapshot.docs.length > 0
